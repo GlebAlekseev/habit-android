@@ -3,35 +3,21 @@ package com.glebalekseevjk.habit.ui.theme
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val LightColorPalette = AppColors(
-    colorPrimary = gray100,
-    colorOnPrimary = blue900,
-    colorSecondary = blue200,
-    colorOnSecondary = blue700,
-    colorAccent = blue500,
-    divider = gray300,
-    icon = gray100,
-    warn = orange500,
-    success = green500,
-    error = red500,
-)
-
-private val DarkColorPalette = AppColors(
-    colorPrimary = blue900,
-    colorOnPrimary = gray100,
-    colorSecondary = blue700,
-    colorOnSecondary = blue200,
-    colorAccent = blue500,
-    divider = gray300,
-    icon = gray500,
-    warn = orange500,
-    success = green500,
-    error = red500,
+    colorPrimary = gray200,
+    colorOnPrimary = brown500,
+    colorSecondary = brown500,
+    colorOnSecondary = gray200,
+    colorAccent = raspberry500_40,
+    divider = brown500_20,
+    selectedContent = gray200,
+    unselectedContent = gray200_40,
 )
 
 var LocalAppColors = compositionLocalOf {
@@ -57,10 +43,8 @@ class AppColors(
     colorOnSecondary: Color,
     colorAccent: Color,
     divider: Color,
-    icon: Color,
-    warn: Color,
-    success: Color,
-    error: Color
+    selectedContent: Color,
+    unselectedContent: Color,
 ) {
     var colorPrimary: Color by mutableStateOf(colorPrimary)
         internal set
@@ -74,15 +58,10 @@ class AppColors(
         private set
     var divider: Color by mutableStateOf(divider)
         private set
-    var icon: Color by mutableStateOf(icon)
+    var selectedContent: Color by mutableStateOf(selectedContent)
         private set
-    var warn: Color by mutableStateOf(warn)
+    var unselectedContent: Color by mutableStateOf(unselectedContent)
         private set
-    var success: Color by mutableStateOf(success)
-        private set
-    var error: Color by mutableStateOf(error)
-        private set
-
 }
 
 @Composable
@@ -93,7 +72,7 @@ fun AppTheme(
 ) {
     val targetColors = when (theme) {
         AppTheme.Theme.Light -> LightColorPalette
-        AppTheme.Theme.Dark -> DarkColorPalette
+        AppTheme.Theme.Dark -> LightColorPalette
     }
 
     val colorPrimary = animateColorAsState(targetColors.colorPrimary, TweenSpec(400))
@@ -102,10 +81,8 @@ fun AppTheme(
     val colorOnSecondary = animateColorAsState(targetColors.colorOnSecondary, TweenSpec(400))
     val colorAccent = animateColorAsState(targetColors.colorAccent, TweenSpec(400))
     val divider = animateColorAsState(targetColors.divider, TweenSpec(400))
-    val icon = animateColorAsState(targetColors.icon, TweenSpec(400))
-    val warn = animateColorAsState(targetColors.warn, TweenSpec(400))
-    val success = animateColorAsState(targetColors.success, TweenSpec(400))
-    val error = animateColorAsState(targetColors.error, TweenSpec(400))
+    val selectedContent = animateColorAsState(targetColors.selectedContent, TweenSpec(400))
+    val unselectedContent = animateColorAsState(targetColors.unselectedContent, TweenSpec(400))
 
     val appColors = AppColors(
         colorPrimary = colorPrimary.value,
@@ -114,16 +91,14 @@ fun AppTheme(
         colorOnSecondary = colorOnSecondary.value,
         colorAccent = colorAccent.value,
         divider = divider.value,
-        icon = icon.value,
-        warn = warn.value,
-        success = success.value,
-        error = error.value,
+        selectedContent = selectedContent.value,
+        unselectedContent = unselectedContent.value,
     )
 
     val systemUiCtrl = rememberSystemUiController()
-    systemUiCtrl.setStatusBarColor(appColors.colorPrimary)
-    systemUiCtrl.setNavigationBarColor(appColors.colorPrimary)
-    systemUiCtrl.setSystemBarsColor(appColors.colorPrimary)
+    systemUiCtrl.setStatusBarColor(appColors.colorOnPrimary)
+    systemUiCtrl.setNavigationBarColor(appColors.colorOnPrimary)
+    systemUiCtrl.setSystemBarsColor(appColors.colorOnPrimary)
 
     ProvideWindowInsets {
         CompositionLocalProvider(LocalAppColors provides appColors, content = content)

@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId "com.glebalekseevjk.habit"
-        minSdk 21
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -83,6 +83,7 @@ dependencies {
 
     // Accompanist
     implementation "com.google.accompanist:accompanist-insets:$accompanistVersion"
+    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanistVersion"
 //    implementation "com.google.accompanist:accompanist-coil:0.15.0"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion"
 //    implementation "com.google.accompanist:accompanist-glide:0.15.0"

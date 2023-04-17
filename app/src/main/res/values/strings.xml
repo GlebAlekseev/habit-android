@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Habit</string>
 
-    <string name="home">Домашняя страница</string>
-    <string name="stats">Статистика</string>
-    <string name="new_quest">Создание квеста</string>
+    <string name="today">Сегодня</string>
+    <string name="habits">Привычки</string>
+    <string name="history">История</string>
 </resources>
