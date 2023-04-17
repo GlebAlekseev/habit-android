@@ -18,6 +18,7 @@ private val LightColorPalette = AppColors(
     divider = brown500_20,
     selectedContent = gray200,
     unselectedContent = gray200_40,
+    subtitle = brown500_60,
 )
 
 var LocalAppColors = compositionLocalOf {
@@ -45,6 +46,7 @@ class AppColors(
     divider: Color,
     selectedContent: Color,
     unselectedContent: Color,
+    subtitle: Color,
 ) {
     var colorPrimary: Color by mutableStateOf(colorPrimary)
         internal set
@@ -61,6 +63,8 @@ class AppColors(
     var selectedContent: Color by mutableStateOf(selectedContent)
         private set
     var unselectedContent: Color by mutableStateOf(unselectedContent)
+        private set
+    var subtitle: Color by mutableStateOf(subtitle)
         private set
 }
 
@@ -83,6 +87,7 @@ fun AppTheme(
     val divider = animateColorAsState(targetColors.divider, TweenSpec(400))
     val selectedContent = animateColorAsState(targetColors.selectedContent, TweenSpec(400))
     val unselectedContent = animateColorAsState(targetColors.unselectedContent, TweenSpec(400))
+    val subtitle = animateColorAsState(targetColors.subtitle, TweenSpec(400))
 
     val appColors = AppColors(
         colorPrimary = colorPrimary.value,
@@ -93,6 +98,7 @@ fun AppTheme(
         divider = divider.value,
         selectedContent = selectedContent.value,
         unselectedContent = unselectedContent.value,
+        subtitle = subtitle.value,
     )
 
     val systemUiCtrl = rememberSystemUiController()

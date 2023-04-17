@@ -15,11 +15,21 @@ val typography = Typography(
     iconHint = TextStyle(
         fontFamily = FontFamily(Font(R.font.raleway_bold)),
         fontSize = 14.sp,
-    )
+    ),
+    titleTopBar = TextStyle(
+        fontFamily = FontFamily(Font(R.font.raleway_bold)),
+        fontSize = 20.sp,
+    ),
+    subtitleTopBar = TextStyle(
+        fontFamily = FontFamily(Font(R.font.raleway_medium)),
+        fontSize = 14.sp,
+    ),
 
 )
 
 data class Typography(
     val brand: TextStyle,
     val iconHint: TextStyle,
+    val titleTopBar: TextStyle,
+    val subtitleTopBar: TextStyle,
 )

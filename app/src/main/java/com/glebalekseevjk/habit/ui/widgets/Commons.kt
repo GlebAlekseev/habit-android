@@ -1,13 +1,13 @@
 package com.glebalekseevjk.habit.ui.widgets
 
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -18,6 +18,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.glebalekseevjk.habit.ui.page.common.BottomNavRoute
+import com.glebalekseevjk.habit.ui.page.common.RouteName
 import com.glebalekseevjk.habit.ui.theme.AppTheme
 import com.glebalekseevjk.habit.ui.theme.typography
 
@@ -72,4 +73,52 @@ fun BottomNavBarView(navController: NavHostController) {
             )
         }
     }
+}
+
+@Composable
+fun TopBarView(title: String, route: String, onOpenDrawer: ()->Unit) {
+    TopAppBar(
+        backgroundColor = AppTheme.colors.colorPrimary,
+        elevation = 5.dp
+    ) {
+        Row(
+            Modifier
+                .fillMaxSize()
+                .align(Alignment.CenterVertically)
+                .padding(horizontal = 24.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(Modifier.align(Alignment.CenterVertically)) {
+                IconButton(
+                    onClick = onOpenDrawer,
+                    modifier = Modifier.align(Alignment.CenterVertically).padding(end = 10.dp)
+                ) {
+                    Icon(Icons.Filled.Menu, "Меню", tint = AppTheme.colors.colorOnPrimary, modifier = Modifier.size(36.dp))
+                }
+
+                Text(
+                    text = title.toUpperCase(),
+                    style = typography.titleTopBar,
+                    color = AppTheme.colors.colorOnPrimary,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+                if (route == RouteName.TODAY) {
+                    Text(
+                        text = "18 апр.",
+                        style = typography.subtitleTopBar,
+                        color = AppTheme.colors.subtitle,
+                        modifier = Modifier.align(Alignment.CenterVertically).padding(start = 20.dp)
+                    )
+                }
+            }
+
+            IconButton(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.align(Alignment.CenterVertically)
+            ) {
+                Icon(Icons.Filled.Add, "Добавить привычку", tint = AppTheme.colors.colorOnPrimary, modifier = Modifier.size(36.dp))
+            }
+        }
+    }
+
 }
