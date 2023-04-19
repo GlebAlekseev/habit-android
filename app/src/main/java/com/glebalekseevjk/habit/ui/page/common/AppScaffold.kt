@@ -30,6 +30,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.glebalekseevjk.habit.R
+import com.glebalekseevjk.habit.ui.page.habits.HabitsPage
 import com.glebalekseevjk.habit.ui.page.splash.SplashPage
 import com.glebalekseevjk.habit.ui.theme.AppTheme
 import com.glebalekseevjk.habit.ui.theme.typography
@@ -182,8 +183,7 @@ fun AppScaffold() {
 
                 }
                 composable(route = RouteName.HABITS) {
-                    Text(text = "HABITS")
-
+                    HabitsPage()
                 }
                 composable(route = RouteName.HISTORY) {
                     Text(text = "HISTORY")
