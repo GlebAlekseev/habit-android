@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,6 +18,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.page.common.BottomNavRoute
 import com.glebalekseevjk.habit.ui.page.common.RouteName
 import com.glebalekseevjk.habit.ui.theme.AppTheme
@@ -120,5 +122,36 @@ fun TopBarView(title: String, route: String, onOpenDrawer: ()->Unit) {
             }
         }
     }
+}
 
+@Composable
+fun WindowTopBarView(title: String, route: String, onBack: ()->Unit) {
+    TopAppBar(
+        backgroundColor = AppTheme.colors.colorPrimary,
+        elevation = 5.dp
+    ) {
+        Row(
+            Modifier
+                .fillMaxSize()
+                .align(Alignment.CenterVertically)
+                .padding(horizontal = 24.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(Modifier.align(Alignment.CenterVertically)) {
+                IconButton(
+                    onClick = onBack,
+                    modifier = Modifier.align(Alignment.CenterVertically).padding(end = 10.dp)
+                ) {
+                    Icon(ImageVector.vectorResource(id = R.drawable.ic_back), "Назад", tint = AppTheme.colors.colorOnPrimary, modifier = Modifier.size(36.dp))
+                }
+
+                Text(
+                    text = title.toUpperCase(),
+                    style = typography.titleTopBar,
+                    color = AppTheme.colors.colorOnPrimary,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
+        }
+    }
 }

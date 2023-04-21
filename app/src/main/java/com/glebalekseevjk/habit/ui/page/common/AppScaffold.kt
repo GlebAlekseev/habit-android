@@ -3,6 +3,7 @@ package com.glebalekseevjk.habit.ui.page.common
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -36,6 +37,7 @@ import com.glebalekseevjk.habit.ui.theme.AppTheme
 import com.glebalekseevjk.habit.ui.theme.typography
 import com.glebalekseevjk.habit.ui.widgets.BottomNavBarView
 import com.glebalekseevjk.habit.ui.widgets.TopBarView
+import com.glebalekseevjk.habit.ui.widgets.WindowTopBarView
 import kotlinx.coroutines.launch
 
 
@@ -59,7 +61,6 @@ fun AppScaffold() {
                 RouteName.TODAY -> BottomNavBarView(navController = navController)
                 RouteName.HABITS -> BottomNavBarView(navController = navController)
                 RouteName.HISTORY -> BottomNavBarView(navController = navController)
-                RouteName.SPLASH -> {}
             }
         },
         drawerShape = object : Shape {
@@ -94,7 +95,13 @@ fun AppScaffold() {
                     stringResource(id = R.string.history),
                     currentDestination.route!!
                 ) { scope.launch { scaffoldState.drawerState.open() } }
-                RouteName.SPLASH -> {}
+                RouteName.SETTINGS -> WindowTopBarView(
+                    title = stringResource(id = R.string.settings),
+                    route = currentDestination.route!!) {
+                    scope.launch {
+                        navController.popBackStack()
+                    }
+                }
             }
         },
         drawerContentColor = AppTheme.colors.colorOnPrimary,
@@ -151,7 +158,18 @@ fun AppScaffold() {
 
                 Divider()
 
-                Row(iconLabelModified, verticalAlignment = Alignment.CenterVertically) {
+                Row(iconLabelModified.clickable {
+                    if (currentDestination?.route != RouteName.SETTINGS) {
+                        navController.navigate(RouteName.SETTINGS) {
+                            popUpTo(navController.graph.findStartDestination().id)
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                        scope.launch {
+                            scaffoldState.drawerState.close()
+                        }
+                    }
+                }, verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Filled.Settings,
                         contentDescription = "Настройки",
@@ -164,7 +182,7 @@ fun AppScaffold() {
 
 
         },
-        drawerGesturesEnabled = currentDestination?.route != RouteName.SPLASH,
+        drawerGesturesEnabled = currentDestination?.route != RouteName.SPLASH && currentDestination?.route != RouteName.SETTINGS,
         drawerBackgroundColor = AppTheme.colors.colorPrimary,
         drawerScrimColor = AppTheme.colors.colorOnPrimary,
         content = {
@@ -188,6 +206,30 @@ fun AppScaffold() {
                 composable(route = RouteName.HISTORY) {
                     Text(text = "HISTORY")
 
+                }
+                composable(route = RouteName.SETTINGS) {
+                    Column(Modifier.padding(horizontal = 72.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 12.dp)) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.ic_lang),
+                                contentDescription = "Выбрать язык",
+                                tint = AppTheme.colors.colorOnPrimary,
+                                modifier = Modifier.size(36.dp),
+                            )
+                            Text(text = "Выбрать язык", style = typography.iconHint, color = AppTheme.colors.colorOnPrimary,
+                                modifier = Modifier.padding(start = 24.dp))
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 12.dp)) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.ic_night),
+                                contentDescription = "Ночной режим",
+                                tint = AppTheme.colors.colorOnPrimary,
+                                modifier = Modifier.size(36.dp),
+                            )
+                            Text(text = "Ночной режим", style = typography.iconHint, color = AppTheme.colors.colorOnPrimary,
+                                modifier = Modifier.padding(start = 24.dp))
+                        }
+                    }
                 }
                 composable(route = RouteName.SPLASH) {
                     SplashPage {

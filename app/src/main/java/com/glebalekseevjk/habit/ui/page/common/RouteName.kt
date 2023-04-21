@@ -5,4 +5,5 @@ object RouteName {
     const val HABITS = "habits"
     const val HISTORY = "history"
     const val SPLASH = "splash"
+    const val SETTINGS = "settings"
 }
