@@ -21,6 +21,18 @@ private val LightColorPalette = AppColors(
     subtitle = brown500_60,
 )
 
+private val DarkColorPalette = AppColors(
+    colorPrimary = brown500,
+    colorOnPrimary = gray200,
+    colorSecondary = brown500,
+    colorOnSecondary = gray200,
+    colorAccent = raspberry500_40,
+    divider = brown500_20,
+    selectedContent = gray200,
+    unselectedContent = gray200_40,
+    subtitle = brown500_60,
+)
+
 var LocalAppColors = compositionLocalOf {
     LightColorPalette
 }
@@ -76,7 +88,7 @@ fun AppTheme(
 ) {
     val targetColors = when (theme) {
         AppTheme.Theme.Light -> LightColorPalette
-        AppTheme.Theme.Dark -> LightColorPalette
+        AppTheme.Theme.Dark -> DarkColorPalette
     }
 
     val colorPrimary = animateColorAsState(targetColors.colorPrimary, TweenSpec(400))
@@ -102,9 +114,9 @@ fun AppTheme(
     )
 
     val systemUiCtrl = rememberSystemUiController()
-    systemUiCtrl.setStatusBarColor(appColors.colorOnPrimary)
-    systemUiCtrl.setNavigationBarColor(appColors.colorOnPrimary)
-    systemUiCtrl.setSystemBarsColor(appColors.colorOnPrimary)
+    systemUiCtrl.setStatusBarColor(appColors.colorPrimary)
+    systemUiCtrl.setNavigationBarColor(appColors.colorPrimary)
+    systemUiCtrl.setSystemBarsColor(appColors.colorPrimary)
 
     ProvideWindowInsets {
         CompositionLocalProvider(LocalAppColors provides appColors, content = content)

@@ -1,4 +1,4 @@
-package com.glebalekseevjk.habit.ui.page.common
+package com.glebalekseevjk.habit.ui.common
 
 import androidx.annotation.StringRes
 import com.glebalekseevjk.habit.R

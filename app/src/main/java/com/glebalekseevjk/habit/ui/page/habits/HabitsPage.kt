@@ -15,11 +15,8 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.glebalekseevjk.habit.R
-import com.glebalekseevjk.habit.ui.theme.AppTheme
-import com.glebalekseevjk.habit.ui.theme.typography
+import com.glebalekseevjk.habit.ui.theme.*
 import com.glebalekseevjk.habit.ui.utils.pxToDp
-
-val testData = 1
 
 data class TestHabit(
     val title: String,
@@ -56,14 +53,78 @@ val testHabitList = listOf(
             TestHabit.Day("Ср", 18),
         )
     ),
+    TestHabit(
+        "Пейте 8 стаканов воды",
+        R.drawable.ic_glass,
+        TestHabit.Type.EVERY_DAY,
+        Color.Red,
+        14,
+        listOf(
+            TestHabit.Day("Чт", 12),
+            TestHabit.Day("Пт", 13),
+            TestHabit.Day("Сб", 14),
+            TestHabit.Day("Вс", 15),
+            TestHabit.Day("Пн", 16),
+            TestHabit.Day("Вт", 17),
+            TestHabit.Day("Ср", 18),
+        )
+    ),
+    TestHabit(
+        "Пейте 8 стаканов воды",
+        R.drawable.ic_glass,
+        TestHabit.Type.EVERY_DAY,
+        Color.Red,
+        14,
+        listOf(
+            TestHabit.Day("Чт", 12),
+            TestHabit.Day("Пт", 13),
+            TestHabit.Day("Сб", 14),
+            TestHabit.Day("Вс", 15),
+            TestHabit.Day("Пн", 16),
+            TestHabit.Day("Вт", 17),
+            TestHabit.Day("Ср", 18),
+        )
+    ),
+    TestHabit(
+        "Пейте 8 стаканов воды",
+        R.drawable.ic_glass,
+        TestHabit.Type.EVERY_DAY,
+        Color.Red,
+        14,
+        listOf(
+            TestHabit.Day("Чт", 12),
+            TestHabit.Day("Пт", 13),
+            TestHabit.Day("Сб", 14),
+            TestHabit.Day("Вс", 15),
+            TestHabit.Day("Пн", 16),
+            TestHabit.Day("Вт", 17),
+            TestHabit.Day("Ср", 18),
+        )
+    ),
+    TestHabit(
+        "Пейте 8 стаканов воды",
+        R.drawable.ic_glass,
+        TestHabit.Type.EVERY_DAY,
+        Color.Red,
+        14,
+        listOf(
+            TestHabit.Day("Чт", 12),
+            TestHabit.Day("Пт", 13),
+            TestHabit.Day("Сб", 14),
+            TestHabit.Day("Вс", 15),
+            TestHabit.Day("Пн", 16),
+            TestHabit.Day("Вт", 17),
+            TestHabit.Day("Ср", 18),
+        )
+    ),
 )
 
 
 @Composable
 fun HabitsPage() {
     LazyColumn(
-        verticalArrangement = Arrangement.Top, modifier = Modifier
-            .fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         items(testHabitList) {
@@ -72,25 +133,26 @@ fun HabitsPage() {
             }
             Column(
                 Modifier
-                    .padding(24.dp)
+                    .padding(MiddlePadding)
                     .background(
                         AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(10.dp)
+                        shape = RoundedCornerShape(SmallPadding)
                     )
-                    .padding(12.dp)
+                    .padding(SmallPadding)
                     .fillMaxWidth()
             ) {
                 Row(
                     Modifier
-                        .padding(12.dp)
-                        .fillMaxSize(), horizontalArrangement = Arrangement.SpaceBetween
+                        .padding(SmallPadding)
+                        .fillMaxSize(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Row(Modifier.height(elementHeight.pxToDp())) {
                         Box(
                             modifier = Modifier
-                                .padding(end = 20.dp)
+                                .padding(end = MiddlePadding)
                                 .background(Color.Green)
-                                .width(8.dp)
+                                .width(ExtraSmallPadding)
                                 .fillMaxHeight()
                         )
                         Column(
@@ -99,7 +161,7 @@ fun HabitsPage() {
                         ) {
                             Text(
                                 text = it.title,
-                                style = typography.titleItem,
+                                style = typography.headlineMedium,
                                 color = AppTheme.colors.colorOnPrimary
                             )
                             when (it.type) {
@@ -108,14 +170,14 @@ fun HabitsPage() {
                                         contentAlignment = Alignment.Center, modifier = Modifier
                                             .background(
                                                 Color.Green.copy(alpha = 0.2f),
-                                                shape = RoundedCornerShape(4.dp),
+                                                shape = RoundedCornerShape(ExtraSmallPadding),
                                             )
-                                            .padding(8.dp)
+                                            .padding(ExtraSmallPadding)
                                     ) {
                                         Text(
                                             text = "Каждый день",
                                             color = Color.Green,
-                                            style = typography.tag
+                                            style = typography.titleSmall
                                         )
                                     }
                                 }
@@ -127,21 +189,21 @@ fun HabitsPage() {
                         Modifier
                             .background(
                                 it.colorIcon.copy(alpha = 0.25f),
-                                shape = RoundedCornerShape(10.dp)
+                                shape = RoundedCornerShape(SmallPadding)
                             )
                             .onSizeChanged {
                                 if (elementHeight != it.height) {
                                     elementHeight = it.height
                                 }
                             }
-                            .padding(24.dp),
+                            .padding(MiddlePadding),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = it.iconId),
                             contentDescription = null,
                             tint = it.colorIcon,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(SmallIconSize)
                         )
                     }
                 }
@@ -159,7 +221,7 @@ fun HabitsPage() {
                             Text(
                                 text = it.day,
                                 color = AppTheme.colors.colorOnPrimary,
-                                modifier = Modifier.padding(bottom = 12.dp)
+                                modifier = Modifier.padding(bottom = SmallPadding)
                             )
                             Box(
                                 modifier = Modifier
@@ -167,7 +229,7 @@ fun HabitsPage() {
                                         AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f),
                                         shape = RoundedCornerShape(100.dp)
                                     )
-                                    .padding(12.dp),
+                                    .padding(SmallPadding),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(text = "${it.dayInt}", color = AppTheme.colors.colorOnPrimary)
@@ -177,7 +239,7 @@ fun HabitsPage() {
                 }
 
                 Divider(
-                    modifier = Modifier.padding(vertical = 12.dp),
+                    modifier = Modifier.padding(vertical = SmallPadding),
                     thickness = 2.dp,
                     color = AppTheme.colors.divider
                 )
@@ -185,7 +247,7 @@ fun HabitsPage() {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp)
+                        .padding(horizontal = SmallPadding)
                 ) {
                     Row() {
                         Icon(
@@ -200,7 +262,6 @@ fun HabitsPage() {
                         )
                     }
                     Row() {
-//                        Icon(imageVector = ImageVector.vectorResource(id = it.iconId), contentDescription = null)
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_edit),
                             contentDescription = null,
@@ -214,11 +275,11 @@ fun HabitsPage() {
         }
 
         item() {
-            Row(Modifier.padding(vertical = 25.dp)) {
+            Row(Modifier.padding(vertical = MiddlePadding)) {
                 Button(
                     onClick = { /*TODO*/ },
                     modifier = Modifier,
-                    contentPadding = PaddingValues(vertical = 24.dp, horizontal = 48.dp),
+                    contentPadding = PaddingValues(vertical = MiddlePadding, horizontal = LargePadding),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AppTheme.colors.colorOnPrimary,
                         contentColor = AppTheme.colors.colorPrimary
@@ -226,7 +287,7 @@ fun HabitsPage() {
                 ) {
                     Text(
                         text = "Создайте новую привычку".toUpperCase(),
-                        style = typography.button,
+                        style = typography.titleMedium,
                         color = AppTheme.colors.colorPrimary
                     )
                 }
