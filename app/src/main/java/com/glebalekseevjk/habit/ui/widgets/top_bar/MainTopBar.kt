@@ -18,11 +18,15 @@ import com.glebalekseevjk.habit.ui.common.RouteName
 import com.glebalekseevjk.habit.ui.theme.*
 
 @Composable
-fun MainTopBar(title: String, route: String, onOpenDrawer: () -> Unit, onNavigateToAddHabits: () -> Unit) {
+fun MainTopBar(
+    title: String, route: String,
+    onOpenDrawer: () -> Unit,
+    onNavigateToAddHabits: () -> Unit
+) {
     TopAppBar(
         backgroundColor = AppTheme.colors.colorPrimary,
         elevation = MediumElevation,
-        modifier = Modifier.height(64.dp)
+        modifier = Modifier.height(ExtraLargePadding)
     ) {
         Row(
             Modifier

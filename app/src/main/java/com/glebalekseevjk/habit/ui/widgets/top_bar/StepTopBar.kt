@@ -21,7 +21,7 @@ fun StepTopBar(title: String, onBack: () -> Unit) {
     TopAppBar(
         backgroundColor = AppTheme.colors.colorPrimary,
         elevation = MediumElevation,
-        modifier = Modifier.height(64.dp)
+        modifier = Modifier.height(ExtraLargePadding)
     ) {
         Row(
             Modifier

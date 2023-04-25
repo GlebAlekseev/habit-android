@@ -21,13 +21,16 @@ import androidx.compose.ui.unit.dp
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.theme.*
 
-private const val REGULAR = 1
-private const val HARMFUL = 2
-private const val DISPOSABLE = 3
+private const val REGULAR = -1
+private const val HARMFUL = -2
+private const val DISPOSABLE = -3
 
 
 @Composable
-fun AddHabitsPage() {
+fun AddHabitsPage(
+    onNavigateToTemplatesHabits: (Int) -> Unit,
+    onNavigateToEditHabits: (Int) -> Unit,
+) {
     var habitsType by rememberSaveable {
         mutableStateOf(REGULAR)
     }
@@ -53,8 +56,9 @@ fun AddHabitsPage() {
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(MiddlePadding + SmallPadding),
-    horizontalAlignment = Alignment.CenterHorizontally) {
+            .padding(LargePadding),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Row(
             Modifier
                 .fillMaxWidth(),
@@ -75,11 +79,15 @@ fun AddHabitsPage() {
                 Column(
                     Modifier
                         .clickable(
-                            indication = rememberRipple(bounded = true, radius = 128.dp, color = AppTheme.colors.colorOnPrimary),
+                            indication = rememberRipple(
+                                bounded = true,
+                                radius = 128.dp,
+                                color = AppTheme.colors.colorOnPrimary
+                            ),
                             interactionSource = remember {
                                 MutableInteractionSource()
                             }
-                        ){
+                        ) {
                             habitsType = it.key
                         }
                         .background(
@@ -133,7 +141,9 @@ fun AddHabitsPage() {
         }
 
         Button(
-            onClick = {},
+            onClick = {
+                onNavigateToEditHabits(habitsType)
+            },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = SmallPadding),
@@ -167,12 +177,23 @@ fun AddHabitsPage() {
         Row(
             Modifier
                 .padding(top = SmallPadding)
+                .clickable(
+                    indication = rememberRipple(
+                        bounded = true,
+                        color = AppTheme.colors.colorOnPrimary
+                    ),
+                    interactionSource = remember {
+                        MutableInteractionSource()
+                    }
+                ) {
+                    onNavigateToTemplatesHabits(132)
+                }
                 .background(
                     AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
                     shape = smallRoundedCornerShape
                 )
-                .padding(MiddlePadding)
-                .fillMaxWidth(0.9f),
+                .padding(start = LargePadding, end = MiddlePadding, top = MiddlePadding, bottom = MiddlePadding)
+                .fillMaxWidth(1f),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -183,7 +204,10 @@ fun AddHabitsPage() {
                     .size(LargeIconSize),
                 tint = Color(0xFFFFC46C)
             )
-            Column(verticalArrangement = Arrangement.Center, modifier = Modifier.padding(start = MiddlePadding)) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(start = MiddlePadding)
+            ) {
                 Text(
                     text = "Доброе утро",
                     color = AppTheme.colors.colorOnPrimary,

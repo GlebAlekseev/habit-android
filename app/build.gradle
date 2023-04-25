@@ -5,7 +5,6 @@ plugins {
     id 'com.google.dagger.hilt.android'
     id 'kotlin-android'
     id "kotlin-parcelize"
-    id "kotlinx-serialization"
 }
 
 android {
@@ -104,8 +103,8 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
-    // Kotlinx Serialization Core
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinx_serializatio"
+    // Gson
+    implementation "com.google.code.gson:gson:$gson_version"
 }
 
 kapt {

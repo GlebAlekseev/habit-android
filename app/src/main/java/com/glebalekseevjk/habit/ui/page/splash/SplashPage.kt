@@ -36,7 +36,7 @@ fun SplashPage(onNextPage: () -> Unit) {
             systemUiCtrl.setStatusBarColor(systemBarColor)
             systemUiCtrl.setNavigationBarColor(systemBarColor)
             systemUiCtrl.setSystemBarsColor(systemBarColor)
-            delay(1600)
+            delay(600)
             onNextPage.invoke()
         }
 

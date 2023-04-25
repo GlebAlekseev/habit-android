@@ -23,15 +23,15 @@ val typography = Typography(
 
     // Заголовки текстовых блоков
     headlineLarge = TextStyle(
-        fontFamily = FontFamily(Font(R.font.raleway_bold)),
+        fontFamily = FontFamily(Font(R.font.roboto_bold)),
         fontSize = 24.sp,
     ),
     headlineMedium = TextStyle(
-        fontFamily = FontFamily(Font(R.font.raleway_medium)),
+        fontFamily = FontFamily(Font(R.font.roboto_bold)),
         fontSize = 18.sp,
     ),
     headlineSmall = TextStyle(
-        fontFamily = FontFamily(Font(R.font.raleway_medium)),
+        fontFamily = FontFamily(Font(R.font.roboto_bold)),
         fontSize = 12.sp,
     ),
 
@@ -69,15 +69,15 @@ val typography = Typography(
 
     // Поля ввода
     labelLarge = TextStyle(
-        fontFamily = FontFamily(Font(R.font.raleway_bold)),
-        fontSize = 14.sp,
+        fontFamily = FontFamily(Font(R.font.roboto_bold)),
+        fontSize = 24.sp,
     ),
     labelMedium = TextStyle(
-        fontFamily = FontFamily(Font(R.font.raleway_bold)),
-        fontSize = 14.sp,
+        fontFamily = FontFamily(Font(R.font.roboto_regular)),
+        fontSize = 18.sp,
     ),
     labelSmall = TextStyle(
-        fontFamily = FontFamily(Font(R.font.raleway_bold)),
+        fontFamily = FontFamily(Font(R.font.roboto_regular)),
         fontSize = 14.sp,
     ),
 

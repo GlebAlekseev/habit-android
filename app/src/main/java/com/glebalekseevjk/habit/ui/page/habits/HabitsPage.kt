@@ -1,10 +1,13 @@
 package com.glebalekseevjk.habit.ui.page.habits
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -121,7 +124,10 @@ val testHabitList = listOf(
 
 
 @Composable
-fun HabitsPage(onNavigateToAddHabits: () -> Unit) {
+fun HabitsPage(
+    onNavigateToAddHabits: () -> Unit,
+    onNavigateToEditHabits: (Int) -> Unit
+) {
     LazyColumn(
         verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxSize(),
@@ -264,8 +270,20 @@ fun HabitsPage(onNavigateToAddHabits: () -> Unit) {
                     Row() {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_edit),
-                            contentDescription = null,
-                            modifier = Modifier.padding(horizontal = 12.dp),
+                            contentDescription = "Редактировать",
+                            modifier = Modifier
+                                .clickable(
+                                    indication = rememberRipple(
+                                        bounded = true,
+                                        color = AppTheme.colors.colorOnPrimary
+                                    ),
+                                    interactionSource = remember {
+                                        MutableInteractionSource()
+                                    }
+                                ) {
+                                    onNavigateToEditHabits(1111)
+                                }
+                                .padding(horizontal = 12.dp),
                             tint = AppTheme.colors.colorOnPrimary
                         )
                     }
