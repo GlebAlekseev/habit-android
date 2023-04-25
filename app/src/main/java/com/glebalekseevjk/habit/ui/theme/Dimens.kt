@@ -4,6 +4,7 @@ import androidx.compose.ui.unit.dp
 
 val SmallIconSize = 24.dp
 val MiddleIconSize = 36.dp
+val LargeIconSize = 48.dp
 
 val ExtraSmallPadding = 8.dp
 val SmallPadding = 12.dp

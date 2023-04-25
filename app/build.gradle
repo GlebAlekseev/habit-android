@@ -5,6 +5,7 @@ plugins {
     id 'com.google.dagger.hilt.android'
     id 'kotlin-android'
     id "kotlin-parcelize"
+    id "kotlinx-serialization"
 }
 
 android {
@@ -73,7 +74,7 @@ dependencies {
 
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
-    implementation "androidx.hilt:hilt-navigation-compose:$hilt_compose"
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_compose_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
     // Room
@@ -102,6 +103,9 @@ dependencies {
     // Debug
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+    // Kotlinx Serialization Core
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinx_serializatio"
 }
 
 kapt {

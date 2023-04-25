@@ -16,6 +16,10 @@ val AppShapes = Shapes(
     large = RoundedCornerShape(0.dp)
 )
 
+val smallRoundedCornerShape = RoundedCornerShape(12.dp)
+val mediumRoundedCornerShape = RoundedCornerShape(24.dp)
+val largeRoundedCornerShape = RoundedCornerShape(36.dp)
+
 val drawerShape = object : Shape {
     override fun createOutline(
         size: Size,

@@ -11,4 +11,10 @@
     <string name="back">Назад</string>
     <string name="lang">Выбрать язык</string>
     <string name="night">Ночной режим</string>
+
+    <string name="regular">Регулярная</string>
+    <string name="harmful">Вредная</string>
+    <string name="disposable">Одноразовая</string>
+
+    <string name="templates_label">или выберите из уже готовых</string>
 </resources>

@@ -48,7 +48,7 @@ val typography = Typography(
     ),
     titleSmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.roboto_bold)),
-        fontSize = 12.sp,
+        fontSize = 14.sp,
     ),
 
 
@@ -63,7 +63,7 @@ val typography = Typography(
     ),
     bodySmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-        fontSize = 12.sp,
+        fontSize = 14.sp,
     ),
 
 

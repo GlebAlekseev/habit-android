@@ -18,7 +18,7 @@ import com.glebalekseevjk.habit.ui.common.RouteName
 import com.glebalekseevjk.habit.ui.theme.*
 
 @Composable
-fun MainTopBar(title: String, route: String, onOpenDrawer: () -> Unit) {
+fun MainTopBar(title: String, route: String, onOpenDrawer: () -> Unit, onNavigateToAddHabits: () -> Unit) {
     TopAppBar(
         backgroundColor = AppTheme.colors.colorPrimary,
         elevation = MediumElevation,
@@ -69,7 +69,7 @@ fun MainTopBar(title: String, route: String, onOpenDrawer: () -> Unit) {
             }
 
             IconButton(
-                onClick = { /*TODO*/ },
+                onClick = onNavigateToAddHabits,
                 modifier = Modifier.align(Alignment.CenterVertically).padding(top = ExtraSmallPadding)
             ) {
                 Icon(

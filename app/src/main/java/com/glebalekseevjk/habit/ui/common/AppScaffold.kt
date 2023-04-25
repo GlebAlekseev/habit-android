@@ -16,6 +16,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.glebalekseevjk.habit.R
+import com.glebalekseevjk.habit.ui.page.add_habits.AddHabitsPage
 import com.glebalekseevjk.habit.ui.page.habits.HabitsPage
 import com.glebalekseevjk.habit.ui.page.settings.SettingsPage
 import com.glebalekseevjk.habit.ui.page.splash.SplashPage
@@ -29,7 +30,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun AppScaffold(onThemeChange: (AppTheme.Theme)->Unit) {
+fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
     val navController = rememberAnimatedNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -54,16 +55,34 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme)->Unit) {
             when (currentDestination?.route) {
                 RouteName.TODAY -> MainTopBar(
                     stringResource(id = R.string.today),
-                    currentDestination.route!!
-                ) { scope.launch { scaffoldState.drawerState.open() } }
+                    currentDestination.route!!,
+                    onOpenDrawer = { scope.launch { scaffoldState.drawerState.open() } },
+                    onNavigateToAddHabits = {
+                        navController.navigateTo(
+                            route = RouteName.ADD_HABITS
+                        )
+                    }
+                )
                 RouteName.HABITS -> MainTopBar(
                     stringResource(id = R.string.habits),
-                    currentDestination.route!!
-                ) { scope.launch { scaffoldState.drawerState.open() } }
+                    currentDestination.route!!,
+                    onOpenDrawer = { scope.launch { scaffoldState.drawerState.open() } },
+                    onNavigateToAddHabits = {
+                        navController.navigateTo(
+                            route = RouteName.ADD_HABITS
+                        )
+                    }
+                )
                 RouteName.HISTORY -> MainTopBar(
                     stringResource(id = R.string.history),
-                    currentDestination.route!!
-                ) { scope.launch { scaffoldState.drawerState.open() } }
+                    currentDestination.route!!,
+                    onOpenDrawer = { scope.launch { scaffoldState.drawerState.open() } },
+                    onNavigateToAddHabits = {
+                        navController.navigateTo(
+                            route = RouteName.ADD_HABITS
+                        )
+                    }
+                )
                 RouteName.SETTINGS -> StepTopBar(
                     title = stringResource(id = R.string.settings)
                 ) { scope.launch { navController.back() } }
@@ -121,15 +140,18 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme)->Unit) {
 
                 }
                 composable(route = RouteName.HABITS) {
-                    HabitsPage()
+                    HabitsPage {
+                        navController.navigateTo(
+                            route = RouteName.ADD_HABITS,
+                        )
+                    }
                 }
                 composable(route = RouteName.HISTORY) {
                     Text(text = "HISTORY")
 
                 }
                 composable(route = RouteName.ADD_HABITS) {
-                    Text(text = "ADD_HABITS")
-
+                    AddHabitsPage()
                 }
                 composable(route = RouteName.SETTINGS) {
                     SettingsPage(onThemeChange)

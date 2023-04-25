@@ -121,7 +121,7 @@ val testHabitList = listOf(
 
 
 @Composable
-fun HabitsPage() {
+fun HabitsPage(onNavigateToAddHabits: () -> Unit) {
     LazyColumn(
         verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxSize(),
@@ -277,9 +277,12 @@ fun HabitsPage() {
         item() {
             Row(Modifier.padding(vertical = MiddlePadding)) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = onNavigateToAddHabits,
                     modifier = Modifier,
-                    contentPadding = PaddingValues(vertical = MiddlePadding, horizontal = LargePadding),
+                    contentPadding = PaddingValues(
+                        vertical = MiddlePadding,
+                        horizontal = LargePadding
+                    ),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AppTheme.colors.colorOnPrimary,
                         contentColor = AppTheme.colors.colorPrimary
