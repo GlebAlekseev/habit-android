@@ -4,6 +4,8 @@ import android.os.Parcelable
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -28,10 +30,10 @@ import com.glebalekseevjk.habit.ui.page.templates_habits.TemplatesHabitsPage
 import com.glebalekseevjk.habit.ui.theme.AppTheme
 import com.glebalekseevjk.habit.ui.theme.MiddlePadding
 import com.glebalekseevjk.habit.ui.theme.drawerShape
+import com.glebalekseevjk.habit.ui.theme.typography
 import com.glebalekseevjk.habit.ui.utils.fromJson
 import com.glebalekseevjk.habit.ui.widgets.bottom_bar.BottomNavigateBar
-import com.glebalekseevjk.habit.ui.widgets.modal_bottom_sheet.ChooseIconColorModalBottomSheet
-import com.glebalekseevjk.habit.ui.widgets.modal_bottom_sheet.ChooseIconModalBottomSheet
+import com.glebalekseevjk.habit.ui.widgets.modal_bottom_sheet.*
 import com.glebalekseevjk.habit.ui.widgets.top_bar.MainTopBar
 import com.glebalekseevjk.habit.ui.widgets.top_bar.StepTopBar
 import com.glebalekseevjk.habit.ui.widgets.top_bar.WindowTopBar
@@ -40,9 +42,12 @@ import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
-internal sealed class ModalBottomSheet: Parcelable {
+internal sealed class ModalBottomSheet : Parcelable {
     object ChooseIcon : ModalBottomSheet()
     object ChooseIconColor : ModalBottomSheet()
+    object ChooseEventDay : ModalBottomSheet()
+    object ChooseTime : ModalBottomSheet()
+    object ChooseFinishDate : ModalBottomSheet()
 }
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
@@ -69,6 +74,9 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
             when (modalBottomSheet) {
                 ModalBottomSheet.ChooseIcon -> ChooseIconModalBottomSheet()
                 ModalBottomSheet.ChooseIconColor -> ChooseIconColorModalBottomSheet()
+                ModalBottomSheet.ChooseEventDay -> ChooseEventDayModalBottomSheet()
+                ModalBottomSheet.ChooseTime -> ChooseTimeModalBottomSheet()
+                ModalBottomSheet.ChooseFinishDate -> ChooseFinishDateModalBottomSheet()
             }
         },
         sheetShape = RoundedCornerShape(
@@ -183,8 +191,13 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
                     popExitTransition = { ExitTransition.None },
                 ) {
                     composable(route = RouteName.TODAY) {
-                        Text(text = "TODAY")
-
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = "TODAY",
+                                color = AppTheme.colors.colorOnPrimary,
+                                style = typography.titleMedium
+                            )
+                        }
                     }
                     composable(route = RouteName.HABITS) {
                         HabitsPage(
@@ -202,7 +215,13 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
                         )
                     }
                     composable(route = RouteName.HISTORY) {
-                        Text(text = "HISTORY")
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = "HISTORY",
+                                color = AppTheme.colors.colorOnPrimary,
+                                style = typography.titleMedium
+                            )
+                        }
 
                     }
                     composable(route = RouteName.ADD_HABITS) {
@@ -240,6 +259,27 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
                                         modalBottomSheet = ModalBottomSheet.ChooseIconColor
                                         bottomSheetState.show()
                                     }
+                                },
+                                onOpenChooseEventDayModalBottomSheet = {
+                                    scope.launch {
+                                        modalBottomSheet = ModalBottomSheet.ChooseEventDay
+                                        bottomSheetState.show()
+                                    }
+                                },
+                                onOpenChooseTimeModalBottomSheet = {
+                                    scope.launch {
+                                        modalBottomSheet = ModalBottomSheet.ChooseTime
+                                        bottomSheetState.show()
+                                    }
+                                },
+                                onOpenChooseFinishDateModalBottomSheet = {
+                                    scope.launch {
+                                        modalBottomSheet = ModalBottomSheet.ChooseFinishDate
+                                        bottomSheetState.show()
+                                    }
+                                },
+                                onSaveHabit = {
+
                                 }
                             )
                         }

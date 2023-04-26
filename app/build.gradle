@@ -105,6 +105,9 @@ dependencies {
 
     // Gson
     implementation "com.google.code.gson:gson:$gson_version"
+
+    // Time Picker
+    implementation 'com.github.commandiron:WheelPickerCompose:1.1.10'
 }
 
 kapt {
