@@ -24,6 +24,7 @@ import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.page.add_habits.AddHabitsPage
 import com.glebalekseevjk.habit.ui.page.edit_habits.EditHabitsPage
 import com.glebalekseevjk.habit.ui.page.habits.HabitsPage
+import com.glebalekseevjk.habit.ui.page.history.HistoryPage
 import com.glebalekseevjk.habit.ui.page.settings.SettingsPage
 import com.glebalekseevjk.habit.ui.page.splash.SplashPage
 import com.glebalekseevjk.habit.ui.page.templates_habits.TemplatesHabitsPage
@@ -215,14 +216,7 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
                         )
                     }
                     composable(route = RouteName.HISTORY) {
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            Text(
-                                text = "HISTORY",
-                                color = AppTheme.colors.colorOnPrimary,
-                                style = typography.titleMedium
-                            )
-                        }
-
+                        HistoryPage()
                     }
                     composable(route = RouteName.ADD_HABITS) {
                         AddHabitsPage(

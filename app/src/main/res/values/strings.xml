@@ -17,4 +17,50 @@
     <string name="disposable">Одноразовая</string>
 
     <string name="templates_label">или выберите из уже готовых</string>
+
+
+    <string name="categories_trend_title">Привычки в тренде</string>
+    <string name="categories_trend_description">Идите в ногу со всем миром</string>
+    <string name="categories_trend_title_1">Структурируйте экранное время</string>
+    <string name="categories_trend_description_1">Блокируйте экран и поддерживайте внимание</string>
+    <string name="categories_trend_title_2">Ограничьте кофеин</string>
+    <string name="categories_trend_description_2">Замените его источники на более здоровые продукты</string>
+    <string name="categories_trend_title_3">Больше смейтесь</string>
+    <string name="categories_trend_description_3">Найдите то, что заставит вас громко смеяться</string>
+    <string name="categories_trend_title_4">Занимайтесь своими хобби</string>
+    <string name="categories_trend_description_4">Заполняйте жизнь осмысленными увлечениями</string>
+    <string name="categories_trend_title_5">Экспресс-уборка</string>
+    <string name="categories_trend_description_5">Выделите несколько минут на быструю уборку помещения</string>
+    <string name="categories_trend_title_6">Достигните своего идеального веса</string>
+    <string name="categories_trend_description_6">Сегодня вы выглядите не так, как вчера</string>
+
+
+    <string name="categories_important_title">Важные привычки</string>
+    <string name="categories_important_description">Освежите свою жизнь простыми действиями</string>
+
+    <string name="categories_eat_title">Ешьте и пейте с пользой для здоровья</string>
+    <string name="categories_eat_description">Оставайтесь здоровым, принимая пищу каждый день</string>
+
+    <string name="categories_sports_title">Поддерживайте активность и физическую форму</string>
+    <string name="categories_sports_description">Пот не обманывает</string>
+
+    <string name="categories_morning_title">Доброе утро</string>
+    <string name="categories_morning_description">Делайте то, что правильно, по утрам</string>
+
+    <string name="categories_sleep_title">Процедура подготовки ко сну</string>
+    <string name="categories_sleep_description">Пусть ваш сон сегодня будет сладким</string>
+
+    <string name="categories_productivity_title">Повышайте производительность</string>
+    <string name="categories_productivity_description">Применяйте стратегический подход к своим усилиям и времени</string>
+
+    <string name="categories_leisure_title">Моменты досуга</string>
+    <string name="categories_leisure_description">Проживите жизнь по-максимуму</string>
+
+    <string name="categories_budget_title">Ведите бюджет</string>
+    <string name="categories_budget_description">Каждая копейка должна работать</string>
+
+    <string name="categories_pets_title">Цените своих животных</string>
+    <string name="categories_pets_description">Вы очень нужны им</string>
+
+
 </resources>
