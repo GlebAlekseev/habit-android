@@ -15,9 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.glebalekseevjk.habit.R
+import com.glebalekseevjk.habit.domain.entity.Habit
+import com.glebalekseevjk.habit.domain.entity.Habit.Companion.RepeatType.SPECIFIC_DAYS
 import com.glebalekseevjk.habit.ui.theme.*
 import com.glebalekseevjk.habit.ui.utils.pxToDp
 
@@ -126,191 +130,212 @@ val testHabitList = listOf(
 @Composable
 fun HabitsPage(
     onNavigateToAddHabits: () -> Unit,
-    onNavigateToEditHabits: (Int) -> Unit
+    onNavigateToEditHabits: (Int) -> Unit,
+    viewModel: HabitsViewModel = hiltViewModel()
 ) {
-    LazyColumn(
-        verticalArrangement = Arrangement.Top,
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        items(testHabitList) {
-            var elementHeight by remember {
-                mutableStateOf(0)
-            }
-            Column(
-                Modifier
-                    .padding(MiddlePadding)
-                    .background(
-                        AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(SmallPadding)
-                    )
-                    .padding(SmallPadding)
-                    .fillMaxWidth()
-            ) {
-                Row(
-                    Modifier
-                        .padding(SmallPadding)
-                        .fillMaxSize(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(Modifier.height(elementHeight.pxToDp())) {
-                        Box(
-                            modifier = Modifier
-                                .padding(end = MiddlePadding)
-                                .background(Color.Green)
-                                .width(ExtraSmallPadding)
-                                .fillMaxHeight()
-                        )
-                        Column(
-                            verticalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.fillMaxHeight()
-                        ) {
-                            Text(
-                                text = it.title,
-                                style = typography.headlineMedium,
-                                color = AppTheme.colors.colorOnPrimary
-                            )
-                            when (it.type) {
-                                TestHabit.Type.EVERY_DAY -> {
-                                    Box(
-                                        contentAlignment = Alignment.Center, modifier = Modifier
-                                            .background(
-                                                Color.Green.copy(alpha = 0.2f),
-                                                shape = RoundedCornerShape(ExtraSmallPadding),
-                                            )
-                                            .padding(ExtraSmallPadding)
-                                    ) {
-                                        Text(
-                                            text = "Каждый день",
-                                            color = Color.Green,
-                                            style = typography.titleSmall
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+    val viewStates = viewModel.viewStates
 
-                    Box(
+    LaunchedEffect(Unit) {
+        viewModel.dispatch(HabitsViewAction.InitHabits)
+    }
+
+    when (viewStates) {
+        HabitsViewState.Failure -> TODO("Неизвестная ошибка")
+        HabitsViewState.Loading -> TODO("Загрузка")
+        is HabitsViewState.Loaded -> {
+
+            LazyColumn(
+                verticalArrangement = Arrangement.Top,
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(viewStates.habitList) {
+                    var elementHeight by remember {
+                        mutableStateOf(0)
+                    }
+                    Column(
                         Modifier
+                            .padding(MiddlePadding)
                             .background(
-                                it.colorIcon.copy(alpha = 0.25f),
+                                AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
                                 shape = RoundedCornerShape(SmallPadding)
                             )
-                            .onSizeChanged {
-                                if (elementHeight != it.height) {
-                                    elementHeight = it.height
+                            .padding(SmallPadding)
+                            .fillMaxWidth()
+                    ) {
+                        Row(
+                            Modifier
+                                .padding(SmallPadding)
+                                .fillMaxSize(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(Modifier.height(elementHeight.pxToDp())) {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(end = MiddlePadding)
+                                        .background(Color.Green)
+                                        .width(ExtraSmallPadding)
+                                        .fillMaxHeight()
+                                )
+                                Column(
+                                    verticalArrangement = Arrangement.SpaceBetween,
+                                    modifier = Modifier.fillMaxHeight()
+                                ) {
+                                    Text(
+                                        text = it.habit.title,
+                                        style = typography.headlineMedium,
+                                        color = AppTheme.colors.colorOnPrimary
+                                    )
+                                    when (it.habit.repeatType) {
+                                        SPECIFIC_DAYS -> {
+                                            Box(
+                                                contentAlignment = Alignment.Center,
+                                                modifier = Modifier
+                                                    .background(
+                                                        Color.Green.copy(alpha = 0.2f),
+                                                        shape = RoundedCornerShape(ExtraSmallPadding),
+                                                    )
+                                                    .padding(ExtraSmallPadding)
+                                            ) {
+                                                Text(
+                                                    text = "Каждый день",
+                                                    color = Color.Green,
+                                                    style = typography.titleSmall
+                                                )
+                                            }
+                                        }
+                                        else ->{}
+                                    }
                                 }
                             }
-                            .padding(MiddlePadding),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = it.iconId),
-                            contentDescription = null,
-                            tint = it.colorIcon,
-                            modifier = Modifier.size(SmallIconSize)
-                        )
-                    }
-                }
 
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    it.dayList.forEach {
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(horizontal = 3.dp)
-                        ) {
-                            Text(
-                                text = it.day,
-                                color = AppTheme.colors.colorOnPrimary,
-                                modifier = Modifier.padding(bottom = SmallPadding)
-                            )
                             Box(
-                                modifier = Modifier
+                                Modifier
                                     .background(
-                                        AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f),
-                                        shape = RoundedCornerShape(100.dp)
+                                        Color(it.habit.colorRGBA).copy(alpha = 0.25f),
+                                        shape = RoundedCornerShape(SmallPadding)
                                     )
-                                    .padding(SmallPadding),
+                                    .onSizeChanged {
+                                        if (elementHeight != it.height) {
+                                            elementHeight = it.height
+                                        }
+                                    }
+                                    .padding(MiddlePadding),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(text = "${it.dayInt}", color = AppTheme.colors.colorOnPrimary)
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = it.habit.iconId),
+                                    contentDescription = it.habit.title,
+                                    tint = Color(it.habit.colorRGBA),
+                                    modifier = Modifier.size(SmallIconSize)
+                                )
                             }
                         }
-                    }
-                }
 
-                Divider(
-                    modifier = Modifier.padding(vertical = SmallPadding),
-                    thickness = 2.dp,
-                    color = AppTheme.colors.divider
-                )
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = SmallPadding)
-                ) {
-                    Row() {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_progress_check),
-                            contentDescription = null,
-                            tint = Color.Green
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            TODO("Парсить и выводить")
+//                            it.dayList.forEach {
+//                                Column(
+//                                    verticalArrangement = Arrangement.Center,
+//                                    horizontalAlignment = Alignment.CenterHorizontally,
+//                                    modifier = Modifier.padding(horizontal = 3.dp)
+//                                ) {
+//                                    Text(
+//                                        text = it.day,
+//                                        color = AppTheme.colors.colorOnPrimary,
+//                                        modifier = Modifier.padding(bottom = SmallPadding)
+//                                    )
+//                                    Box(
+//                                        modifier = Modifier
+//                                            .background(
+//                                                AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f),
+//                                                shape = RoundedCornerShape(100.dp)
+//                                            )
+//                                            .padding(SmallPadding),
+//                                        contentAlignment = Alignment.Center
+//                                    ) {
+//                                        Text(
+//                                            text = "${it.dayInt}",
+//                                            color = AppTheme.colors.colorOnPrimary
+//                                        )
+//                                    }
+//                                }
+//                            }
+                        }
+
+                        Divider(
+                            modifier = Modifier.padding(vertical = SmallPadding),
+                            thickness = 2.dp,
+                            color = AppTheme.colors.divider
                         )
-                        Text(
-                            text = "${it.stage}%",
-                            color = Color.Green,
-                            modifier = Modifier.padding(start = 12.dp)
-                        )
-                    }
-                    Row() {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_edit),
-                            contentDescription = "Редактировать",
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier
-                                .clickable(
-                                    indication = rememberRipple(
-                                        bounded = true,
-                                        color = AppTheme.colors.colorOnPrimary
-                                    ),
-                                    interactionSource = remember {
-                                        MutableInteractionSource()
-                                    }
-                                ) {
-                                    onNavigateToEditHabits(1111)
-                                }
-                                .padding(horizontal = 12.dp),
-                            tint = AppTheme.colors.colorOnPrimary
-                        )
+                                .fillMaxWidth()
+                                .padding(horizontal = SmallPadding)
+                        ) {
+                            Row() {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_progress_check),
+                                    contentDescription = null,
+                                    tint = Color.Green
+                                )
+                                Text(
+//                                    text = "${it.stage}%",
+                                    text = "11%",
+                                    color = Color.Green,
+                                    modifier = Modifier.padding(start = 12.dp)
+                                )
+                            }
+                            Row() {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_edit),
+                                    contentDescription = "Редактировать",
+                                    modifier = Modifier
+                                        .clickable(
+                                            indication = rememberRipple(
+                                                bounded = true,
+                                                color = AppTheme.colors.colorOnPrimary
+                                            ),
+                                            interactionSource = remember {
+                                                MutableInteractionSource()
+                                            }
+                                        ) {
+                                            onNavigateToEditHabits(1111)
+                                        }
+                                        .padding(horizontal = 12.dp),
+                                    tint = AppTheme.colors.colorOnPrimary
+                                )
+                            }
+                        }
+
                     }
                 }
 
-            }
-        }
-
-        item() {
-            Row(Modifier.padding(vertical = MiddlePadding)) {
-                Button(
-                    onClick = onNavigateToAddHabits,
-                    modifier = Modifier,
-                    contentPadding = PaddingValues(
-                        vertical = MiddlePadding,
-                        horizontal = LargePadding
-                    ),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = AppTheme.colors.colorOnPrimary,
-                        contentColor = AppTheme.colors.colorPrimary
-                    )
-                ) {
-                    Text(
-                        text = "Создайте новую привычку".toUpperCase(),
-                        style = typography.titleMedium,
-                        color = AppTheme.colors.colorPrimary
-                    )
+                item() {
+                    Row(Modifier.padding(vertical = MiddlePadding)) {
+                        Button(
+                            onClick = onNavigateToAddHabits,
+                            modifier = Modifier,
+                            contentPadding = PaddingValues(
+                                vertical = MiddlePadding,
+                                horizontal = LargePadding
+                            ),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = AppTheme.colors.colorOnPrimary,
+                                contentColor = AppTheme.colors.colorPrimary
+                            )
+                        ) {
+                            Text(
+                                text = "Создайте новую привычку".toUpperCase(),
+                                style = typography.titleMedium,
+                                color = AppTheme.colors.colorPrimary
+                            )
+                        }
+                    }
                 }
             }
         }

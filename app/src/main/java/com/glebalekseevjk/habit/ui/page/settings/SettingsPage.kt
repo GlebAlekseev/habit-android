@@ -24,12 +24,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.glebalekseevjk.habit.R
+import com.glebalekseevjk.habit.ui.page.history.HistoryViewModel
 import com.glebalekseevjk.habit.ui.theme.*
 
 
 @Composable
-fun SettingsPage(onThemeChange: (AppTheme.Theme) -> Unit) {
+fun SettingsPage(
+    onThemeChange: (AppTheme.Theme) -> Unit,
+    viewModel: SettingsViewModel = hiltViewModel()
+) {
     var isNightTheme by remember { mutableStateOf(false) }
     if (isNightTheme) {
         onThemeChange(AppTheme.Theme.Dark)

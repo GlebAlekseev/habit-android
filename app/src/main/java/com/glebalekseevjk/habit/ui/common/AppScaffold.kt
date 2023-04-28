@@ -21,8 +21,8 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.glebalekseevjk.habit.R
-import com.glebalekseevjk.habit.ui.page.add_habits.AddHabitsPage
-import com.glebalekseevjk.habit.ui.page.edit_habits.EditHabitsPage
+import com.glebalekseevjk.habit.ui.page.add_habits.AddHabitPage
+import com.glebalekseevjk.habit.ui.page.edit_habits.EditHabitPage
 import com.glebalekseevjk.habit.ui.page.habits.HabitsPage
 import com.glebalekseevjk.habit.ui.page.history.HistoryPage
 import com.glebalekseevjk.habit.ui.page.settings.SettingsPage
@@ -219,17 +219,17 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
                         HistoryPage()
                     }
                     composable(route = RouteName.ADD_HABITS) {
-                        AddHabitsPage(
-                            onNavigateToTemplatesHabits = {
+                        AddHabitPage(
+                            onNavigateToTemplatesHabits = { categoryId ->
                                 navController.navigateTo(
                                     route = RouteName.TEMPLATES_HABITS,
-                                    args = it
+                                    args = categoryId
                                 )
                             },
                             onNavigateToEditHabits = {
                                 navController.navigateTo(
                                     route = RouteName.EDIT_HABITS,
-                                    args = EditHabitsPageParams(null, it)
+                                    args = EditHabitsPageParams(null, 1)
                                 )
                             }
                         )
@@ -241,7 +241,7 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
                         val args =
                             it.arguments?.getString("params")?.fromJson<EditHabitsPageParams>()
                         args?.let { (habitId, templateId) ->
-                            EditHabitsPage(habitId, templateId,
+                            EditHabitPage(habitId, templateId,
                                 onOpenChooseIconModalBottomSheet = {
                                     scope.launch {
                                         modalBottomSheet = ModalBottomSheet.ChooseIcon
@@ -284,12 +284,15 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
                     ) {
                         val args = it.arguments?.getInt("templatesId")
                         args?.let { templatesId ->
-                            TemplatesHabitsPage(templatesId) { templateId ->
-                                navController.navigateTo(
-                                    route = RouteName.EDIT_HABITS,
-                                    args = EditHabitsPageParams(null, templateId)
-                                )
-                            }
+                            TemplatesHabitsPage(
+                                categoryId = templatesId,
+                                onNavigateToEditHabits = { templateId ->
+                                    navController.navigateTo(
+                                        route = RouteName.EDIT_HABITS,
+                                        args = EditHabitsPageParams(null, templateId)
+                                    )
+                                }
+                            )
                         }
                     }
                     composable(route = RouteName.SETTINGS) {

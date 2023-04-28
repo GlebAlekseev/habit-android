@@ -19,15 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.glebalekseevjk.habit.R
+import com.glebalekseevjk.habit.ui.page.add_habits.AddHabitViewModel
 import com.glebalekseevjk.habit.ui.theme.*
 import com.glebalekseevjk.habit.ui.widgets.CustomTextField
 
 @Composable
-fun EditHabitsPage(
+fun EditHabitPage(
     habitId: Int? = null,
     templateId: Int? = null,
     onOpenChooseIconModalBottomSheet: () -> Unit,
@@ -36,6 +37,7 @@ fun EditHabitsPage(
     onOpenChooseTimeModalBottomSheet: () -> Unit,
     onOpenChooseFinishDateModalBottomSheet: () -> Unit,
     onSaveHabit: () -> Unit,
+    viewModel: EditHabitViewModel = hiltViewModel()
 ) {
     // Поле ввода -> текстовый ввод
     var habitTitle by remember { mutableStateOf(TextFieldValue("")) }
