@@ -6,8 +6,7 @@ import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.Day
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.Day.*
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.HabitType
-import com.glebalekseevjk.habit.domain.entity.Habit.Companion.HabitType.DISPOSABLE
-import com.glebalekseevjk.habit.domain.entity.Habit.Companion.HabitType.REGULAR
+import com.glebalekseevjk.habit.domain.entity.Habit.Companion.HabitType.*
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.RepeatType
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.RepeatType.SPECIFIC_DAYS
 import java.time.LocalDate
@@ -33,6 +32,76 @@ data class TemplateHabit(
 ) {
     companion object {
         val templateHabitList = listOf(
+            TemplateHabit( // DISPOSABLE
+                id = -3,
+                categoryId = 0,
+                titleStringId = R.string.empty,
+                descriptionStringId = R.string.empty,
+                iconId = R.drawable.ic_disposable,
+                colorRGBA = Color(0xFFb2ebf2).toArgb(),
+                repeatType = SPECIFIC_DAYS,
+                daysOfRepeat = setOf(),
+                startExecutionInterval = LocalTime.of(12, 0),
+                endExecutionInterval = LocalTime.of(15, 0),
+                deadline = null,
+                habitType = DISPOSABLE,
+                targetType = Habit.Companion.TargetType.OFF,
+                repeatCount = null,
+                duration = null
+            ),
+            TemplateHabit( // HARMFUL
+                id = -2,
+                categoryId = 0,
+                titleStringId = R.string.empty,
+                descriptionStringId = R.string.empty,
+                iconId = R.drawable.ic_harmful,
+                colorRGBA = Color(0xFFa70000).toArgb(),
+                repeatType = SPECIFIC_DAYS,
+                daysOfRepeat = setOf(
+                    MONDAY,
+                    TUESDAY,
+                    WEDNESDAY,
+                    THURSDAY,
+                    FRIDAY,
+                    SATURDAY,
+                    SUNDAY
+                ),
+                startExecutionInterval = LocalTime.of(9, 0),
+                endExecutionInterval = LocalTime.of(21, 0),
+                deadline = null,
+                habitType = HARMFUL,
+                targetType = Habit.Companion.TargetType.OFF,
+                repeatCount = null,
+                duration = null
+            ),
+            TemplateHabit( // REGULAR
+                id = -1,
+                categoryId = 0,
+                titleStringId = R.string.empty,
+                descriptionStringId = R.string.empty,
+                iconId = R.drawable.ic_regular,
+                colorRGBA = Color(0xFF1e5f74).toArgb(),
+                repeatType = SPECIFIC_DAYS,
+                daysOfRepeat = setOf(
+                    MONDAY,
+                    TUESDAY,
+                    WEDNESDAY,
+                    THURSDAY,
+                    FRIDAY,
+                    SATURDAY,
+                    SUNDAY
+                ),
+                startExecutionInterval = LocalTime.of(12, 0),
+                endExecutionInterval = LocalTime.of(15, 0),
+                deadline = null,
+                habitType = REGULAR,
+                targetType = Habit.Companion.TargetType.DURATION,
+                repeatCount = null,
+                duration = LocalTime.of(0, 30)
+            ),
+
+
+
             TemplateHabit(
                 id = 1,
                 categoryId = 1,

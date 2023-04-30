@@ -1,5 +1,6 @@
 package com.glebalekseevjk.habit.ui.page.add_habits
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,7 +15,8 @@ class AddHabitViewModel @Inject constructor() : ViewModel() {
     var viewStates by mutableStateOf(
         AddHabitViewState(
             habitType = HabitType.REGULAR,
-            categoryList = Category.categoryList
+            categoryList = Category.categoryList,
+            lazyListState = LazyListState()
         )
     )
         private set
@@ -32,7 +34,8 @@ class AddHabitViewModel @Inject constructor() : ViewModel() {
 
 data class AddHabitViewState(
     val habitType: HabitType,
-    val categoryList: List<Category>
+    val categoryList: List<Category>,
+    val lazyListState: LazyListState
 )
 
 sealed class AddHabitViewAction {

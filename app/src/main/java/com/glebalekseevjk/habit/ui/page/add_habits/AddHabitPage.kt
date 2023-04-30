@@ -4,11 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,9 +31,10 @@ import com.glebalekseevjk.habit.ui.theme.*
 fun AddHabitPage(
     onNavigateToTemplatesHabits: (Int) -> Unit,
     onNavigateToEditHabits: (HabitType) -> Unit,
-    viewModel: AddHabitViewModel = hiltViewModel()
+    viewModel: AddHabitViewModel = hiltViewModel(),
 ) {
     val viewStates = viewModel.viewStates
+
 
     val habitsTypeMap = mapOf(
         REGULAR to Triple(
@@ -50,131 +54,141 @@ fun AddHabitPage(
         )
     )
 
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(LargePadding),
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth(),
+        state = viewStates.lazyListState,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            habitsTypeMap.forEach {
-                val (title, icon, _) = it.value
-                val (contentColor, backgroundColor) = if (viewStates.habitType == it.key)
-                    Pair(
-                        AppTheme.colors.colorPrimary,
-                        AppTheme.colors.colorOnPrimary
-                    )
-                else Pair(
-                    AppTheme.colors.colorOnPrimary,
-                    AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f)
-                )
-
-                Column(
-                    Modifier
-                        .clickable(
-                            indication = rememberRipple(
-                                bounded = true,
-                                radius = 128.dp,
-                                color = AppTheme.colors.colorOnPrimary
-                            ),
-                            interactionSource = remember {
-                                MutableInteractionSource()
-                            }
-                        ) {
-                            viewModel.dispatch(AddHabitViewAction.SetHabitType(it.key))
-                        }
-                        .background(
-                            backgroundColor,
-                            shape = smallRoundedCornerShape
+        item {
+            Row(
+                Modifier
+                    .padding(top = LargePadding)
+                    .padding(horizontal = LargePadding)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                habitsTypeMap.forEach {
+                    val (title, icon, _) = it.value
+                    val (contentColor, backgroundColor) = if (viewStates.habitType == it.key)
+                        Pair(
+                            AppTheme.colors.colorPrimary,
+                            AppTheme.colors.colorOnPrimary
                         )
-                        .padding(MiddlePadding),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = title,
-                        modifier = Modifier
-                            .padding(vertical = MiddlePadding)
-                            .size(LargeIconSize),
-                        tint = contentColor
+                    else Pair(
+                        AppTheme.colors.colorOnPrimary,
+                        AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f)
                     )
-                    Text(
-                        text = title.toUpperCase(),
-                        color = contentColor,
-                        style = typography.titleSmall
-                    )
+
+                    Column(
+                        Modifier
+                            .clickable(
+                                indication = rememberRipple(
+                                    bounded = true,
+                                    radius = 128.dp,
+                                    color = AppTheme.colors.colorOnPrimary
+                                ),
+                                interactionSource = remember {
+                                    MutableInteractionSource()
+                                }
+                            ) {
+                                viewModel.dispatch(AddHabitViewAction.SetHabitType(it.key))
+                            }
+                            .background(
+                                backgroundColor,
+                                shape = smallRoundedCornerShape
+                            )
+                            .padding(MiddlePadding),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = title,
+                            modifier = Modifier
+                                .padding(vertical = MiddlePadding)
+                                .size(LargeIconSize),
+                            tint = contentColor
+                        )
+                        Text(
+                            text = title.toUpperCase(),
+                            color = contentColor,
+                            style = typography.titleSmall
+                        )
+                    }
                 }
             }
         }
 
-        val (title, _, text) = habitsTypeMap[viewStates.habitType]!!
 
-        Column(
-            Modifier
-                .padding(top = SmallPadding)
-                .background(
-                    AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
-                    shape = smallRoundedCornerShape
+        item {
+            val (title, _, text) = habitsTypeMap[viewStates.habitType]!!
+
+            Column(
+                Modifier
+                    .padding(top = SmallPadding)
+                    .padding(horizontal = LargePadding)
+                    .background(
+                        AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
+                        shape = smallRoundedCornerShape
+                    )
+                    .padding(MiddlePadding)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = title.toUpperCase(),
+                    color = AppTheme.colors.colorOnPrimary,
+                    style = typography.titleSmall
                 )
-                .padding(MiddlePadding)
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = title.toUpperCase(),
-                color = AppTheme.colors.colorOnPrimary,
-                style = typography.titleSmall
-            )
-            Text(
-                text = text,
-                color = AppTheme.colors.colorOnPrimary,
-                style = typography.bodySmall,
-                modifier = Modifier.padding(top = SmallPadding)
-            )
+                Text(
+                    text = text,
+                    color = AppTheme.colors.colorOnPrimary,
+                    style = typography.bodySmall,
+                    modifier = Modifier.padding(top = SmallPadding)
+                )
+            }
         }
 
-        Button(
-            onClick = {
-                onNavigateToEditHabits(viewStates.habitType)
-            },
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = SmallPadding),
-            shape = mediumRoundedCornerShape,
-            contentPadding = PaddingValues(
-                vertical = SmallPadding,
-                horizontal = LargePadding
-            ),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = AppTheme.colors.colorOnPrimary,
-                contentColor = AppTheme.colors.colorPrimary
-            )
-        ) {
+        item {
+            Button(
+                onClick = {
+                    onNavigateToEditHabits(viewStates.habitType)
+                },
+                modifier = Modifier
+                    .padding(horizontal = LargePadding)
+                    .padding(top = SmallPadding),
+                shape = mediumRoundedCornerShape,
+                contentPadding = PaddingValues(
+                    vertical = SmallPadding,
+                    horizontal = LargePadding
+                ),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AppTheme.colors.colorOnPrimary,
+                    contentColor = AppTheme.colors.colorPrimary
+                )
+            ) {
+                Text(
+                    text = "Создать привычку".toUpperCase(),
+                    style = typography.titleSmall,
+                    color = AppTheme.colors.colorPrimary
+                )
+            }
+
             Text(
-                text = "Создать привычку".toUpperCase(),
+                modifier = Modifier
+                    .padding(horizontal = LargePadding)
+                    .padding(top = SmallPadding),
+                text = stringResource(id = R.string.templates_label).toUpperCase(),
                 style = typography.titleSmall,
-                color = AppTheme.colors.colorPrimary
+                color = AppTheme.colors.colorOnPrimary
             )
         }
 
-        Text(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = SmallPadding),
-            text = stringResource(id = R.string.templates_label).toUpperCase(),
-            style = typography.titleSmall,
-            color = AppTheme.colors.colorOnPrimary
-        )
-
-
-        viewStates.categoryList.forEach {
+        items(viewStates.categoryList) {
             Row(
                 Modifier
                     .padding(top = SmallPadding)
+                    .padding(horizontal = LargePadding)
                     .clickable(
                         indication = rememberRipple(
                             bounded = true,
@@ -198,7 +212,7 @@ fun AddHabitPage(
                     )
                     .fillMaxWidth(1f),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.Start
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = it.iconId),
@@ -224,6 +238,10 @@ fun AddHabitPage(
                     )
                 }
             }
+        }
+
+        item {
+            Row(modifier = Modifier.padding(vertical = SmallPadding)){}
         }
     }
 }

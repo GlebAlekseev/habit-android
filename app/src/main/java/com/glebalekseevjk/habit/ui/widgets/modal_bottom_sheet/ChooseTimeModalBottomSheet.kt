@@ -14,10 +14,11 @@ import com.glebalekseevjk.habit.ui.theme.AppTheme
 import com.glebalekseevjk.habit.ui.theme.LargePadding
 import com.glebalekseevjk.habit.ui.theme.MiddlePadding
 import com.glebalekseevjk.habit.ui.theme.typography
+import java.time.LocalTime
 
 
 @Composable
-fun ChooseTimeModalBottomSheet() {
+fun ChooseTimeModalBottomSheet(callback: (LocalTime)->Unit) {
     Column(
         modifier = Modifier
             .padding(MiddlePadding),

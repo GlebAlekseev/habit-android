@@ -59,7 +59,14 @@ fun BottomNavigateBar(navController: NavHostController) {
                 onClick = {
                     navController.navigateTo(
                         route = screen.routeName,
-                        isClearBackStack = true
+                        navConfig = {
+                            it.popUpTo(navController.currentBackStack.value[1].destination.route!!){
+                                inclusive = true
+                                saveState = true
+                            }
+                            it.restoreState = true
+                            it.launchSingleTop = true
+                        }
                     )
                 },
                 selectedContentColor = AppTheme.colors.selectedContent,

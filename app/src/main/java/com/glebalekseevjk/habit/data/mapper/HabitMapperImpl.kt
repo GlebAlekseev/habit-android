@@ -21,6 +21,7 @@ class HabitMapperImpl @Inject constructor() : Mapper<Habit, HabitDbModel> {
         item.targetType,
         item.repeatCount,
         item.duration,
+        item.createdAt
     )
 
     override fun mapDbModelToItem(dbModel: HabitDbModel): Habit = Habit(
@@ -38,5 +39,6 @@ class HabitMapperImpl @Inject constructor() : Mapper<Habit, HabitDbModel> {
         dbModel.targetType,
         dbModel.repeatCount,
         dbModel.duration,
+        dbModel.createdAt
     )
 }

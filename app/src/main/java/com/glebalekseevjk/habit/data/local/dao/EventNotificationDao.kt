@@ -17,12 +17,12 @@ interface EventNotificationDao {
     @Query("DELETE FROM EventNotificationDbModel WHERE id = :eventNotificationId")
     suspend fun delete(eventNotificationId: Int)
 
-    @Query("DELETE FROM EventNotificationDbModel WHERE habitId = :habitId")
+    @Query("DELETE FROM EventNotificationDbModel WHERE habit_id = :habitId")
     suspend fun deleteForHabit(habitId: Int)
 
-    @Query("SELECT * FROM EventNotificationDbModel WHERE habitId = :habitId ORDER BY created_at ASC")
+    @Query("SELECT * FROM EventNotificationDbModel WHERE habit_id = :habitId ORDER BY date ASC")
     suspend fun getForHabit(habitId: Int): List<EventNotificationDbModel>
 
-    @Query("SELECT * FROM EventNotificationDbModel ORDER BY created_at ASC")
+    @Query("SELECT * FROM EventNotificationDbModel ORDER BY date ASC")
     suspend fun getAll(): List<EventNotificationDbModel>
 }

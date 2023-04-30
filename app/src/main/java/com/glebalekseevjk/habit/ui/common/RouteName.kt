@@ -2,8 +2,8 @@ package com.glebalekseevjk.habit.ui.common
 
 import android.net.Uri
 import android.os.Parcelable
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import com.glebalekseevjk.habit.ui.utils.toJson
 import kotlinx.parcelize.Parcelize
 
@@ -20,37 +20,31 @@ object RouteName {
 
 internal fun NavHostController.navigateTo(
     route: String,
-    isClearBackStack: Boolean = false,
+    navConfig: (NavOptionsBuilder) -> Unit = {
+//        it.launchSingleTop = true
+//        it.popUpTo(route) { inclusive = true }
+    },
     args: Any? = null,
     sideEffect: () -> Unit = {}
 ) {
-    if (currentDestination?.route != route) {
-        val argument = when (args) {
-            is Parcelable -> String.format("/%s", Uri.encode(args.toJson()))
-            is String -> String.format("/%s", args)
-            is Int -> String.format("/%s", args)
-            is Float -> String.format("/%s", args)
-            is Double -> String.format("/%s", args)
-            is Boolean -> String.format("/%s", args)
-            is Long -> String.format("/%s", args)
-            else -> ""
-        }
-
-        this.navigate("$route$argument") {
-            if (isClearBackStack) {
-                popUpTo(this@navigateTo.graph.findNode(currentDestination?.route)!!.id) {
-                    inclusive = true
-                }
-            } else {
-                popUpTo(this@navigateTo.graph.findStartDestination().id) {
-                    inclusive = true
-                }
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-        sideEffect()
+    val argument = when (args) {
+        is Parcelable -> String.format("/%s", Uri.encode(args.toJson()))
+        is String -> String.format("/%s", args)
+        is Int -> String.format("/%s", args)
+        is Float -> String.format("/%s", args)
+        is Double -> String.format("/%s", args)
+        is Boolean -> String.format("/%s", args)
+        is Long -> String.format("/%s", args)
+        else -> ""
     }
+    println("$$$$$$$$$$$$$ 1route=$route currentDestination=${currentDestination?.route} \n\t\tthis.currentBackStack.value=${this.currentBackStack.value.map { it.destination.route }}")
+    println(">>>>>>>>>>>>>> 1.5 route ${this.currentBackStack.value.map { it.savedStateHandle }}")
+    this.navigate("$route$argument") {
+        navConfig(this)
+    }
+    println("$$$$$$$$$$$$$ 2route=$route currentDestination=${currentDestination?.route} \n\t\tthis.currentBackStack.value=${this.currentBackStack.value.map { it.destination.route }}")
+
+    sideEffect()
 }
 
 

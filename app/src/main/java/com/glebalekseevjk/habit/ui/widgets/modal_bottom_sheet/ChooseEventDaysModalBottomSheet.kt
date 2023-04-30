@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.commandiron.wheel_picker_compose.WheelDatePicker
+import com.glebalekseevjk.habit.domain.entity.Habit
 import com.glebalekseevjk.habit.ui.theme.*
 
 
@@ -19,7 +19,7 @@ val days = listOf(
 )
 
 @Composable
-fun ChooseEventDayModalBottomSheet() {
+fun ChooseEventDaysModalBottomSheet(callback: (Set<Habit.Companion.Day>)->Unit) {
     val radioOptions = listOf("Определенные дни недели", "X д. в неделю", "X д. в месяц", "X д. в год")
 
     var selectedItem by remember {

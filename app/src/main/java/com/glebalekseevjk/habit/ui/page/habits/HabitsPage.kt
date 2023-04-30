@@ -15,116 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.glebalekseevjk.habit.R
-import com.glebalekseevjk.habit.domain.entity.Habit
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.RepeatType.SPECIFIC_DAYS
 import com.glebalekseevjk.habit.ui.theme.*
 import com.glebalekseevjk.habit.ui.utils.pxToDp
-
-data class TestHabit(
-    val title: String,
-    val iconId: Int,
-    val type: Type,
-    val colorIcon: Color,
-    val stage: Int,
-    val dayList: List<Day>
-) {
-    data class Day(
-        val day: String,
-        val dayInt: Int
-    )
-
-    enum class Type {
-        EVERY_DAY,
-    }
-}
-
-val testHabitList = listOf(
-    TestHabit(
-        "Пейте 8 стаканов воды",
-        R.drawable.ic_glass,
-        TestHabit.Type.EVERY_DAY,
-        Color.Red,
-        14,
-        listOf(
-            TestHabit.Day("Чт", 12),
-            TestHabit.Day("Пт", 13),
-            TestHabit.Day("Сб", 14),
-            TestHabit.Day("Вс", 15),
-            TestHabit.Day("Пн", 16),
-            TestHabit.Day("Вт", 17),
-            TestHabit.Day("Ср", 18),
-        )
-    ),
-    TestHabit(
-        "Пейте 8 стаканов воды",
-        R.drawable.ic_glass,
-        TestHabit.Type.EVERY_DAY,
-        Color.Red,
-        14,
-        listOf(
-            TestHabit.Day("Чт", 12),
-            TestHabit.Day("Пт", 13),
-            TestHabit.Day("Сб", 14),
-            TestHabit.Day("Вс", 15),
-            TestHabit.Day("Пн", 16),
-            TestHabit.Day("Вт", 17),
-            TestHabit.Day("Ср", 18),
-        )
-    ),
-    TestHabit(
-        "Пейте 8 стаканов воды",
-        R.drawable.ic_glass,
-        TestHabit.Type.EVERY_DAY,
-        Color.Red,
-        14,
-        listOf(
-            TestHabit.Day("Чт", 12),
-            TestHabit.Day("Пт", 13),
-            TestHabit.Day("Сб", 14),
-            TestHabit.Day("Вс", 15),
-            TestHabit.Day("Пн", 16),
-            TestHabit.Day("Вт", 17),
-            TestHabit.Day("Ср", 18),
-        )
-    ),
-    TestHabit(
-        "Пейте 8 стаканов воды",
-        R.drawable.ic_glass,
-        TestHabit.Type.EVERY_DAY,
-        Color.Red,
-        14,
-        listOf(
-            TestHabit.Day("Чт", 12),
-            TestHabit.Day("Пт", 13),
-            TestHabit.Day("Сб", 14),
-            TestHabit.Day("Вс", 15),
-            TestHabit.Day("Пн", 16),
-            TestHabit.Day("Вт", 17),
-            TestHabit.Day("Ср", 18),
-        )
-    ),
-    TestHabit(
-        "Пейте 8 стаканов воды",
-        R.drawable.ic_glass,
-        TestHabit.Type.EVERY_DAY,
-        Color.Red,
-        14,
-        listOf(
-            TestHabit.Day("Чт", 12),
-            TestHabit.Day("Пт", 13),
-            TestHabit.Day("Сб", 14),
-            TestHabit.Day("Вс", 15),
-            TestHabit.Day("Пн", 16),
-            TestHabit.Day("Вт", 17),
-            TestHabit.Day("Ср", 18),
-        )
-    ),
-)
 
 
 @Composable
@@ -136,17 +33,35 @@ fun HabitsPage(
     val viewStates = viewModel.viewStates
 
     LaunchedEffect(Unit) {
-        viewModel.dispatch(HabitsViewAction.InitHabits)
+        println(">>>>>>>>>>>>>> viewmodel=$viewModel")
+        if (viewStates is HabitsViewState.Init) {
+            viewModel.dispatch(HabitsViewAction.InitHabits)
+        }
     }
 
     when (viewStates) {
-        HabitsViewState.Failure -> TODO("Неизвестная ошибка")
-        HabitsViewState.Loading -> TODO("Загрузка")
+        HabitsViewState.Failure -> {
+            TODO("Ошибка")
+        }
+        is HabitsViewState.Loading, is HabitsViewState.Init -> {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.15f),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                CircularProgressIndicator(
+                    color = AppTheme.colors.colorOnPrimary,
+                    strokeWidth = 2.dp
+                )
+            }
+        }
         is HabitsViewState.Loaded -> {
-
             LazyColumn(
+                state = viewStates.lazyListState,
                 verticalArrangement = Arrangement.Top,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 items(viewStates.habitList) {
@@ -204,7 +119,6 @@ fun HabitsPage(
                                                 )
                                             }
                                         }
-                                        else ->{}
                                     }
                                 }
                             }
@@ -232,39 +146,39 @@ fun HabitsPage(
                             }
                         }
 
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            TODO("Парсить и выводить")
-//                            it.dayList.forEach {
-//                                Column(
-//                                    verticalArrangement = Arrangement.Center,
-//                                    horizontalAlignment = Alignment.CenterHorizontally,
-//                                    modifier = Modifier.padding(horizontal = 3.dp)
-//                                ) {
-//                                    Text(
-//                                        text = it.day,
-//                                        color = AppTheme.colors.colorOnPrimary,
-//                                        modifier = Modifier.padding(bottom = SmallPadding)
-//                                    )
-//                                    Box(
-//                                        modifier = Modifier
-//                                            .background(
-//                                                AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f),
-//                                                shape = RoundedCornerShape(100.dp)
-//                                            )
-//                                            .padding(SmallPadding),
-//                                        contentAlignment = Alignment.Center
-//                                    ) {
-//                                        Text(
-//                                            text = "${it.dayInt}",
-//                                            color = AppTheme.colors.colorOnPrimary
-//                                        )
-//                                    }
-//                                }
-//                            }
-                        }
+//                        Row(
+//                            horizontalArrangement = Arrangement.Center,
+//                            modifier = Modifier.fillMaxWidth()
+//                        ) {
+//                            TODO("Парсить и выводить")
+////                            it.dayList.forEach {
+////                                Column(
+////                                    verticalArrangement = Arrangement.Center,
+////                                    horizontalAlignment = Alignment.CenterHorizontally,
+////                                    modifier = Modifier.padding(horizontal = 3.dp)
+////                                ) {
+////                                    Text(
+////                                        text = it.day,
+////                                        color = AppTheme.colors.colorOnPrimary,
+////                                        modifier = Modifier.padding(bottom = SmallPadding)
+////                                    )
+////                                    Box(
+////                                        modifier = Modifier
+////                                            .background(
+////                                                AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f),
+////                                                shape = RoundedCornerShape(100.dp)
+////                                            )
+////                                            .padding(SmallPadding),
+////                                        contentAlignment = Alignment.Center
+////                                    ) {
+////                                        Text(
+////                                            text = "${it.dayInt}",
+////                                            color = AppTheme.colors.colorOnPrimary
+////                                        )
+////                                    }
+////                                }
+////                            }
+//                        }
 
                         Divider(
                             modifier = Modifier.padding(vertical = SmallPadding),

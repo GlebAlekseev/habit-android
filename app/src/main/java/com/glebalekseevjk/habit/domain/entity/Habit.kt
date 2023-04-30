@@ -1,6 +1,7 @@
 package com.glebalekseevjk.habit.domain.entity
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 data class Habit(
@@ -18,15 +19,13 @@ data class Habit(
     val targetType: TargetType = TargetType.OFF,
     val repeatCount: Int?,
     val duration: LocalTime?,
+    val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
     companion object {
         const val UNDEFINED_ID = 0
 
         enum class RepeatType {
             SPECIFIC_DAYS,
-            X_DAYS_PER_WEEK,
-            X_DAYS_PER_MONTH,
-            X_DAYS_PER_YEAR,
         }
 
         enum class Day {

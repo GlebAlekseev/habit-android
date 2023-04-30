@@ -12,6 +12,6 @@ data class EventNotificationDbModel(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int,
     @ColumnInfo(name = "habit_id") val habitId: Int,
-    @ColumnInfo(name = "date") @TypeConverters(LocalDateTimeTypeConverter::class) val date: LocalDateTime,
+    @ColumnInfo(name = "date") val date: LocalDateTime,
     @ColumnInfo(name = "is_done") val isDone: Boolean
 )

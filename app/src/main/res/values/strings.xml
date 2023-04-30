@@ -17,6 +17,7 @@
     <string name="disposable">Одноразовая</string>
 
     <string name="templates_label">или выберите из уже готовых</string>
+    <string name="empty"></string>
 
 
     <string name="categories_trend_title">Привычки в тренде</string>
@@ -61,6 +62,10 @@
 
     <string name="categories_pets_title">Цените своих животных</string>
     <string name="categories_pets_description">Вы очень нужны им</string>
+
+    <string name="regular_text">Регулярная привычка</string>
+    <string name="harmful_text">Вредная привычка</string>
+    <string name="disposable_text">Одноразовая привычка</string>
 
 
 </resources>

@@ -1,5 +1,6 @@
 package com.glebalekseevjk.habit.ui.page.habits
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -20,7 +21,7 @@ class HabitsViewModel @Inject constructor(
     private val eventNotificationUseCase: EventNotificationUseCase
 ) : ViewModel() {
     var viewStates by mutableStateOf<HabitsViewState>(
-        HabitsViewState.Loading
+        HabitsViewState.Init
     )
         private set
 
@@ -31,6 +32,7 @@ class HabitsViewModel @Inject constructor(
     }
 
     private fun initHabits() {
+        viewStates = HabitsViewState.Loading
         viewModelScope.launch {
             when (val habits = habitUseCase.getHabitList()) {
                 is Resource.Failure -> viewStates = HabitsViewState.Failure
@@ -45,7 +47,8 @@ class HabitsViewModel @Inject constructor(
                                     is Resource.Success -> eventNotificationList.data
                                 }
                             )
-                        }
+                        },
+                        LazyListState()
                     )
                 }
             }
@@ -59,9 +62,13 @@ data class HabitUI(
 )
 
 sealed class HabitsViewState {
+    object Init : HabitsViewState()
     object Loading : HabitsViewState()
     object Failure : HabitsViewState()
-    data class Loaded(val habitList: List<HabitUI>) : HabitsViewState()
+    data class Loaded(
+        val habitList: List<HabitUI>,
+        val lazyListState: LazyListState
+    ) : HabitsViewState()
 }
 
 sealed class HabitsViewAction {

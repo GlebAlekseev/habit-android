@@ -36,7 +36,7 @@ val iconList = listOf(
 ).windowed(3, 3)
 
 @Composable
-fun ChooseIconModalBottomSheet() {
+fun ChooseIconModalBottomSheet(callback: (Int)->Unit) {
     Column(
         modifier = Modifier
             .padding(MiddlePadding),

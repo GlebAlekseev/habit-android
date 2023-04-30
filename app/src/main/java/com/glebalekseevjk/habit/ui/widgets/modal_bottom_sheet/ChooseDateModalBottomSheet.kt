@@ -10,15 +10,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.commandiron.wheel_picker_compose.WheelDatePicker
-import com.commandiron.wheel_picker_compose.WheelTimePicker
 import com.glebalekseevjk.habit.ui.theme.AppTheme
 import com.glebalekseevjk.habit.ui.theme.LargePadding
 import com.glebalekseevjk.habit.ui.theme.MiddlePadding
 import com.glebalekseevjk.habit.ui.theme.typography
+import java.time.LocalDate
 
 
 @Composable
-fun ChooseFinishDateModalBottomSheet() {
+fun ChooseDateModalBottomSheet(callback: (LocalDate)->Unit) {
     Column(
         modifier = Modifier
             .padding(MiddlePadding),

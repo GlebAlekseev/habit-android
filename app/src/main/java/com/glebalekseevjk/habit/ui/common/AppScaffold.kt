@@ -21,6 +21,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.glebalekseevjk.habit.R
+import com.glebalekseevjk.habit.domain.entity.Habit
 import com.glebalekseevjk.habit.ui.page.add_habits.AddHabitPage
 import com.glebalekseevjk.habit.ui.page.edit_habits.EditHabitPage
 import com.glebalekseevjk.habit.ui.page.habits.HabitsPage
@@ -40,20 +41,27 @@ import com.glebalekseevjk.habit.ui.widgets.top_bar.StepTopBar
 import com.glebalekseevjk.habit.ui.widgets.top_bar.WindowTopBar
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import java.time.LocalDate
+import java.time.LocalTime
 
 
 @Parcelize
-internal sealed class ModalBottomSheet : Parcelable {
-    object ChooseIcon : ModalBottomSheet()
-    object ChooseIconColor : ModalBottomSheet()
-    object ChooseEventDay : ModalBottomSheet()
-    object ChooseTime : ModalBottomSheet()
-    object ChooseFinishDate : ModalBottomSheet()
+sealed class ModalBottomSheetState : Parcelable {
+    object Hide : ModalBottomSheetState()
+    data class ChooseIcon(val iconId: (Int) -> Unit) : ModalBottomSheetState()
+    data class ChooseColor(val colorRGBA: (Int) -> Unit) : ModalBottomSheetState()
+    data class ChooseEventDays(val eventDays: (Set<Habit.Companion.Day>) -> Unit) :
+        ModalBottomSheetState()
+
+    data class ChooseTime(val time: (LocalTime) -> Unit) : ModalBottomSheetState()
+    data class ChooseDate(val date: (LocalDate) -> Unit) : ModalBottomSheetState()
 }
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
+fun AppScaffold(
+    onThemeChange: (AppTheme.Theme) -> Unit,
+) {
     val navController = rememberAnimatedNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -65,19 +73,21 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
     )
-    var modalBottomSheet by rememberSaveable {
-        mutableStateOf<ModalBottomSheet>(ModalBottomSheet.ChooseIcon)
+
+    var modalBottomSheetType: ModalBottomSheetState by rememberSaveable {
+        mutableStateOf(ModalBottomSheetState.Hide)
     }
 
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetContent = {
-            when (modalBottomSheet) {
-                ModalBottomSheet.ChooseIcon -> ChooseIconModalBottomSheet()
-                ModalBottomSheet.ChooseIconColor -> ChooseIconColorModalBottomSheet()
-                ModalBottomSheet.ChooseEventDay -> ChooseEventDayModalBottomSheet()
-                ModalBottomSheet.ChooseTime -> ChooseTimeModalBottomSheet()
-                ModalBottomSheet.ChooseFinishDate -> ChooseFinishDateModalBottomSheet()
+            when (val value = modalBottomSheetType) {
+                is ModalBottomSheetState.ChooseColor -> ChooseColorModalBottomSheet(value.colorRGBA)
+                is ModalBottomSheetState.ChooseDate -> ChooseDateModalBottomSheet(value.date)
+                is ModalBottomSheetState.ChooseEventDays -> ChooseEventDaysModalBottomSheet(value.eventDays)
+                is ModalBottomSheetState.ChooseIcon -> ChooseIconModalBottomSheet(value.iconId)
+                is ModalBottomSheetState.ChooseTime -> ChooseTimeModalBottomSheet(value.time)
+                ModalBottomSheetState.Hide -> {}
             }
         },
         sheetShape = RoundedCornerShape(
@@ -108,9 +118,11 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
                         currentDestination.route!!,
                         onOpenDrawer = { scope.launch { scaffoldState.drawerState.open() } },
                         onNavigateToAddHabits = {
-                            navController.navigateTo(
-                                route = RouteName.ADD_HABITS
-                            )
+                            scope.launch {
+                                navController.navigateTo(
+                                    route = RouteName.ADD_HABITS
+                                )
+                            }
                         }
                     )
                     RouteName.HABITS -> MainTopBar(
@@ -118,9 +130,11 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
                         currentDestination.route!!,
                         onOpenDrawer = { scope.launch { scaffoldState.drawerState.open() } },
                         onNavigateToAddHabits = {
-                            navController.navigateTo(
-                                route = RouteName.ADD_HABITS
-                            )
+                            scope.launch {
+                                navController.navigateTo(
+                                    route = RouteName.ADD_HABITS
+                                )
+                            }
                         }
                     )
                     RouteName.HISTORY -> MainTopBar(
@@ -128,9 +142,11 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
                         currentDestination.route!!,
                         onOpenDrawer = { scope.launch { scaffoldState.drawerState.open() } },
                         onNavigateToAddHabits = {
-                            navController.navigateTo(
-                                route = RouteName.ADD_HABITS
-                            )
+                            scope.launch {
+                                navController.navigateTo(
+                                    route = RouteName.ADD_HABITS
+                                )
+                            }
                         }
                     )
                     RouteName.SETTINGS -> StepTopBar(
@@ -151,19 +167,49 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
             drawerContent = {
                 MainDrawer(
                     onNavigateToToday = {
-                        navController.navigateTo(route = RouteName.TODAY, isClearBackStack = true)
+                        navController.navigateTo(
+                            route = RouteName.TODAY,
+                            navConfig = {
+                                it.popUpTo(navController.currentBackStack.value[1].destination.route!!) {
+                                    inclusive = true
+                                    saveState = true
+                                }
+                                it.restoreState = true
+                                it.launchSingleTop = true
+                            }
+                        )
                         scope.launch {
                             scaffoldState.drawerState.close()
                         }
                     },
                     onNavigateToHabits = {
-                        navController.navigateTo(route = RouteName.HABITS, isClearBackStack = true)
+                        navController.navigateTo(
+                            route = RouteName.HABITS,
+                            navConfig = {
+                                it.popUpTo(navController.currentBackStack.value[1].destination.route!!) {
+                                    inclusive = true
+                                    saveState = true
+                                }
+                                it.restoreState = true
+                                it.launchSingleTop = true
+                            }
+                        )
                         scope.launch {
                             scaffoldState.drawerState.close()
                         }
                     },
                     onNavigateToHistory = {
-                        navController.navigateTo(route = RouteName.HISTORY, isClearBackStack = true)
+                        navController.navigateTo(
+                            route = RouteName.HISTORY,
+                            navConfig = {
+                                it.popUpTo(navController.currentBackStack.value[1].destination.route!!) {
+                                    inclusive = true
+                                    saveState = true
+                                }
+                                it.restoreState = true
+                                it.launchSingleTop = true
+                            }
+                        )
                         scope.launch {
                             scaffoldState.drawerState.close()
                         }
@@ -229,7 +275,14 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
                             onNavigateToEditHabits = {
                                 navController.navigateTo(
                                     route = RouteName.EDIT_HABITS,
-                                    args = EditHabitsPageParams(null, 1)
+                                    args = EditHabitsPageParams(
+                                        null,
+                                        when (it) {
+                                            Habit.Companion.HabitType.REGULAR -> -1
+                                            Habit.Companion.HabitType.HARMFUL -> -2
+                                            Habit.Companion.HabitType.DISPOSABLE -> -3
+                                        }
+                                    )
                                 )
                             }
                         )
@@ -244,36 +297,46 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
                             EditHabitPage(habitId, templateId,
                                 onOpenChooseIconModalBottomSheet = {
                                     scope.launch {
-                                        modalBottomSheet = ModalBottomSheet.ChooseIcon
+                                        modalBottomSheetType = ModalBottomSheetState.ChooseIcon(it)
                                         bottomSheetState.show()
                                     }
                                 },
                                 onOpenChooseIconColorModalBottomSheet = {
                                     scope.launch {
-                                        modalBottomSheet = ModalBottomSheet.ChooseIconColor
+                                        modalBottomSheetType = ModalBottomSheetState.ChooseColor(it)
                                         bottomSheetState.show()
                                     }
                                 },
                                 onOpenChooseEventDayModalBottomSheet = {
                                     scope.launch {
-                                        modalBottomSheet = ModalBottomSheet.ChooseEventDay
+                                        modalBottomSheetType =
+                                            ModalBottomSheetState.ChooseEventDays(it)
                                         bottomSheetState.show()
                                     }
                                 },
                                 onOpenChooseTimeModalBottomSheet = {
                                     scope.launch {
-                                        modalBottomSheet = ModalBottomSheet.ChooseTime
+                                        modalBottomSheetType = ModalBottomSheetState.ChooseTime(it)
                                         bottomSheetState.show()
                                     }
                                 },
                                 onOpenChooseFinishDateModalBottomSheet = {
                                     scope.launch {
-                                        modalBottomSheet = ModalBottomSheet.ChooseFinishDate
+                                        modalBottomSheetType = ModalBottomSheetState.ChooseDate(it)
                                         bottomSheetState.show()
                                     }
                                 },
                                 onSaveHabit = {
-
+                                    navController.navigateTo(
+                                        route = RouteName.ADD_HABITS,
+                                        navConfig = {
+                                            it.popUpTo(RouteName.ADD_HABITS) {
+                                                inclusive = true
+                                            }
+                                            it.launchSingleTop = true
+                                        }
+                                    )
+                                    navController.popBackStack()
                                 }
                             )
                         }
@@ -302,7 +365,9 @@ fun AppScaffold(onThemeChange: (AppTheme.Theme) -> Unit) {
                         SplashPage {
                             navController.navigateTo(
                                 route = RouteName.TODAY,
-                                isClearBackStack = true,
+                                navConfig = {
+                                    navController.popBackStack()
+                                },
                                 sideEffect = {
                                     systemUiCtrl.setStatusBarColor(systemBarColor)
                                     systemUiCtrl.setNavigationBarColor(systemBarColor)
