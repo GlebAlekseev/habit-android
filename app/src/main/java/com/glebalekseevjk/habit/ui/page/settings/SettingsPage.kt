@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
@@ -23,24 +25,27 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.glebalekseevjk.habit.R
-import com.glebalekseevjk.habit.ui.page.history.HistoryViewModel
+import com.glebalekseevjk.habit.domain.entity.Language
 import com.glebalekseevjk.habit.ui.theme.*
 
 
 @Composable
 fun SettingsPage(
     onThemeChange: (AppTheme.Theme) -> Unit,
+    onLanguageChange: (Language) -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    var isNightTheme by remember { mutableStateOf(false) }
-    if (isNightTheme) {
-        onThemeChange(AppTheme.Theme.Dark)
-    } else {
-        onThemeChange(AppTheme.Theme.Light)
+    val viewStates = viewModel.viewStates
+
+    var expanded by remember {
+        mutableStateOf(false)
     }
+
     Column(
         Modifier
             .fillMaxWidth()
@@ -59,6 +64,8 @@ fun SettingsPage(
                         MutableInteractionSource()
                     }
                 ) {
+
+                    expanded = !expanded
                 }
                 .padding(vertical = SmallPadding, horizontal = 84.dp)
                 .fillMaxWidth(),
@@ -81,11 +88,39 @@ fun SettingsPage(
                 )
             }
 
-            Text(
-                text = "Русский",
-                style = typography.titleSmall,
-                color = AppTheme.colors.colorOnPrimary,
-            )
+            Box() {
+                Text(
+                    text = when(viewStates.language){
+                        Language.RUSSIAN -> "Русский"
+                        Language.ENGLISH -> "English"
+                    },
+                    style = typography.titleSmall,
+                    color = AppTheme.colors.colorOnPrimary,
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    offset = DpOffset(0.dp, SmallPadding),
+                    onDismissRequest = {
+                        expanded = !expanded
+                    })
+                {
+                    DropdownMenuItem(onClick = {
+                        onLanguageChange(Language.RUSSIAN)
+                        viewModel.dispatch(SettingsViewAction.SetLanguage(Language.RUSSIAN))
+                        expanded = !expanded
+                    }) {
+                        Text(text = "Русский")
+                    }
+                    DropdownMenuItem(onClick = {
+                        onLanguageChange(Language.ENGLISH)
+                        viewModel.dispatch(SettingsViewAction.SetLanguage(Language.ENGLISH))
+                        expanded = !expanded
+                    }) {
+                        Text(text = "English")
+                    }
+                }
+            }
+
         }
 
         Row(
@@ -101,7 +136,13 @@ fun SettingsPage(
                         MutableInteractionSource()
                     }
                 ) {
-                    isNightTheme = !isNightTheme
+                    val theme = if (!viewStates.isDarkTheme) {
+                        AppTheme.Theme.Dark
+                    } else {
+                        AppTheme.Theme.Light
+                    }
+                    onThemeChange(theme)
+                    viewModel.dispatch(SettingsViewAction.SetTheme(!viewStates.isDarkTheme))
                 }
                 .padding(vertical = SmallPadding, horizontal = 84.dp)
                 .fillMaxWidth(),
@@ -127,10 +168,7 @@ fun SettingsPage(
 
             Switch2(
                 scale = 1.2f,
-                checked = isNightTheme,
-                onCheckedChange = {
-                    isNightTheme = !isNightTheme
-                },
+                checked = viewStates.isDarkTheme,
                 checkedTrackColor = AppTheme.colors.colorOnPrimary,
                 uncheckedTrackColor = AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f)
             )
@@ -169,15 +207,15 @@ fun Switch2(
         modifier = modifier
             .size(width = width, height = height)
             .scale(scale = scale)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = {
-                        // This is called when the user taps on the canvas
-                        println("!!!!!!!!")
-                        onCheckedChange()
-                    }
-                )
-            }
+//            .pointerInput(Unit) {
+//                detectTapGestures(
+//                    onTap = {
+//                        // This is called when the user taps on the canvas
+//                        println("!!!!!!!!")
+//                        onCheckedChange()
+//                    }
+//                )
+//            }
     ) {
         // Track
         drawRoundRect(

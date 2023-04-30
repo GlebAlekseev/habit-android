@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="today">Today</string>
+    <string name="habits">Habits</string>
+    <string name="history">History</string>
+    <string name="settings">Settings</string>
+    <string name="add_habits">Add habit</string>
+    <string name="menu">Menu</string>
+    <string name="back">Back</string>
+    <string name="lang">Select language</string>
+    <string name="night">Night mode</string>
+
+    <string name="regular">Regular</string>
+    <string name="harmful">Harmful</string>
+    <string name="disposable">Disposable</string>
+</resources>

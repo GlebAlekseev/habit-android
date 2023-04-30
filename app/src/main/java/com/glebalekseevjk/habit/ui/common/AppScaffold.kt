@@ -22,6 +22,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.domain.entity.Habit
+import com.glebalekseevjk.habit.domain.entity.Language
 import com.glebalekseevjk.habit.ui.page.add_habits.AddHabitPage
 import com.glebalekseevjk.habit.ui.page.edit_habits.EditHabitPage
 import com.glebalekseevjk.habit.ui.page.habits.HabitsPage
@@ -61,6 +62,8 @@ sealed class ModalBottomSheetState : Parcelable {
 @Composable
 fun AppScaffold(
     onThemeChange: (AppTheme.Theme) -> Unit,
+    onLanguageChange: (Language) -> Unit,
+    lang: String
 ) {
     val navController = rememberAnimatedNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -150,7 +153,8 @@ fun AppScaffold(
                         }
                     )
                     RouteName.SETTINGS -> StepTopBar(
-                        title = stringResource(id = R.string.settings)
+                        title = stringResource(id = R.string.settings),
+                        lang = lang,
                     ) { scope.launch { navController.back() } }
                     RouteName.ADD_HABITS -> StepTopBar(
                         title = stringResource(id = R.string.add_habits)
@@ -359,7 +363,7 @@ fun AppScaffold(
                         }
                     }
                     composable(route = RouteName.SETTINGS) {
-                        SettingsPage(onThemeChange)
+                        SettingsPage(onThemeChange,onLanguageChange)
                     }
                     composable(route = RouteName.SPLASH) {
                         SplashPage {

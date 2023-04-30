@@ -17,7 +17,7 @@ import com.glebalekseevjk.habit.ui.theme.*
 
 
 @Composable
-fun StepTopBar(title: String, onBack: () -> Unit) {
+fun StepTopBar(title: String, lang: String? = null, onBack: () -> Unit) {
     TopAppBar(
         backgroundColor = AppTheme.colors.colorPrimary,
         elevation = MediumElevation,

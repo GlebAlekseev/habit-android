@@ -2,8 +2,10 @@ package com.glebalekseevjk.habit.di.module
 
 import com.glebalekseevjk.habit.data.repository.EventNotificationRepositoryImpl
 import com.glebalekseevjk.habit.data.repository.HabitRepositoryImpl
+import com.glebalekseevjk.habit.data.repository.SettingsRepositoryImpl
 import com.glebalekseevjk.habit.domain.repository.EventNotificationRepository
 import com.glebalekseevjk.habit.domain.repository.HabitRepository
+import com.glebalekseevjk.habit.domain.repository.SettingsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -18,4 +20,7 @@ interface RepositoryModule {
 
     @Binds
     fun bindEventNotificationRepository(eventNotificationRepositoryImpl: EventNotificationRepositoryImpl): EventNotificationRepository
+
+    @Binds
+    fun bindSettingsRepository(settingsRepositoryImpl: SettingsRepositoryImpl): SettingsRepository
 }
