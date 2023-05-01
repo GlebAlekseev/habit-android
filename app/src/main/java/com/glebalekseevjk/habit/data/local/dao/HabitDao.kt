@@ -1,5 +1,6 @@
 package com.glebalekseevjk.habit.data.local.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -18,5 +19,5 @@ interface HabitDao {
     suspend fun delete(habitId: Int)
 
     @Query("SELECT * FROM HabitDbModel ORDER BY created_at ASC")
-    suspend fun getAll(): List<HabitDbModel>
+    fun getAll(): LiveData<List<HabitDbModel>>
 }

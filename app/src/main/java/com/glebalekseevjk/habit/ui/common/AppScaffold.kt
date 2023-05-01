@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.invalidate
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -22,6 +23,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.domain.entity.Habit
+import com.glebalekseevjk.habit.domain.entity.Habit.Companion.TargetType
 import com.glebalekseevjk.habit.domain.entity.Language
 import com.glebalekseevjk.habit.ui.page.add_habits.AddHabitPage
 import com.glebalekseevjk.habit.ui.page.edit_habits.EditHabitPage
@@ -40,6 +42,7 @@ import com.glebalekseevjk.habit.ui.widgets.modal_bottom_sheet.*
 import com.glebalekseevjk.habit.ui.widgets.top_bar.MainTopBar
 import com.glebalekseevjk.habit.ui.widgets.top_bar.StepTopBar
 import com.glebalekseevjk.habit.ui.widgets.top_bar.WindowTopBar
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
@@ -49,13 +52,40 @@ import java.time.LocalTime
 @Parcelize
 sealed class ModalBottomSheetState : Parcelable {
     object Hide : ModalBottomSheetState()
-    data class ChooseIcon(val iconId: (Int) -> Unit) : ModalBottomSheetState()
-    data class ChooseColor(val colorRGBA: (Int) -> Unit) : ModalBottomSheetState()
-    data class ChooseEventDays(val eventDays: (Set<Habit.Companion.Day>) -> Unit) :
+    data class ChooseIcon(val initValue: Int, val setIconId: (Int) -> Unit) :
         ModalBottomSheetState()
 
-    data class ChooseTime(val time: (LocalTime) -> Unit) : ModalBottomSheetState()
-    data class ChooseDate(val date: (LocalDate) -> Unit) : ModalBottomSheetState()
+    data class ChooseColor(val initValue: Int, val setColorRGBA: (Int) -> Unit) :
+        ModalBottomSheetState()
+
+    data class ChooseEventDays(
+        val initValue: Set<Habit.Companion.Day>,
+        val setEventDays: (Set<Habit.Companion.Day>) -> Unit
+    ) :
+        ModalBottomSheetState()
+
+    data class ChooseTimeStart(val initValue: LocalTime?,val minValue: LocalTime?, val maxValue: LocalTime?, val setTime: (LocalTime) -> Unit) :
+        ModalBottomSheetState()
+
+    data class ChooseTimeEnd(val initValue: LocalTime?,val minValue: LocalTime?, val maxValue: LocalTime?, val setTime: (LocalTime) -> Unit) :
+        ModalBottomSheetState()
+
+    data class ChooseTime(val initValue: LocalTime?,val minValue: LocalTime?, val maxValue: LocalTime?, val setTime: (LocalTime) -> Unit) :
+        ModalBottomSheetState()
+
+    data class ChooseDate(val initValue: LocalDate?, val setDate: (LocalDate) -> Unit) :
+        ModalBottomSheetState()
+
+    data class ChooseTargetType(
+        val initValue: TargetType,
+        val setTargetType: (TargetType) -> Unit
+    ) : ModalBottomSheetState()
+
+    data class ChooseDuration(val initValue: LocalTime?, val setDuration: (LocalTime) -> Unit) :
+        ModalBottomSheetState()
+
+    data class ChooseRepeatCount(val initValue: Int?, val setRepeatCount: (Int) -> Unit) :
+        ModalBottomSheetState()
 }
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
@@ -65,6 +95,7 @@ fun AppScaffold(
     onLanguageChange: (Language) -> Unit,
     lang: String
 ) {
+    var counter = 0
     val navController = rememberAnimatedNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -81,15 +112,75 @@ fun AppScaffold(
         mutableStateOf(ModalBottomSheetState.Hide)
     }
 
+
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetContent = {
-            when (val value = modalBottomSheetType) {
-                is ModalBottomSheetState.ChooseColor -> ChooseColorModalBottomSheet(value.colorRGBA)
-                is ModalBottomSheetState.ChooseDate -> ChooseDateModalBottomSheet(value.date)
-                is ModalBottomSheetState.ChooseEventDays -> ChooseEventDaysModalBottomSheet(value.eventDays)
-                is ModalBottomSheetState.ChooseIcon -> ChooseIconModalBottomSheet(value.iconId)
-                is ModalBottomSheetState.ChooseTime -> ChooseTimeModalBottomSheet(value.time)
+            when (val action = modalBottomSheetType) {
+                is ModalBottomSheetState.ChooseColor -> ChooseColorModalBottomSheet(
+                    initValue = action.initValue,
+                    callback = action.setColorRGBA,
+                    onCancel = { scope.launch { bottomSheetState.hide() }}
+                )
+                is ModalBottomSheetState.ChooseDate -> ChooseDateModalBottomSheet(
+                    action.initValue,
+                    action.setDate,
+                    onCancel = { scope.launch { bottomSheetState.hide() }}
+                )
+                is ModalBottomSheetState.ChooseEventDays -> ChooseEventDaysModalBottomSheet(
+                    action.initValue,
+                    action.setEventDays,
+                    onCancel = { scope.launch { bottomSheetState.hide() }}
+                )
+                is ModalBottomSheetState.ChooseIcon -> ChooseIconModalBottomSheet(
+                    action.initValue,
+                    action.setIconId,
+                    onCancel = { scope.launch { bottomSheetState.hide() }}
+                )
+                is ModalBottomSheetState.ChooseTime -> {
+                    ChooseTimeModalBottomSheet(
+                        action.initValue,
+                        action.minValue,
+                        action.maxValue,
+                        action.setTime,
+                        onCancel = { scope.launch { bottomSheetState.hide() }}
+                    )
+                }
+                is ModalBottomSheetState.ChooseTimeStart -> {
+                    ChooseTimeModalBottomSheet(
+                        action.initValue,
+                        action.minValue,
+                        action.maxValue,
+                        action.setTime,
+                        onCancel = { scope.launch { bottomSheetState.hide() }}
+                    )
+                }
+                is ModalBottomSheetState.ChooseTimeEnd -> {
+                    ChooseTimeModalBottomSheet(
+                        action.initValue,
+                        action.minValue,
+                        action.maxValue,
+                        action.setTime,
+                        onCancel = { scope.launch { bottomSheetState.hide()  }}
+                    )
+                }
+                is ModalBottomSheetState.ChooseDuration -> ChooseTimeModalBottomSheet(
+                    action.initValue,
+                    null,
+                    null,
+                    action.setDuration,
+                    onCancel = { scope.launch { bottomSheetState.hide()  }}
+                )
+                is ModalBottomSheetState.ChooseRepeatCount -> ChooseRepeatCountModalBottomSheet(
+                    action.initValue,
+                    action.setRepeatCount,
+                    onCancel = { scope.launch { bottomSheetState.hide() }}
+                )
+                is ModalBottomSheetState.ChooseTargetType -> ChooseTargetTypeModalBottomSheet(
+                    action.initValue,
+                    action.setTargetType,
+                    onCancel = { scope.launch { bottomSheetState.hide() }}
+                )
                 ModalBottomSheetState.Hide -> {}
             }
         },
@@ -299,34 +390,77 @@ fun AppScaffold(
                             it.arguments?.getString("params")?.fromJson<EditHabitsPageParams>()
                         args?.let { (habitId, templateId) ->
                             EditHabitPage(habitId, templateId,
-                                onOpenChooseIconModalBottomSheet = {
-                                    scope.launch {
-                                        modalBottomSheetType = ModalBottomSheetState.ChooseIcon(it)
-                                        bottomSheetState.show()
-                                    }
-                                },
-                                onOpenChooseIconColorModalBottomSheet = {
-                                    scope.launch {
-                                        modalBottomSheetType = ModalBottomSheetState.ChooseColor(it)
-                                        bottomSheetState.show()
-                                    }
-                                },
-                                onOpenChooseEventDayModalBottomSheet = {
+                                onOpenChooseIconModalBottomSheet = { initValue, callback ->
                                     scope.launch {
                                         modalBottomSheetType =
-                                            ModalBottomSheetState.ChooseEventDays(it)
+                                            ModalBottomSheetState.ChooseIcon(initValue, callback)
                                         bottomSheetState.show()
                                     }
                                 },
-                                onOpenChooseTimeModalBottomSheet = {
+                                onOpenChooseIconColorModalBottomSheet = { initValue, callback ->
                                     scope.launch {
-                                        modalBottomSheetType = ModalBottomSheetState.ChooseTime(it)
+                                        modalBottomSheetType =
+                                            ModalBottomSheetState.ChooseColor(initValue, callback)
                                         bottomSheetState.show()
                                     }
                                 },
-                                onOpenChooseFinishDateModalBottomSheet = {
+                                onOpenChooseEventDayModalBottomSheet = { initValue, callback ->
                                     scope.launch {
-                                        modalBottomSheetType = ModalBottomSheetState.ChooseDate(it)
+                                        modalBottomSheetType =
+                                            ModalBottomSheetState.ChooseEventDays(
+                                                initValue,
+                                                callback
+                                            )
+                                        bottomSheetState.show()
+                                    }
+                                },
+                                onOpenChooseTimeStartModalBottomSheet = { initValue, minValue, maxValue, callback ->
+                                    scope.launch {
+                                        modalBottomSheetType =
+                                            ModalBottomSheetState.ChooseTimeStart(initValue, minValue, maxValue, callback)
+                                        bottomSheetState.show()
+                                    }
+                                },
+                                onOpenChooseTimeEndModalBottomSheet = { initValue, minValue, maxValue, callback ->
+                                    scope.launch {
+                                        modalBottomSheetType =
+                                            ModalBottomSheetState.ChooseTimeEnd(initValue, minValue, maxValue, callback)
+                                        bottomSheetState.show()
+                                    }
+                                },
+                                onOpenChooseFinishDateModalBottomSheet = { initValue, callback ->
+                                    scope.launch {
+                                        modalBottomSheetType =
+                                            ModalBottomSheetState.ChooseDate(initValue, callback)
+                                        bottomSheetState.show()
+                                    }
+                                },
+                                onOpenChooseTargetType = { initValue, callback ->
+                                    scope.launch {
+                                        modalBottomSheetType =
+                                            ModalBottomSheetState.ChooseTargetType(
+                                                initValue,
+                                                callback
+                                            )
+                                        bottomSheetState.show()
+                                    }
+                                },
+                                onOpenChooseRepeatCount = { initValue, callback ->
+                                    scope.launch {
+                                        modalBottomSheetType =
+                                            ModalBottomSheetState.ChooseRepeatCount(
+                                                initValue,
+                                                callback
+                                            )
+                                        bottomSheetState.show()
+                                    }
+                                },
+                                onOpenChooseDuration = { initValue, callback ->
+                                    scope.launch {
+                                        modalBottomSheetType = ModalBottomSheetState.ChooseDuration(
+                                            initValue,
+                                            callback
+                                        )
                                         bottomSheetState.show()
                                     }
                                 },
@@ -363,7 +497,7 @@ fun AppScaffold(
                         }
                     }
                     composable(route = RouteName.SETTINGS) {
-                        SettingsPage(onThemeChange,onLanguageChange)
+                        SettingsPage(onThemeChange, onLanguageChange)
                     }
                     composable(route = RouteName.SPLASH) {
                         SplashPage {

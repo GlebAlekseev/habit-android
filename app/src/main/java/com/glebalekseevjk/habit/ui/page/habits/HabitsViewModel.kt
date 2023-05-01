@@ -12,6 +12,7 @@ import com.glebalekseevjk.habit.domain.interactor.EventNotificationUseCase
 import com.glebalekseevjk.habit.domain.interactor.HabitUseCase
 import com.glebalekseevjk.habit.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,19 +38,21 @@ class HabitsViewModel @Inject constructor(
             when (val habits = habitUseCase.getHabitList()) {
                 is Resource.Failure -> viewStates = HabitsViewState.Failure
                 is Resource.Success -> {
-                    viewStates = HabitsViewState.Loaded(
-                        habits.data.map {
-                            HabitUI(
-                                habit = it,
-                                eventNotificationList = when (val eventNotificationList =
-                                    eventNotificationUseCase.getEventNotificationListForHabit(it.id)) {
-                                    is Resource.Failure -> listOf()
-                                    is Resource.Success -> eventNotificationList.data
-                                }
-                            )
-                        },
-                        LazyListState()
-                    )
+                    habits.data.collect {
+                        viewStates = HabitsViewState.Loaded(
+                            it.map {
+                                HabitUI(
+                                    habit = it,
+                                    eventNotificationList = when (val eventNotificationList =
+                                        eventNotificationUseCase.getEventNotificationListForHabit(it.id)) {
+                                        is Resource.Failure -> listOf()
+                                        is Resource.Success -> eventNotificationList.data
+                                    }
+                                )
+                            },
+                            LazyListState()
+                        )
+                    }
                 }
             }
         }

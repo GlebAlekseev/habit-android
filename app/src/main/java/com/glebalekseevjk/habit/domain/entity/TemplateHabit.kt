@@ -46,8 +46,8 @@ data class TemplateHabit(
                 deadline = null,
                 habitType = DISPOSABLE,
                 targetType = Habit.Companion.TargetType.OFF,
-                repeatCount = null,
-                duration = null
+                repeatCount = 1,
+                duration = LocalTime.of(0, 30)
             ),
             TemplateHabit( // HARMFUL
                 id = -2,
@@ -71,8 +71,8 @@ data class TemplateHabit(
                 deadline = null,
                 habitType = HARMFUL,
                 targetType = Habit.Companion.TargetType.OFF,
-                repeatCount = null,
-                duration = null
+                repeatCount = 1,
+                duration = LocalTime.of(0, 30)
             ),
             TemplateHabit( // REGULAR
                 id = -1,
@@ -96,7 +96,7 @@ data class TemplateHabit(
                 deadline = null,
                 habitType = REGULAR,
                 targetType = Habit.Companion.TargetType.DURATION,
-                repeatCount = null,
+                repeatCount = 1,
                 duration = LocalTime.of(0, 30)
             ),
 

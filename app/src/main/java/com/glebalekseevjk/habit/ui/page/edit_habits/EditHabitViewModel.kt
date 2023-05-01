@@ -2,6 +2,7 @@ package com.glebalekseevjk.habit.ui.page.edit_habits
 
 
 import android.app.Application
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -60,7 +61,7 @@ class EditHabitViewModel @Inject constructor(
                 viewModelScope.launch {
                     viewStates = when (val habit = habitUseCase.getHabit(habitId)) {
                         is Resource.Failure -> EditHabitViewState.Failure
-                        is Resource.Success -> EditHabitViewState.Loaded(habit.data)
+                        is Resource.Success -> EditHabitViewState.Loaded(habit.data, LazyListState())
                     }
                 }
             }
@@ -71,21 +72,22 @@ class EditHabitViewModel @Inject constructor(
                     viewStates = templateHabit?.let {
                         EditHabitViewState.Loaded(
                             Habit(
-                                Habit.UNDEFINED_ID,
-                                getString(it.titleStringId),
-                                getString(it.descriptionStringId),
-                                it.iconId,
-                                it.colorRGBA,
-                                it.repeatType,
-                                it.daysOfRepeat,
-                                it.startExecutionInterval,
-                                it.endExecutionInterval,
-                                it.deadline ?: LocalDate.now().plusMonths(1),
-                                it.habitType,
-                                it.targetType,
-                                it.repeatCount,
-                                it.duration,
-                            )
+                                id = Habit.UNDEFINED_ID,
+                                title = getString(it.titleStringId),
+                                description = getString(it.descriptionStringId),
+                                iconId = it.iconId,
+                                colorRGBA = it.colorRGBA,
+                                repeatType = it.repeatType,
+                                daysOfRepeat = it.daysOfRepeat,
+                                startExecutionInterval = it.startExecutionInterval,
+                                endExecutionInterval = it.endExecutionInterval,
+                                deadline = it.deadline ?: LocalDate.now().plusMonths(1),
+                                habitType = it.habitType,
+                                targetType = it.targetType,
+                                repeatCount = it.repeatCount,
+                                duration = it.duration,
+                            ),
+                            LazyListState()
                         )
                     } ?: EditHabitViewState.Failure
                 }
@@ -190,7 +192,7 @@ sealed class EditHabitViewState {
     object Init : EditHabitViewState()
     object Loading : EditHabitViewState()
     object Failure : EditHabitViewState()
-    data class Loaded(val habit: Habit) : EditHabitViewState()
+    data class Loaded(val habit: Habit, val lazyListState: LazyListState) : EditHabitViewState()
 }
 
 sealed class EditHabitViewAction {
@@ -201,7 +203,6 @@ sealed class EditHabitViewAction {
     data class SetDaysOfRepeat(val daysOfRepeat: Set<Habit.Companion.Day>) : EditHabitViewAction()
     data class SetStartExecutionInterval(val startExecutionInterval: LocalTime) :
         EditHabitViewAction()
-
     data class SetEndExecutionInterval(val endExecutionInterval: LocalTime) : EditHabitViewAction()
     data class SetDeadline(val deadline: LocalDate) : EditHabitViewAction()
     data class SetTargetType(val targetType: Habit.Companion.TargetType) : EditHabitViewAction()

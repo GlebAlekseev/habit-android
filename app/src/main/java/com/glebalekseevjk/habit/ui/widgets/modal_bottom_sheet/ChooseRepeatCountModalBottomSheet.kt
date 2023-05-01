@@ -1,36 +1,39 @@
 package com.glebalekseevjk.habit.ui.widgets.modal_bottom_sheet
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.commandiron.wheel_picker_compose.WheelTimePicker
-import com.commandiron.wheel_picker_compose.core.SelectorProperties
 import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
-import com.glebalekseevjk.habit.ui.theme.*
-import java.time.LocalTime
+import com.commandiron.wheel_picker_compose.core.WheelTextPicker
+import com.glebalekseevjk.habit.ui.theme.AppTheme
+import com.glebalekseevjk.habit.ui.theme.LargePadding
+import com.glebalekseevjk.habit.ui.theme.MiddlePadding
+import com.glebalekseevjk.habit.ui.theme.typography
+
 
 @Composable
-fun ChooseTimeModalBottomSheet(
-    initValue: LocalTime?,
-    minValue: LocalTime?,
-    maxValue: LocalTime?,
-    callback: (LocalTime) -> Unit,
+fun ChooseRepeatCountModalBottomSheet(
+    initValue: Int?,
+    callback: (Int) -> Unit,
     onCancel: () -> Unit
 ) {
-    var currentTime by rememberSaveable {
-        mutableStateOf(initValue ?: LocalTime.of(LocalTime.now().hour, 0))
+    var currentRepeatCountIndex by rememberSaveable {
+        mutableStateOf((initValue ?: 1) - 1)
     }
+
+    val listRepeatCounters = (1..1000).toList().map { it.toString() }
+
 
     Column(
         modifier = Modifier
@@ -38,30 +41,33 @@ fun ChooseTimeModalBottomSheet(
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = "Выбор времени",
+            text = "Кол-во повторов",
             color = AppTheme.colors.colorOnPrimary,
             style = typography.titleMedium,
         )
 
-
-        WheelTimePicker(
+        WheelTextPicker(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(MiddlePadding),
-            startTime = initValue ?: LocalTime.of(LocalTime.now().hour, 0),
-            minTime = minValue ?: LocalTime.MIN,
-            maxTime = maxValue ?: LocalTime.MAX,
-            size = DpSize(256.dp,128.dp),
+            size = DpSize(256.dp, 128.dp),
             rowCount = 3,
-            textStyle = typography.labelMedium,
-            textColor = AppTheme.colors.colorOnPrimary,
+            startIndex = currentRepeatCountIndex,
+            style = typography.labelMedium,
+            color = AppTheme.colors.colorOnPrimary,
             selectorProperties = WheelPickerDefaults.selectorProperties(
                 color = AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f),
                 border = null
             ),
-        ) { snappedTime ->
-            currentTime = snappedTime
+            texts = listRepeatCounters
+        ) {
+            if (it in listRepeatCounters.indices) {
+                currentRepeatCountIndex = it
+            }
+            null
         }
+
+
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Button(
@@ -85,7 +91,7 @@ fun ChooseTimeModalBottomSheet(
             }
             Button(
                 onClick = {
-                    callback(currentTime)
+                    callback(currentRepeatCountIndex + 1)
                     onCancel()
                 },
                 shape = RoundedCornerShape(16.dp),

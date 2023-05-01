@@ -218,7 +218,7 @@ fun HabitsPage(
                                                 MutableInteractionSource()
                                             }
                                         ) {
-                                            onNavigateToEditHabits(1111)
+                                            onNavigateToEditHabits(it.habit.id)
                                         }
                                         .padding(horizontal = 12.dp),
                                     tint = AppTheme.colors.colorOnPrimary

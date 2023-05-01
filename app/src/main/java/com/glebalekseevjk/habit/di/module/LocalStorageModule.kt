@@ -18,6 +18,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 
 @InstallIn(SingletonComponent::class)
@@ -31,6 +32,7 @@ interface LocalStorageModule {
 
 
     companion object {
+        @Singleton
         @Provides
         fun provideAppDataBase(@ApplicationContext context: Context): AppDatabase {
             return Room.databaseBuilder(
@@ -40,9 +42,11 @@ interface LocalStorageModule {
             ).build()
         }
 
+        @Singleton
         @Provides
         fun provideHabitDao(appDatabase: AppDatabase): HabitDao = appDatabase.habitDao()
 
+        @Singleton
         @Provides
         fun provideEventNotificationDao(appDatabase: AppDatabase): EventNotificationDao = appDatabase.eventNotificationDao()
     }

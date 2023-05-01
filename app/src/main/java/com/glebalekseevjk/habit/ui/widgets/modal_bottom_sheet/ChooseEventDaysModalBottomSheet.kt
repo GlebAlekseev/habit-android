@@ -1,30 +1,50 @@
 package com.glebalekseevjk.habit.ui.widgets.modal_bottom_sheet
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.glebalekseevjk.habit.domain.entity.Habit
+import com.glebalekseevjk.habit.domain.entity.Habit.Companion.Day
 import com.glebalekseevjk.habit.ui.theme.*
 
-
-val days = listOf(
-    "ПН","ВТ","СР","ЧТ","ПТ","СБ", "ВС"
-)
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChooseEventDaysModalBottomSheet(callback: (Set<Habit.Companion.Day>)->Unit) {
-    val radioOptions = listOf("Определенные дни недели", "X д. в неделю", "X д. в месяц", "X д. в год")
-
-    var selectedItem by remember {
-        mutableStateOf(radioOptions[0])
+fun ChooseEventDaysModalBottomSheet(
+    initValue: Set<Day>,
+    callback: (Set<Day>) -> Unit,
+    onCancel: () -> Unit
+) {
+    var monday by rememberSaveable {
+        mutableStateOf(initValue.contains(Day.MONDAY))
     }
+    var tuesday by rememberSaveable {
+        mutableStateOf(initValue.contains(Day.TUESDAY))
+    }
+    var wednesday by rememberSaveable {
+        mutableStateOf(initValue.contains(Day.WEDNESDAY))
+    }
+    var thursday by rememberSaveable {
+        mutableStateOf(initValue.contains(Day.THURSDAY))
+    }
+    var friday by rememberSaveable {
+        mutableStateOf(initValue.contains(Day.FRIDAY))
+    }
+    var saturday by rememberSaveable {
+        mutableStateOf(initValue.contains(Day.SATURDAY))
+    }
+    var sunday by rememberSaveable {
+        mutableStateOf(initValue.contains(Day.SUNDAY))
+    }
+
+
+
 
     Column(
         modifier = Modifier
@@ -33,60 +53,147 @@ fun ChooseEventDaysModalBottomSheet(callback: (Set<Habit.Companion.Day>)->Unit) 
     ) {
 
         Text(
-            text = "Выберите время",
+            text = "Выбор дней повторения",
             color = AppTheme.colors.colorOnPrimary,
             style = typography.titleMedium,
         )
 
 
-
-        Column(modifier = Modifier.fillMaxWidth()) {
-            for (label in radioOptions){
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = SmallPadding)
-                        .selectable(
-                            selected = (selectedItem == label),
-                            onClick = { selectedItem = label },
-                            role = Role.RadioButton
-                        )
-                        .background(AppTheme.colors.colorOnPrimary)
-                        .padding(SmallPadding),
-                        horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = label, color = AppTheme.colors.colorPrimary, style = typography.titleSmall)
-                        RadioButton(selected = selectedItem == label, onClick = { selectedItem = label },
-                        colors = RadioButtonDefaults.colors(
-                            selectedColor = AppTheme.colors.colorPrimary,
-                            unselectedColor = AppTheme.colors.colorPrimary
-                        ))
-                    }
-                    if (label == radioOptions[0]){
-                        Text("Каждый день", color = AppTheme.colors.colorPrimary, style = typography.titleSmall)
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            for (day in days){
-                                Box(modifier = Modifier
-                                    .padding(ExtraSmallPadding)
-                                    .background(AppTheme.colors.colorOnPrimary, shape = RoundedCornerShape(4.dp))
-                                    .padding(ExtraSmallPadding), contentAlignment = Alignment.Center) {
-                                    Text(text = day, color = AppTheme.colors.colorPrimary, style = typography.titleMedium)
-                                }
-                            }
-                        }
-                    }
-                }
-
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = SmallPadding),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Card(
+                onClick = {
+                    monday = !monday
+                },
+                shape = RoundedCornerShape(ExtraSmallPadding),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (monday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
+                    contentColor = if (monday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
+                ),
+                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
+            ) {
+                Text(
+                    "ПН",
+                    style = typography.titleMedium,
+                    modifier = Modifier.padding(SmallPadding)
+                )
+            }
+            Card(
+                onClick = {
+                    tuesday = !tuesday
+                },
+                shape = RoundedCornerShape(ExtraSmallPadding),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (tuesday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
+                    contentColor = if (tuesday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
+                ),
+                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
+            ) {
+                Text(
+                    "ВТ",
+                    style = typography.titleMedium,
+                    modifier = Modifier.padding(SmallPadding)
+                )
+            }
+            Card(
+                onClick = {
+                    wednesday = !wednesday
+                },
+                shape = RoundedCornerShape(ExtraSmallPadding),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (wednesday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
+                    contentColor = if (wednesday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
+                ),
+                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
+            ) {
+                Text(
+                    "СР",
+                    style = typography.titleMedium,
+                    modifier = Modifier.padding(SmallPadding)
+                )
+            }
+            Card(
+                onClick = {
+                    thursday = !thursday
+                },
+                shape = RoundedCornerShape(ExtraSmallPadding),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (thursday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
+                    contentColor = if (thursday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
+                ),
+                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
+            ) {
+                Text(
+                    "ЧТ",
+                    style = typography.titleMedium,
+                    modifier = Modifier.padding(SmallPadding)
+                )
+            }
+            Card(
+                onClick = {
+                    friday = !friday
+                },
+                shape = RoundedCornerShape(ExtraSmallPadding),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (friday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
+                    contentColor = if (friday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
+                ),
+                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
+            ) {
+                Text(
+                    "ПТ",
+                    style = typography.titleMedium,
+                    modifier = Modifier.padding(SmallPadding)
+                )
+            }
+            Card(
+                onClick = {
+                    saturday = !saturday
+                },
+                shape = RoundedCornerShape(ExtraSmallPadding),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (saturday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
+                    contentColor = if (saturday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
+                ),
+                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
+            ) {
+                Text(
+                    "СБ",
+                    style = typography.titleMedium,
+                    modifier = Modifier.padding(SmallPadding)
+                )
+            }
+            Card(
+                onClick = {
+                    sunday = !sunday
+                },
+                shape = RoundedCornerShape(ExtraSmallPadding),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (sunday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
+                    contentColor = if (sunday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
+                ),
+                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
+            ) {
+                Text(
+                    "ВС",
+                    style = typography.titleMedium,
+                    modifier = Modifier.padding(SmallPadding)
+                )
             }
         }
 
 
 
 
-        
-
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Button(
-                onClick = { },
+                onClick = {
+                    onCancel()
+                },
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier,
                 contentPadding = PaddingValues(
@@ -105,7 +212,18 @@ fun ChooseEventDaysModalBottomSheet(callback: (Set<Habit.Companion.Day>)->Unit) 
                 )
             }
             Button(
-                onClick = {},
+                onClick = {
+                    val set = mutableSetOf<Day>()
+                    if (monday) set.add(Day.MONDAY)
+                    if (tuesday) set.add(Day.TUESDAY)
+                    if (wednesday) set.add(Day.WEDNESDAY)
+                    if (thursday) set.add(Day.THURSDAY)
+                    if (friday) set.add(Day.FRIDAY)
+                    if (saturday) set.add(Day.SATURDAY)
+                    if (sunday) set.add(Day.SUNDAY)
+                    callback(set)
+                    onCancel()
+                },
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier,
                 contentPadding = PaddingValues(

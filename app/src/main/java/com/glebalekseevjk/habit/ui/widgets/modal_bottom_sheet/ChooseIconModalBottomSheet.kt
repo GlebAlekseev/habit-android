@@ -1,22 +1,20 @@
 package com.glebalekseevjk.habit.ui.widgets.modal_bottom_sheet
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -24,56 +22,78 @@ import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.theme.*
 
 val iconList = listOf(
-    R.drawable.ic_edit,
-    R.drawable.ic_back,
-    R.drawable.ic_glass,
-    R.drawable.ic_sleep,
-    R.drawable.ic_lang,
-    R.drawable.ic_history,
-    R.drawable.ic_habits,
+    R.drawable.ic_regular,
+    R.drawable.ic_harmful,
     R.drawable.ic_disposable,
-    R.drawable.ic_night,
-).windowed(3, 3)
+    R.drawable.ic_categories_budget,
+    R.drawable.ic_categories_eat,
+    R.drawable.ic_categories_important,
+    R.drawable.ic_categories_leisure,
+    R.drawable.ic_categories_morning,
+    R.drawable.ic_categories_pets,
+    R.drawable.ic_categories_productivity,
+    R.drawable.ic_categories_sleep,
+    R.drawable.ic_categories_sports,
+    R.drawable.ic_categories_trend,
+    R.drawable.ic_categories_trend_1,
+    R.drawable.ic_categories_trend_2,
+    R.drawable.ic_categories_trend_3,
+    R.drawable.ic_categories_trend_4,
+    R.drawable.ic_categories_trend_5,
+    R.drawable.ic_categories_trend_6,
+)
 
 @Composable
-fun ChooseIconModalBottomSheet(callback: (Int)->Unit) {
+fun ChooseIconModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCancel: () -> Unit) {
+    var currentIcon by rememberSaveable {
+        mutableStateOf(initValue)
+    }
+
+    val lazyGridState = rememberLazyGridState()
+
     Column(
         modifier = Modifier
             .padding(MiddlePadding),
-        verticalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "Выбор иконки",
+            text = "Выбор значка",
             color = AppTheme.colors.colorOnPrimary,
             style = typography.titleMedium,
         )
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height((256 + 32 + 16).dp)
-                .padding(vertical = MiddlePadding)
+        LazyVerticalGrid(
+            state = lazyGridState,
+            columns = GridCells.Fixed(4),
+            contentPadding = PaddingValues(SmallPadding),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            items(iconList) { iconRow ->
-
-                Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                    iconRow.forEach {
+            items(iconList) {
+                Box(Modifier.padding(ExtraSmallPadding), contentAlignment = Alignment.Center) {
+                    IconButton(onClick = {
+                        currentIcon = it
+                    }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = it),
                             contentDescription = "Редактировать",
                             modifier = Modifier
-                                .weight(1f)
-                                .padding(SmallPadding)
-                                .size(64.dp),
-                            tint = AppTheme.colors.colorOnPrimary
+                                .background(
+                                    if (it == currentIcon) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
+                                    shape = RoundedCornerShape(ExtraSmallPadding)
+                                )
+                                .padding(ExtraSmallPadding)
+                                .size(LargeIconSize)
+                            ,
+                            tint = if (it == currentIcon) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary
                         )
                     }
                 }
-
             }
         }
+
+
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Button(
-                onClick = { },
+                onClick = { onCancel() },
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier,
                 contentPadding = PaddingValues(
@@ -92,7 +112,10 @@ fun ChooseIconModalBottomSheet(callback: (Int)->Unit) {
                 )
             }
             Button(
-                onClick = {},
+                onClick = {
+                    callback(currentIcon)
+                    onCancel()
+                },
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier,
                 contentPadding = PaddingValues(
