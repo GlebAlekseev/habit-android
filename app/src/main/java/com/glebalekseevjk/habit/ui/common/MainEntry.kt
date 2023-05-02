@@ -18,7 +18,7 @@ fun MainEntry(
 ) {
     var theme by rememberSaveable {
         mutableStateOf(
-            when (settingsViewModel.viewStates.isDarkTheme.also { println(">>>>>>>>>>>>>>>>>>>>> isDarkTheme=$it") }) {
+            when (settingsViewModel.viewStates.isDarkTheme) {
                 true -> AppTheme.Theme.Dark
                 false -> AppTheme.Theme.Light
             }

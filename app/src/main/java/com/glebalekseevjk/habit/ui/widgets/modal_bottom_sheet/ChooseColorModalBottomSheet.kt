@@ -22,15 +22,20 @@ import androidx.compose.ui.unit.dp
 import com.glebalekseevjk.habit.ui.theme.*
 
 val colorList = listOf(
-    Color.Blue,
-    Color.Cyan,
-    Color.Red,
-    Color.Green,
-    Color.Magenta,
-    Color.Yellow,
-    Color.LightGray,
-    Color.Gray,
-    Color.Black,
+    Color(0xFFffc107),
+    Color(0xFFcdb30c),
+    Color(0xFFB5EFB2),
+    Color(0xFF14b1ab),
+    Color(0xFF5e6f64),
+    Color(0xFF535204),
+    Color(0xFF8675a9),
+    Color(0xFFd9adad),
+    Color(0xFFcf7500),
+    Color(0xFFff9292),
+    Color(0xFFe84a5f),
+    Color(0xFFd789d7),
+    Color(0xFF8557c7),
+    Color(0xFF88BBEF),
 )
 
 

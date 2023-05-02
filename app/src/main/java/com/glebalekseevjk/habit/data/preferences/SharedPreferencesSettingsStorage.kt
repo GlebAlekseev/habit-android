@@ -14,13 +14,10 @@ open class SharedPreferencesSettingsStorage @Inject constructor(@ApplicationCont
     }
 
     fun getIsDarkTheme(): Boolean {
-        return settingsPref.getBoolean(PREF_KEY_IS_DARK_THEME, false).also {
-            println("+++++++++++++ prefrences getIsDarkTheme=${it}")
-        }
+        return settingsPref.getBoolean(PREF_KEY_IS_DARK_THEME, false)
     }
 
     fun setIsDarkTheme(value: Boolean) {
-        println("++++++++++++++ prefrences setIsDarkTheme=${value}")
         settingsPref.edit().putBoolean(PREF_KEY_IS_DARK_THEME, value).apply()
     }
 

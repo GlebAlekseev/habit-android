@@ -21,11 +21,11 @@ class HabitRepositoryImpl @Inject constructor(
     private val habitDao: HabitDao,
     private val mapper: Mapper<Habit, HabitDbModel>
 ) : HabitRepository {
-    override suspend fun addOrUpdateHabit(habit: Habit): Resource<Unit> =
+    override suspend fun addOrUpdateHabit(habit: Habit): Resource<Long> =
         withContext(Dispatchers.IO) {
             val item = mapper.mapItemToDbModel(habit)
-            habitDao.insert(item)
-            Resource.Success(Unit)
+            val id = habitDao.insert(item)
+            Resource.Success(id)
         }
 
     override suspend fun removeHabit(habitId: Int): Resource<Unit> =

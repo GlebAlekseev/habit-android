@@ -12,7 +12,7 @@ import com.glebalekseevjk.habit.domain.interactor.EventNotificationUseCase
 import com.glebalekseevjk.habit.domain.interactor.HabitUseCase
 import com.glebalekseevjk.habit.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,32 +29,51 @@ class HabitsViewModel @Inject constructor(
     fun dispatch(action: HabitsViewAction) {
         when (action) {
             is HabitsViewAction.InitHabits -> initHabits()
+            is HabitsViewAction.ToggleIsDoneEventNotification -> toggleIsDoneEventNotification(
+                action.id
+            )
         }
     }
 
     private fun initHabits() {
         viewStates = HabitsViewState.Loading
+
         viewModelScope.launch {
             when (val habits = habitUseCase.getHabitList()) {
                 is Resource.Failure -> viewStates = HabitsViewState.Failure
                 is Resource.Success -> {
-                    habits.data.collect {
-                        viewStates = HabitsViewState.Loaded(
-                            it.map {
-                                HabitUI(
-                                    habit = it,
-                                    eventNotificationList = when (val eventNotificationList =
-                                        eventNotificationUseCase.getEventNotificationListForHabit(it.id)) {
-                                        is Resource.Failure -> listOf()
-                                        is Resource.Success -> eventNotificationList.data
-                                    }
-                                )
-                            },
-                            LazyListState()
-                        )
+                    val eventNotifications = eventNotificationUseCase.getEventNotificationList()
+                    when (eventNotifications) {
+                        is Resource.Failure -> {}
+                        is Resource.Success -> {
+                            eventNotifications.data
+                                .combine(habits.data) { a, b -> Pair(a, b) }
+                                .collect {
+                                    val habitList = it.second
+                                    val eventNotificationList = it.first
+                                    viewStates
+                                    viewStates = HabitsViewState.Loaded(
+                                        habitList.map { habit ->
+                                            HabitUI(
+                                                habit = habit,
+                                                eventNotificationList = eventNotificationList.filter { it.habitId == habit.id }
+                                            )
+                                        },
+                                        if (viewStates is HabitsViewState.Loaded) (viewStates as HabitsViewState.Loaded).lazyListState else LazyListState()
+
+                                    )
+                                }
+                        }
                     }
+
                 }
             }
+        }
+    }
+
+    private fun toggleIsDoneEventNotification(id: Int) {
+        viewModelScope.launch {
+            eventNotificationUseCase.toggleIsDoneEventNotification(id)
         }
     }
 }
@@ -76,4 +95,5 @@ sealed class HabitsViewState {
 
 sealed class HabitsViewAction {
     object InitHabits : HabitsViewAction()
+    data class ToggleIsDoneEventNotification(val id: Int) : HabitsViewAction()
 }

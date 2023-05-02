@@ -9,7 +9,7 @@ import javax.inject.Inject
 class HabitUseCase @Inject constructor(
     private val habitRepository: HabitRepository
 ) {
-    suspend fun addOrUpdateHabit(habit: Habit): Resource<Unit> =
+    suspend fun addOrUpdateHabit(habit: Habit): Resource<Long> =
         habitRepository.addOrUpdateHabit(habit)
 
     suspend fun removeHabit(habitId: Int): Resource<Unit> =

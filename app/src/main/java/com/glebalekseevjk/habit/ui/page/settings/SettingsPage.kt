@@ -3,7 +3,6 @@ package com.glebalekseevjk.habit.ui.page.settings
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.DropdownMenu
@@ -20,14 +19,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.domain.entity.Language
@@ -90,7 +87,7 @@ fun SettingsPage(
 
             Box() {
                 Text(
-                    text = when(viewStates.language){
+                    text = when (viewStates.language) {
                         Language.RUSSIAN -> "Русский"
                         Language.ENGLISH -> "English"
                     },
@@ -190,12 +187,8 @@ fun Switch2(
     uncheckedTrackColor: Color = Color(0xFFe0e0e0),
     gapBetweenThumbAndTrackEdge: Dp = 4.dp
 ) {
-    println("checked = $checked")
-
-
     val thumbRadius = (height / 2) - gapBetweenThumbAndTrackEdge
 
-    // To move thumb, we need to calculate the position (along x axis)
     val animatePosition = animateFloatAsState(
         targetValue = if (checked)
             with(LocalDensity.current) { (width - thumbRadius - gapBetweenThumbAndTrackEdge).toPx() }
@@ -207,23 +200,12 @@ fun Switch2(
         modifier = modifier
             .size(width = width, height = height)
             .scale(scale = scale)
-//            .pointerInput(Unit) {
-//                detectTapGestures(
-//                    onTap = {
-//                        // This is called when the user taps on the canvas
-//                        println("!!!!!!!!")
-//                        onCheckedChange()
-//                    }
-//                )
-//            }
     ) {
-        // Track
         drawRoundRect(
             color = if (checked) checkedTrackColor else uncheckedTrackColor,
             cornerRadius = CornerRadius(x = 10.dp.toPx(), y = 10.dp.toPx()),
             style = Stroke(width = strokeWidth.toPx())
         )
-        // Thumb
         drawCircle(
             color = if (checked) checkedTrackColor else uncheckedTrackColor,
             radius = thumbRadius.toPx(),

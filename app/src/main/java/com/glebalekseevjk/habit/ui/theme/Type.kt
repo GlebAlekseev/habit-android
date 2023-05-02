@@ -78,7 +78,7 @@ val typography = Typography(
     ),
     labelSmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.roboto_regular)),
-        fontSize = 14.sp,
+        fontSize = 12.sp,
     ),
 
 

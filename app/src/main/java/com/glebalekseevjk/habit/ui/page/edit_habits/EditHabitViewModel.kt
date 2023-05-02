@@ -10,9 +10,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.glebalekseevjk.habit.domain.entity.Habit
 import com.glebalekseevjk.habit.domain.entity.TemplateHabit
+import com.glebalekseevjk.habit.domain.interactor.EventNotificationUseCase
 import com.glebalekseevjk.habit.domain.interactor.HabitUseCase
 import com.glebalekseevjk.habit.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -21,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class EditHabitViewModel @Inject constructor(
     private val app: Application,
-    private val habitUseCase: HabitUseCase
+    private val habitUseCase: HabitUseCase,
+    private val eventNotificationUseCase: EventNotificationUseCase
 ) : AndroidViewModel(app) {
     var viewStates by mutableStateOf<EditHabitViewState>(
         EditHabitViewState.Init
@@ -48,8 +52,21 @@ class EditHabitViewModel @Inject constructor(
     private fun saveHabit() {
         (viewStates as? EditHabitViewState.Loaded)
             ?.let {
-                viewModelScope.launch {
-                    habitUseCase.addOrUpdateHabit(it.habit)
+                CoroutineScope(Dispatchers.IO).launch {
+                    when (val addResult = habitUseCase.addOrUpdateHabit(it.habit)) {
+                        is Resource.Failure -> {}
+                        is Resource.Success -> {
+                            eventNotificationUseCase.loadEventNotificationsForHabit(
+                                habit = it.habit.copy(id = addResult.data.toInt()),
+                                onInitNotifications = {
+                                    // пройтись по списку, и запланировать каждое событие
+                                },
+                                onCancelNotifications = {
+                                    // пройтись по списку, и отменить каждое событие
+                                }
+                            )
+                        }
+                    }
                 }
             }
     }
@@ -61,7 +78,10 @@ class EditHabitViewModel @Inject constructor(
                 viewModelScope.launch {
                     viewStates = when (val habit = habitUseCase.getHabit(habitId)) {
                         is Resource.Failure -> EditHabitViewState.Failure
-                        is Resource.Success -> EditHabitViewState.Loaded(habit.data, LazyListState())
+                        is Resource.Success -> EditHabitViewState.Loaded(
+                            habit.data,
+                            LazyListState()
+                        )
                     }
                 }
             }
@@ -203,6 +223,7 @@ sealed class EditHabitViewAction {
     data class SetDaysOfRepeat(val daysOfRepeat: Set<Habit.Companion.Day>) : EditHabitViewAction()
     data class SetStartExecutionInterval(val startExecutionInterval: LocalTime) :
         EditHabitViewAction()
+
     data class SetEndExecutionInterval(val endExecutionInterval: LocalTime) : EditHabitViewAction()
     data class SetDeadline(val deadline: LocalDate) : EditHabitViewAction()
     data class SetTargetType(val targetType: Habit.Companion.TargetType) : EditHabitViewAction()

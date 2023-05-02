@@ -18,6 +18,12 @@ val gray200_40 = Color(0x66FFFBFB)
 
 val raspberry500_40 = Color(0x66C5002F)
 
+val green500 = Color(0xFF00CF2E)
+val blue500 = Color(0xFF364F6B)
+val red500 = Color(0xFFe84a5f)
+
+val yellow500 = Color(0xFFffc47e)
+
 
 
 

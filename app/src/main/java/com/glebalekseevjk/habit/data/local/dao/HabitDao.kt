@@ -13,7 +13,7 @@ interface HabitDao {
     suspend fun get(habitId: Int): HabitDbModel?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(habitDbModel: HabitDbModel)
+    suspend fun insert(habitDbModel: HabitDbModel): Long
 
     @Query("DELETE FROM HabitDbModel WHERE id = :habitId")
     suspend fun delete(habitId: Int)

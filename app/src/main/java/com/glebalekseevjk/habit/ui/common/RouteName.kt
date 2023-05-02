@@ -37,13 +37,9 @@ internal fun NavHostController.navigateTo(
         is Long -> String.format("/%s", args)
         else -> ""
     }
-    println("$$$$$$$$$$$$$ 1route=$route currentDestination=${currentDestination?.route} \n\t\tthis.currentBackStack.value=${this.currentBackStack.value.map { it.destination.route }}")
-    println(">>>>>>>>>>>>>> 1.5 route ${this.currentBackStack.value.map { it.savedStateHandle }}")
     this.navigate("$route$argument") {
         navConfig(this)
     }
-    println("$$$$$$$$$$$$$ 2route=$route currentDestination=${currentDestination?.route} \n\t\tthis.currentBackStack.value=${this.currentBackStack.value.map { it.destination.route }}")
-
     sideEffect()
 }
 

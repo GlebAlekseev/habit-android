@@ -52,7 +52,6 @@ fun EditHabitPage(
     val viewStates = viewModel.viewStates
 
     LaunchedEffect(Unit) {
-        println("================= viewmodel=${viewModel} viewModel.viewStates=${viewModel.viewStates}")
         viewModel.dispatch(EditHabitViewAction.InitParams(habitId, templateId))
     }
 
