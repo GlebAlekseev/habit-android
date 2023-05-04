@@ -1,12 +1,14 @@
 package com.glebalekseevjk.habit.ui.page.habits
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,16 +21,21 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.glebalekseevjk.habit.R
+import com.glebalekseevjk.habit.domain.entity.Habit
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.HabitType.*
-import com.glebalekseevjk.habit.ui.page.edit_habits.EditHabitViewAction
 import com.glebalekseevjk.habit.ui.theme.*
 import com.glebalekseevjk.habit.ui.utils.pxToDp
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.math.max
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun HabitsPage(
     onNavigateToAddHabits: () -> Unit,
@@ -87,7 +94,8 @@ fun HabitsPage(
                     ) {
                         Column(
                             modifier = Modifier
-                                .padding(MiddlePadding)
+                                .padding(horizontal = MiddlePadding)
+                                .padding(top = MiddlePadding)
                                 .fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -121,46 +129,117 @@ fun HabitsPage(
                                         }
                                     ) {
                                         Text(
-                                            text = habitUI.habit.title,
+                                            text = habitUI.habit.title + when (habitUI.habit.targetType) {
+                                                Habit.Companion.TargetType.OFF -> ""
+                                                Habit.Companion.TargetType.REPEAT -> " — ${habitUI.habit.repeatCount} раз"
+                                                Habit.Companion.TargetType.DURATION -> " — ${
+                                                    habitUI.habit.duration!!.format(
+                                                        DateTimeFormatter.ofPattern("h ч. m мин.")
+                                                    )
+                                                }"
+                                            },
                                             maxLines = 2,
                                             overflow = TextOverflow.Ellipsis,
                                             modifier = Modifier.padding(bottom = ExtraSmallPadding),
                                             style = typography.titleMedium
                                         )
-                                        Card(
-                                            shape = RoundedCornerShape(ExtraSmallPadding),
-                                            colors = when (habitUI.habit.habitType) {
-                                                REGULAR -> CardDefaults.cardColors(
-                                                    contentColor = green500,
-                                                    containerColor = green500.copy(alpha = 0.2f)
-                                                )
-                                                HARMFUL -> CardDefaults.cardColors(
-                                                    contentColor = red500,
-                                                    containerColor = red500.copy(alpha = 0.2f)
-                                                )
-                                                DISPOSABLE -> CardDefaults.cardColors(
-                                                    contentColor = blue500,
-                                                    containerColor = blue500.copy(alpha = 0.2f)
-                                                )
-                                            },
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
                                         ) {
-                                            Text(
-                                                text = when (habitUI.habit.habitType) {
-                                                    REGULAR -> "Регулярная"
-                                                    HARMFUL -> "Вредная"
-                                                    DISPOSABLE -> "Одноразовая"
+                                            Card(
+                                                shape = RoundedCornerShape(ExtraSmallPadding / 2),
+                                                colors = when (habitUI.habit.habitType) {
+                                                    REGULAR -> CardDefaults.cardColors(
+                                                        contentColor = green500,
+                                                        containerColor = green500.copy(alpha = 0.1f)
+                                                    )
+                                                    HARMFUL -> CardDefaults.cardColors(
+                                                        contentColor = red500,
+                                                        containerColor = red500.copy(alpha = 0.1f)
+                                                    )
+                                                    DISPOSABLE -> CardDefaults.cardColors(
+                                                        contentColor = blue500,
+                                                        containerColor = blue500.copy(alpha = 0.1f)
+                                                    )
                                                 },
-                                                style = typography.labelSmall,
-                                                modifier = Modifier.padding(
-                                                    horizontal = ExtraSmallPadding,
-                                                    vertical = ExtraSmallPadding / 2
+                                                modifier = Modifier.padding(end = SmallPadding)
+                                            ) {
+                                                Text(
+                                                    text = when (habitUI.habit.habitType) {
+                                                        REGULAR -> "Регулярная"
+                                                        HARMFUL -> "Вредная"
+                                                        DISPOSABLE -> "Одноразовая"
+                                                    },
+                                                    style = typography.labelSmall,
+                                                    modifier = Modifier.padding(
+                                                        horizontal = ExtraSmallPadding,
+                                                        vertical = ExtraSmallPadding / 2
+                                                    )
                                                 )
-                                            )
+                                            }
+
+
+
+                                            Card(
+                                                shape = RoundedCornerShape(ExtraSmallPadding / 2),
+                                                colors = when (habitUI.habit.habitType) {
+                                                    REGULAR -> CardDefaults.cardColors(
+                                                        contentColor = green500,
+                                                        containerColor = green500.copy(alpha = 0.1f)
+                                                    )
+                                                    HARMFUL -> CardDefaults.cardColors(
+                                                        contentColor = red500,
+                                                        containerColor = red500.copy(alpha = 0.1f)
+                                                    )
+                                                    DISPOSABLE -> CardDefaults.cardColors(
+                                                        contentColor = blue500,
+                                                        containerColor = blue500.copy(alpha = 0.1f)
+                                                    )
+                                                },
+                                                modifier = Modifier.padding(end = SmallPadding)
+                                            ) {
+                                                Text(
+                                                    text = "${habitUI.habit.startExecutionInterval.toString()} - ${habitUI.habit.endExecutionInterval.toString()}",
+                                                    style = typography.labelSmall,
+                                                    modifier = Modifier.padding(
+                                                        horizontal = ExtraSmallPadding,
+                                                        vertical = ExtraSmallPadding / 2
+                                                    )
+                                                )
+                                            }
+
+                                            Card(
+                                                shape = RoundedCornerShape(ExtraSmallPadding / 2),
+                                                colors = when (habitUI.habit.habitType) {
+                                                    REGULAR -> CardDefaults.cardColors(
+                                                        contentColor = green500,
+                                                        containerColor = green500.copy(alpha = 0.1f)
+                                                    )
+                                                    HARMFUL -> CardDefaults.cardColors(
+                                                        contentColor = red500,
+                                                        containerColor = red500.copy(alpha = 0.1f)
+                                                    )
+                                                    DISPOSABLE -> CardDefaults.cardColors(
+                                                        contentColor = blue500,
+                                                        containerColor = blue500.copy(alpha = 0.1f)
+                                                    )
+                                                },
+                                            ) {
+                                                Text(
+                                                    text = habitUI.habit.deadline!!.format(
+                                                        DateTimeFormatter.ofPattern("d MMMM")
+                                                    ),
+                                                    style = typography.labelSmall,
+                                                    modifier = Modifier.padding(
+                                                        horizontal = ExtraSmallPadding,
+                                                        vertical = ExtraSmallPadding / 2
+                                                    )
+                                                )
+                                            }
 
                                         }
 
                                     }
-
                                 }
 
                                 Card(
@@ -168,7 +247,7 @@ fun HabitsPage(
                                     border = BorderStroke(2.dp, Color(habitUI.habit.colorRGBA)),
                                     colors = CardDefaults.cardColors(
                                         contentColor = Color(habitUI.habit.colorRGBA),
-                                        containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.2f)
+                                        containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.1f)
                                     ),
                                     modifier = Modifier
                                         .onSizeChanged {
@@ -190,12 +269,6 @@ fun HabitsPage(
                                 }
                             }
 
-
-                            // по центру текщий день, бордер (да нет..)
-                            // по бокам соседние дни,
-
-                            // вывести последние 7 дней,
-                            // дедлайн, таргетные дни, текущий день, выполненные дни, будущие..
                             Row(
                                 modifier = Modifier
                                     .padding(ExtraSmallPadding)
@@ -246,7 +319,6 @@ fun HabitsPage(
                                             modifier = Modifier
                                                 .size(LargePadding)
                                                 .padding(bottom = ExtraSmallPadding),
-                                            border = if (isCurrentDate && isDeadline) BorderStroke(2.dp, Color.Black) else null
                                         ) {
                                             Box(
                                                 modifier = Modifier.fillMaxSize(),
@@ -271,31 +343,38 @@ fun HabitsPage(
 
                                         Card(
                                             onClick = {
-                                                viewModel.dispatch(HabitsViewAction.ToggleIsDoneEventNotification(eventNotification!!.id))
+                                                viewModel.dispatch(
+                                                    HabitsViewAction.ToggleIsDoneEventNotification(
+                                                        eventNotification!!.id
+                                                    )
+                                                )
                                             },
                                             enabled = isTarget && isBad || isTarget && isCurrentDate,
                                             shape = RoundedCornerShape(SmallPadding),
                                             colors = CardDefaults.cardColors(
-                                                containerColor = when{
-                                                    isDone -> green500.copy(alpha = 0.2f)
-                                                    isTarget && isBad -> red500.copy(alpha = 0.2f)
-                                                    else ->AppTheme.colors.colorPrimary
+                                                containerColor = when {
+                                                    isDone -> green500.copy(alpha = 0.1f)
+                                                    isTarget && isBad -> red500.copy(alpha = 0.1f)
+                                                    else -> AppTheme.colors.colorPrimary
                                                 },
                                                 contentColor = when {
                                                     isDeadline -> if (isBad) red500 else Color.Black
                                                     else -> AppTheme.colors.colorOnPrimary
                                                 },
-                                                disabledContainerColor = when{
-                                                    isDone -> green500.copy(alpha = 0.2f)
-                                                    isTarget && isBad -> red500.copy(alpha = 0.2f)
-                                                    else ->AppTheme.colors.colorPrimary
+                                                disabledContainerColor = when {
+                                                    isDone -> green500.copy(alpha = 0.1f)
+                                                    isTarget && isBad -> red500.copy(alpha = 0.1f)
+                                                    else -> AppTheme.colors.colorPrimary
                                                 },
                                                 disabledContentColor = when {
                                                     isDeadline -> if (isBad) red500 else Color.Black
                                                     else -> AppTheme.colors.colorOnPrimary
                                                 },
                                             ),
-                                            border = if (isTarget) BorderStroke(1.dp, AppTheme.colors.colorOnPrimary) else null,
+                                            border = if (isTarget) BorderStroke(
+                                                1.dp,
+                                                AppTheme.colors.colorOnPrimary
+                                            ) else null,
                                             modifier = Modifier
                                                 .size(LargePadding + SmallPadding)
                                         ) {
@@ -311,180 +390,64 @@ fun HabitsPage(
                                             }
                                         }
                                     }
+                                }
+                            }
+
+                            Divider(
+                                thickness = 2.dp,
+                                color = AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f),
+                                modifier = Modifier.padding(top = ExtraSmallPadding/2)
+                            )
+
+                            // Прогресс (% 1/10), Редактирование
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+
+                                Row(
+                                    modifier = Modifier
+                                        .weight(1f),
+                                    verticalAlignment = Alignment.CenterVertically
+
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_progress_check),
+                                        contentDescription = "Прогресс",
+                                        tint = green500,
+                                        modifier = Modifier
+                                            .size(SmallIconSize)
+                                    )
+                                    val countIsDone = habitUI.eventNotificationList.filter { it.isDone }.size
+                                    val all =  habitUI.eventNotificationList.size
+                                    val percent = (if (countIsDone == 0) 0 else countIsDone / all.toDouble() * 100).toInt()
+                                    Text(text = "$percent%", color = green500, style = typography.labelMedium, modifier = Modifier.padding(start = SmallPadding))
+                                    Text(text = "$countIsDone/$all", color = green500, style = typography.labelSmall, modifier = Modifier.padding(start = SmallPadding))
 
                                 }
 
+                                androidx.compose.material.IconButton(onClick = { onNavigateToEditHabits(habitUI.habit.id) }) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_edit),
+                                        contentDescription = "Редактирование",
+                                        tint = AppTheme.colors.colorOnPrimary,
+                                        modifier = Modifier
+                                            .size(SmallIconSize)
+                                    )
+                                }
+
+                                
+
 
                             }
-
 
                         }
 
                     }
 
 
-//                    Column(
-//                        Modifier
-//                            .padding(SmallPadding)
-//                            .background(
-//                                AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
-//                                shape = RoundedCornerShape(SmallPadding)
-//                            )
-//                            .padding(ExtraSmallPadding)
-//                            .fillMaxWidth()
-//                    ) {
-
-
-//                        Row(
-//                            Modifier
-//                                .padding(ExtraSmallPadding)
-//                                .fillMaxWidth(),
-//                            horizontalArrangement = Arrangement.SpaceBetween
-//                        ) {
-//                            Row(Modifier.height(elementHeight.pxToDp())) {
-//                                Box(
-//                                    modifier = Modifier
-//                                        .padding(end = MiddlePadding)
-//                                        .background(green500)
-//                                        .width(ExtraSmallPadding/2)
-//                                        .fillMaxHeight()
-//                                )
-//                                Column(
-//                                    verticalArrangement = Arrangement.SpaceBetween,
-//                                    modifier = Modifier.fillMaxHeight()
-//                                ) {
-//                                    Text(
-//                                        text = it.habit.title,
-//                                        style = typography.headlineMedium,
-//                                        color = AppTheme.colors.colorOnPrimary
-//                                    )
-//                                    when (it.habit.repeatType) {
-//                                        SPECIFIC_DAYS -> {
-//                                            Box(
-//                                                contentAlignment = Alignment.Center,
-//                                                modifier = Modifier
-//                                                    .background(
-//                                                        Color.Green.copy(alpha = 0.1f),
-//                                                        shape = RoundedCornerShape(ExtraSmallPadding),
-//                                                    )
-//                                                    .padding(ExtraSmallPadding)
-//                                            ) {
-//                                                Text(
-//                                                    text = "Каждый день",
-//                                                    color = green500,
-//                                                    style = typography.labelSmall
-//                                                )
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            }
-//
-//                            Box(
-//                                Modifier
-//                                    .background(
-//                                        Color(it.habit.colorRGBA).copy(alpha = 0.25f),
-//                                        shape = RoundedCornerShape(SmallPadding)
-//                                    )
-//                                    .onSizeChanged {
-//                                        if (elementHeight != it.height) {
-//                                            elementHeight = it.height
-//                                        }
-//                                    }
-//                                    .padding(MiddlePadding),
-//                                contentAlignment = Alignment.Center
-//                            ) {
-//                                Icon(
-//                                    imageVector = ImageVector.vectorResource(id = it.habit.iconId),
-//                                    contentDescription = it.habit.title,
-//                                    tint = Color(it.habit.colorRGBA),
-//                                    modifier = Modifier.size(SmallIconSize)
-//                                )
-//                            }
-//                        }
-
-
-//                        Row(
-//                            horizontalArrangement = Arrangement.Center,
-//                            modifier = Modifier.fillMaxWidth()
-//                        ) {
-//                            TODO("Парсить и выводить")
-////                            it.dayList.forEach {
-////                                Column(
-////                                    verticalArrangement = Arrangement.Center,
-////                                    horizontalAlignment = Alignment.CenterHorizontally,
-////                                    modifier = Modifier.padding(horizontal = 3.dp)
-////                                ) {
-////                                    Text(
-////                                        text = it.day,
-////                                        color = AppTheme.colors.colorOnPrimary,
-////                                        modifier = Modifier.padding(bottom = SmallPadding)
-////                                    )
-////                                    Box(
-////                                        modifier = Modifier
-////                                            .background(
-////                                                AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f),
-////                                                shape = RoundedCornerShape(100.dp)
-////                                            )
-////                                            .padding(SmallPadding),
-////                                        contentAlignment = Alignment.Center
-////                                    ) {
-////                                        Text(
-////                                            text = "${it.dayInt}",
-////                                            color = AppTheme.colors.colorOnPrimary
-////                                        )
-////                                    }
-////                                }
-////                            }
-//                        }
-
-//                        Divider(
-//                            modifier = Modifier.padding(vertical = SmallPadding),
-//                            thickness = 2.dp,
-//                            color = AppTheme.colors.divider
-//                        )
-//                        Row(
-//                            horizontalArrangement = Arrangement.SpaceBetween,
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(horizontal = SmallPadding)
-//                        ) {
-//                            Row() {
-//                                Icon(
-//                                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_progress_check),
-//                                    contentDescription = null,
-//                                    tint = Color.Green
-//                                )
-//                                Text(
-////                                    text = "${it.stage}%",
-//                                    text = "11%",
-//                                    color = Color.Green,
-//                                    modifier = Modifier.padding(start = 12.dp)
-//                                )
-//                            }
-//                            Row() {
-//                                Icon(
-//                                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_edit),
-//                                    contentDescription = "Редактировать",
-//                                    modifier = Modifier
-//                                        .clickable(
-//                                            indication = rememberRipple(
-//                                                bounded = true,
-//                                                color = AppTheme.colors.colorOnPrimary
-//                                            ),
-//                                            interactionSource = remember {
-//                                                MutableInteractionSource()
-//                                            }
-//                                        ) {
-//                                            onNavigateToEditHabits(it.habit.id)
-//                                        }
-//                                        .padding(horizontal = 12.dp),
-//                                    tint = AppTheme.colors.colorOnPrimary
-//                                )
-//                            }
-//                        }
-
-//                    }
                 }
 
                 item() {
