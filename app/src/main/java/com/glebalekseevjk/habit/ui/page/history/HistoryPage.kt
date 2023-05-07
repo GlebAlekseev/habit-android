@@ -1,28 +1,29 @@
 package com.glebalekseevjk.habit.ui.page.history
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.himanshoe.kalendar.common.KalendarStyle
 import com.himanshoe.kalendar.ui.Kalendar
+import com.glebalekseevjk.habit.R
+import com.glebalekseevjk.habit.domain.entity.Habit
 import com.glebalekseevjk.habit.ui.external.kalendar.common.data.KalendarEventCounter
-import com.glebalekseevjk.habit.ui.page.habits.HabitsViewModel
 import com.glebalekseevjk.habit.ui.theme.*
 import java.time.LocalDate
-
+import java.time.format.DateTimeFormatter
 
 data class Stats(
     val title: String,
@@ -36,98 +37,283 @@ data class Stats(
 fun HistoryPage(
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
-    val stats = listOf(
-        Stats(
-            "Текущая\nсерия",
-            "1",
-            "Лучшая серия успехов: ",
-            "111",
-            containerColor = Color(0xFF7e8a97),
-        ),
-        Stats(
-            "Привычка\nзавершена",
-            "2",
-            "Эта неделя: ",
-            "1",
-            containerColor = Color(0xFFf77a4e),
-        ),
-        Stats(
-            "Доля за\nвершенных",
-            "331%",
-            "Привычка: ",
-            "2/6",
-            containerColor = Color(0xFF4e5778),
-            ),
-        Stats(
-            "Идеальные\nдни",
-            "111",
-            "Эта неделя: ",
-            "1",
-            containerColor = Color(0xFF54a79c),
-            ),
-    )
+    val viewStates = viewModel.viewStates
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(MiddlePadding)
-        ) {
-            item {
-                LazyRow {
-                    items(stats){
-                        Card(
-                            modifier = Modifier
-                                .padding(ExtraSmallPadding)
-                                .height(192.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = it.containerColor,
-                                contentColor = AppTheme.colors.colorPrimary
-                            ),
-                            shape = RoundedCornerShape(ExtraSmallPadding)
-                        ) {
-                            Column(modifier = Modifier.padding(SmallPadding)) {
-                                Text(text = it.title.toUpperCase(), style = typography.titleLarge.copy(fontSize = 21.sp))
-                                Text(text = it.value, style = typography.titleLarge.copy(fontSize = 72.sp))
-                                Text(text = it.subtitle + " " + it.subValue, style = typography.labelSmall.copy(fontSize = 11.sp))
+    var currentDate by rememberSaveable {
+        mutableStateOf(LocalDate.now().toEpochDay())
+    }
+
+    LaunchedEffect(Unit) {
+        if (viewStates is HistoryViewState.Init) {
+            viewModel.dispatch(HistoryViewAction.InitHistory)
+        }
+    }
+
+    when (viewStates) {
+        HistoryViewState.Failure -> {
+            TODO("Ошибка")
+        }
+        is HistoryViewState.Loading, is HistoryViewState.Init -> {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.15f),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                CircularProgressIndicator(
+                    color = AppTheme.colors.colorOnPrimary,
+                    strokeWidth = 2.dp
+                )
+            }
+        }
+        is HistoryViewState.Loaded -> {
+            val stats = listOf(
+                Stats(
+                    "Текущая\nсерия",
+                    viewStates.currentSeries.toString(),
+                    "Лучшая серия успехов: ",
+                    viewStates.bestSeries.toString(),
+                    containerColor = Color(0xFF7e8a97),
+                ),
+                Stats(
+                    "Привычка\nзавершена",
+                    viewStates.numberCompletedHabits.toString(),
+                    "Эта неделя: ",
+                    viewStates.numberCompletedHabitsForLastWeek.toString(),
+                    containerColor = Color(0xFFf77a4e),
+                ),
+                Stats(
+                    "Доля за\nвершенных",
+                    "${viewStates.percentageOfCompleted}%",
+                    "Привычка: ",
+                    "${viewStates.numberCompletedHabits} / ${viewStates.numberHabits}",
+                    containerColor = Color(0xFF4e5778),
+                ),
+                Stats(
+                    "Идеальные\nдни",
+                    viewStates.numberPerfectDays.toString(),
+                    "Эта неделя: ",
+                    viewStates.numberPerfectDaysForLastWeek.toString(),
+                    containerColor = Color(0xFF54a79c),
+                ),
+            )
+
+
+            LazyColumn(
+                state = viewStates.lazyColumnListState,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(MiddlePadding)
+            ) {
+                item {
+                    LazyRow(
+                        state = viewStates.lazyRowListState
+                    ) {
+                        items(stats) {
+                            Card(
+                                modifier = Modifier
+                                    .padding(ExtraSmallPadding)
+                                    .height(192.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = it.containerColor,
+                                    contentColor = AppTheme.colors.colorPrimary
+                                ),
+                                shape = RoundedCornerShape(ExtraSmallPadding)
+                            ) {
+                                Column(modifier = Modifier.padding(SmallPadding)) {
+                                    Text(
+                                        text = it.title.toUpperCase(),
+                                        style = typography.titleLarge.copy(fontSize = 21.sp)
+                                    )
+                                    Text(
+                                        text = it.value,
+                                        style = typography.titleLarge.copy(fontSize = 72.sp)
+                                    )
+                                    Text(
+                                        text = it.subtitle + " " + it.subValue,
+                                        style = typography.labelSmall.copy(fontSize = 11.sp)
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
-
-            item {
-                Kalendar(
-                    onCurrentDayClick = { date, _ ->
-                        println(date)
-                    },
-                    kalendarEventCounterList = listOf(
-                        KalendarEventCounter(LocalDate.now(), 4),
-                        KalendarEventCounter(LocalDate.now().plusDays(1), 4),
-                        KalendarEventCounter(LocalDate.now().plusDays(2), 1),
-                        KalendarEventCounter(LocalDate.now().plusDays(3), 51),
-                        KalendarEventCounter(LocalDate.now().plusDays(4), 411),
-                    ),
-                    modifier = Modifier
-                        .padding(top = SmallPadding)
-                        .padding(horizontal = ExtraSmallPadding)
-                )
-            }
-
-            item {
-                Card() {
-                    
+                val allEvents =
+                    viewStates.habitList.flatMap { it.eventNotificationList }.filter { it.isDone }
+                val events = allEvents.groupBy { it.date.toLocalDate() }
+                item {
+                    Kalendar(
+                        selectedDay = LocalDate.ofEpochDay(currentDate),
+                        onCurrentDayClick = { date, _ ->
+                            currentDate = date.toEpochDay()
+                        },
+                        kalendarEventCounterList = events.map {
+                            KalendarEventCounter(
+                                it.key,
+                                it.value.size
+                            )
+                        },
+                        modifier = Modifier
+                            .padding(vertical = SmallPadding)
+                            .padding(horizontal = ExtraSmallPadding)
+                    )
                 }
 
+                val listEventNothingsForDate =
+                    events[LocalDate.ofEpochDay(currentDate)] ?: emptyList()
+                val grouped = listEventNothingsForDate.groupBy { it.habitId }
+                val habitList =
+                    grouped.map { map -> viewStates.habitList.find { it.habit.id == map.key }!! to map.value }
+
+                items(habitList) { (habitUI, events) ->
+                    val isDoneList =
+                        habitUI.eventNotificationList.filter { it.isDone }
+                    val countIsDoneBeforeToday = isDoneList.filter { it.date.isBefore(LocalDate.ofEpochDay(currentDate).atStartOfDay()) }.size
+                    val all = habitUI.eventNotificationList.size
+                    val percentOld =
+                        (if (countIsDoneBeforeToday == 0) 0 else countIsDoneBeforeToday / all.toDouble() * 100).toInt()
+
+                    var percentStep = if (all != 0) 100 / all else 0
+
+                    if (isDoneList.size == all) percentStep = 100 - percentOld
+
+                    val percentNow =
+                        (if (countIsDoneBeforeToday == 0) 0 else countIsDoneBeforeToday / all.toDouble() * 100).toInt() + percentStep
+
+                    Card(
+                        modifier = Modifier.padding(MiddlePadding),
+                        colors = CardDefaults.cardColors(
+                            containerColor = transparent
+                        ),
+
+                    ) {
+
+                        Row(
+                            modifier = Modifier,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Card(
+                                shape = RoundedCornerShape(SmallPadding),
+                                colors = CardDefaults.cardColors(
+                                    contentColor = Color(habitUI.habit.colorRGBA),
+                                    containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.2f)
+                                ),
+                                modifier = Modifier
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = habitUI.habit.iconId),
+                                    contentDescription = habitUI.habit.title,
+                                    tint = Color(habitUI.habit.colorRGBA),
+                                    modifier = Modifier
+                                        .padding(MiddlePadding)
+                                        .size(
+                                            SmallIconSize
+                                        )
+                                )
+                            }
+
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(horizontal = MiddlePadding),
+                                verticalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = habitUI.habit.title + when (habitUI.habit.targetType) {
+                                        Habit.Companion.TargetType.OFF -> ""
+                                        Habit.Companion.TargetType.REPEAT -> " — ${habitUI.habit.repeatCount} раз"
+                                        Habit.Companion.TargetType.DURATION -> " — ${
+                                            habitUI.habit.duration!!.format(
+                                                DateTimeFormatter.ofPattern("h ч m мин")
+                                            )
+                                        }"
+                                    },
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.padding(bottom = ExtraSmallPadding),
+                                    style = typography.titleMedium,
+                                    color = AppTheme.colors.colorOnPrimary
+                                )
+                                Row(
+                                    modifier = Modifier,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Row(
+                                        modifier = Modifier,
+                                        verticalAlignment = Alignment.CenterVertically
+
+                                    ) {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_progress_check),
+                                            contentDescription = "Прогресс",
+                                            tint = green500,
+                                            modifier = Modifier
+                                                .size(ExtraSmallIconSize)
+                                        )
+                                        Text(
+                                            text = "${percentOld}% → ${percentNow}%",
+                                            color = green500,
+                                            style = typography.labelSmall,
+                                            modifier = Modifier.padding(
+                                                start = ExtraSmallPadding / 2,
+                                                end = SmallPadding
+                                            )
+                                        )
+
+                                    }
+                                    Card(
+                                        shape = RoundedCornerShape(ExtraSmallPadding / 2),
+                                        colors = when (habitUI.habit.habitType) {
+                                            Habit.Companion.HabitType.REGULAR -> CardDefaults.cardColors(
+                                                contentColor = green500,
+                                                containerColor = green500.copy(alpha = 0.1f)
+                                            )
+                                            Habit.Companion.HabitType.HARMFUL -> CardDefaults.cardColors(
+                                                contentColor = red500,
+                                                containerColor = red500.copy(alpha = 0.1f)
+                                            )
+                                            Habit.Companion.HabitType.DISPOSABLE -> CardDefaults.cardColors(
+                                                contentColor = blue500,
+                                                containerColor = blue500.copy(alpha = 0.1f)
+                                            )
+                                        },
+                                        modifier = Modifier.padding(end = SmallPadding)
+                                    ) {
+                                        Text(
+                                            text = when (habitUI.habit.habitType) {
+                                                Habit.Companion.HabitType.REGULAR -> "Регулярная"
+                                                Habit.Companion.HabitType.HARMFUL -> "Вредная"
+                                                Habit.Companion.HabitType.DISPOSABLE -> "Одноразовая"
+                                            },
+                                            style = typography.labelSmall,
+                                            modifier = Modifier.padding(
+                                                horizontal = ExtraSmallPadding,
+                                                vertical = ExtraSmallPadding / 2
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+
+
+
+                            Column(
+                                modifier = Modifier,
+                                horizontalAlignment = Alignment.End,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(text = "+$percentStep%", color = green500, style = typography.titleLarge)
+                            }
+
+
+                        }
+                    }
+
+                }
             }
+
+
         }
-
-
-
-
-
-
-
-
-
-
+    }
 }

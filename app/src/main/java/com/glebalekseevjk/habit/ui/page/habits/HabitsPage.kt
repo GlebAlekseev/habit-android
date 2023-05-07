@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.IconButton
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -134,7 +134,7 @@ fun HabitsPage(
                                                 Habit.Companion.TargetType.REPEAT -> " — ${habitUI.habit.repeatCount} раз"
                                                 Habit.Companion.TargetType.DURATION -> " — ${
                                                     habitUI.habit.duration!!.format(
-                                                        DateTimeFormatter.ofPattern("h ч. m мин.")
+                                                        DateTimeFormatter.ofPattern("h ч m мин")
                                                     )
                                                 }"
                                             },
@@ -244,10 +244,10 @@ fun HabitsPage(
 
                                 Card(
                                     shape = RoundedCornerShape(SmallPadding),
-                                    border = BorderStroke(2.dp, Color(habitUI.habit.colorRGBA)),
+//                                    border = BorderStroke(2.dp, Color(habitUI.habit.colorRGBA)),
                                     colors = CardDefaults.cardColors(
                                         contentColor = Color(habitUI.habit.colorRGBA),
-                                        containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.1f)
+                                        containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.2f)
                                     ),
                                     modifier = Modifier
                                         .onSizeChanged {
@@ -396,7 +396,7 @@ fun HabitsPage(
                             Divider(
                                 thickness = 2.dp,
                                 color = AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f),
-                                modifier = Modifier.padding(top = ExtraSmallPadding/2)
+                                modifier = Modifier.padding(top = ExtraSmallPadding / 2)
                             )
 
                             // Прогресс (% 1/10), Редактирование
@@ -420,15 +420,27 @@ fun HabitsPage(
                                         modifier = Modifier
                                             .size(SmallIconSize)
                                     )
-                                    val countIsDone = habitUI.eventNotificationList.filter { it.isDone }.size
-                                    val all =  habitUI.eventNotificationList.size
-                                    val percent = (if (countIsDone == 0) 0 else countIsDone / all.toDouble() * 100).toInt()
-                                    Text(text = "$percent%", color = green500, style = typography.labelMedium, modifier = Modifier.padding(start = SmallPadding))
-                                    Text(text = "$countIsDone/$all", color = green500, style = typography.labelSmall, modifier = Modifier.padding(start = SmallPadding))
+                                    val countIsDone =
+                                        habitUI.eventNotificationList.filter { it.isDone }.size
+                                    val all = habitUI.eventNotificationList.size
+                                    val percent =
+                                        (if (countIsDone == 0) 0 else countIsDone / all.toDouble() * 100).toInt()
+                                    Text(
+                                        text = "$percent%",
+                                        color = green500,
+                                        style = typography.labelMedium,
+                                        modifier = Modifier.padding(start = SmallPadding)
+                                    )
+                                    Text(
+                                        text = "$countIsDone/$all",
+                                        color = green500,
+                                        style = typography.labelSmall,
+                                        modifier = Modifier.padding(start = SmallPadding)
+                                    )
 
                                 }
 
-                                androidx.compose.material.IconButton(onClick = { onNavigateToEditHabits(habitUI.habit.id) }) {
+                                IconButton(onClick = { onNavigateToEditHabits(habitUI.habit.id) }) {
                                     Icon(
                                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_edit),
                                         contentDescription = "Редактирование",
@@ -437,8 +449,6 @@ fun HabitsPage(
                                             .size(SmallIconSize)
                                     )
                                 }
-
-                                
 
 
                             }
