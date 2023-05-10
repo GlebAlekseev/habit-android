@@ -38,7 +38,6 @@ fun StepTopBar(title: String, lang: String? = null, onBack: () -> Unit) {
                     onClick = onBack,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(end = MiddlePadding, top = ExtraSmallPadding)
                 ) {
                     Icon(
                         ImageVector.vectorResource(id = R.drawable.ic_back),

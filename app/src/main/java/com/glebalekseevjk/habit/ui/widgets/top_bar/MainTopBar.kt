@@ -1,5 +1,6 @@
 package com.glebalekseevjk.habit.ui.widgets.top_bar
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -11,11 +12,14 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.common.RouteName
 import com.glebalekseevjk.habit.ui.theme.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun MainTopBar(
@@ -43,7 +47,7 @@ fun MainTopBar(
                     onClick = onOpenDrawer,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(end = MiddlePadding, top = ExtraSmallPadding)
+                        .padding(end = MiddlePadding)
                 ) {
                     Icon(
                         Icons.Filled.Menu,
@@ -62,7 +66,7 @@ fun MainTopBar(
                 )
                 if (route == RouteName.TODAY) {
                     Text(
-                        text = "18 апр.",
+                        text = LocalDate.now().format(DateTimeFormatter.ofPattern("d MMMM")),
                         style = typography.labelMedium,
                         color = AppTheme.colors.subtitle,
                         modifier = Modifier

@@ -9,15 +9,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -26,7 +25,9 @@ import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.HabitType
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.HabitType.*
 import com.glebalekseevjk.habit.ui.theme.*
+import com.glebalekseevjk.habit.ui.utils.pxToDp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddHabitPage(
     onNavigateToTemplatesHabits: (Int) -> Unit,
@@ -40,17 +41,17 @@ fun AddHabitPage(
         REGULAR to Triple(
             stringResource(id = R.string.regular),
             ImageVector.vectorResource(id = R.drawable.ic_regular),
-            "Часть ваших повседневных привычек. Регулярно помечайте их как выполненные."
+            "Часть ваших повседневных привычек.\nРегулярно помечайте их как выполненные.\nНапример: йога три раза в неделю."
         ),
         HARMFUL to Triple(
             stringResource(id = R.string.harmful),
             ImageVector.vectorResource(id = R.drawable.ic_harmful),
-            "Вредная .."
+            "Каждый день по умолчанию выполнено.\nНо если вы сорвались, снимите отметку о выполнении.\nПример: бросить курить и пить."
         ),
         DISPOSABLE to Triple(
             stringResource(id = R.string.disposable),
             ImageVector.vectorResource(id = R.drawable.ic_disposable),
-            "Одноразовая .."
+            "Напомнит вам о важном разовом событии в выбранную дату.\nПример: сходить к врачу в пятницу."
         )
     )
 
@@ -61,93 +62,105 @@ fun AddHabitPage(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
-            Row(
+            Column(
                 Modifier
                     .padding(top = LargePadding)
                     .padding(horizontal = LargePadding)
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                habitsTypeMap.forEach {
-                    val (title, icon, _) = it.value
-                    val (contentColor, backgroundColor) = if (viewStates.habitType == it.key)
-                        Pair(
-                            AppTheme.colors.colorPrimary,
-                            AppTheme.colors.colorOnPrimary
-                        )
-                    else Pair(
-                        AppTheme.colors.colorOnPrimary,
-                        AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f)
-                    )
+                var widthRow by rememberSaveable {
+                    mutableStateOf(0)
+                }
 
-                    Column(
-                        Modifier
-                            .clickable(
-                                indication = rememberRipple(
-                                    bounded = true,
-                                    radius = 128.dp,
-                                    color = AppTheme.colors.colorOnPrimary
-                                ),
-                                interactionSource = remember {
-                                    MutableInteractionSource()
-                                }
-                            ) {
-                                viewModel.dispatch(AddHabitViewAction.SetHabitType(it.key))
-                            }
-                            .background(
-                                backgroundColor,
-                                shape = smallRoundedCornerShape
+                Row(
+                    modifier = Modifier
+                        .onSizeChanged {
+                            widthRow = it.width
+                        }
+                ) {
+                    habitsTypeMap.forEach {
+                        val (title, icon, _) = it.value
+                        val (contentColor, backgroundColor) = if (viewStates.habitType == it.key)
+                            Pair(
+                                AppTheme.colors.colorPrimary,
+                                AppTheme.colors.colorOnPrimary
                             )
-                            .padding(MiddlePadding),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = title,
-                            modifier = Modifier
-                                .padding(vertical = MiddlePadding)
-                                .size(LargeIconSize),
-                            tint = contentColor
+                        else Pair(
+                            AppTheme.colors.colorOnPrimary,
+                            AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f)
                         )
-                        Text(
-                            text = title.toUpperCase(),
-                            color = contentColor,
-                            style = typography.titleSmall
-                        )
+
+                        Card(
+                            onClick = {
+                                viewModel.dispatch(AddHabitViewAction.SetHabitType(it.key))
+                            },
+                            modifier = if (it.key == HARMFUL) Modifier.padding(horizontal = ExtraSmallPadding) else Modifier,
+                            colors = CardDefaults.cardColors(
+                                contentColor = contentColor,
+                                containerColor = backgroundColor
+                            )
+                        ) {
+                            Column(
+                                Modifier
+                                    .background(
+                                        backgroundColor,
+                                        shape = smallRoundedCornerShape
+                                    )
+                                    .padding(SmallPadding),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = title,
+                                    modifier = Modifier
+                                        .padding(vertical = MiddlePadding)
+                                        .size(LargeIconSize),
+                                    tint = contentColor
+                                )
+                                Text(
+                                    text = title.toUpperCase(),
+                                    color = contentColor,
+                                    style = typography.titleSmall
+                                )
+                            }
+                        }
                     }
                 }
-            }
-        }
 
 
-        item {
-            val (title, _, text) = habitsTypeMap[viewStates.habitType]!!
 
-            Column(
-                Modifier
-                    .padding(top = SmallPadding)
-                    .padding(horizontal = LargePadding)
-                    .background(
-                        AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
-                        shape = smallRoundedCornerShape
+                val (title, _, text) = habitsTypeMap[viewStates.habitType]!!
+
+                Column(
+                    Modifier
+                        .padding(top = SmallPadding)
+//                        .padding(horizontal = LargePadding)
+                        .background(
+                            AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
+                            shape = smallRoundedCornerShape
+                        )
+                        .width(widthRow.pxToDp())
+                        .padding(MiddlePadding)
+                ) {
+                    Text(
+                        text = title.toUpperCase(),
+                        color = AppTheme.colors.colorOnPrimary,
+                        style = typography.titleSmall
                     )
-                    .padding(MiddlePadding)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = title.toUpperCase(),
-                    color = AppTheme.colors.colorOnPrimary,
-                    style = typography.titleSmall
-                )
-                Text(
-                    text = text,
-                    color = AppTheme.colors.colorOnPrimary,
-                    style = typography.bodySmall,
-                    modifier = Modifier.padding(top = SmallPadding)
-                )
+                    Text(
+                        text = text,
+                        color = AppTheme.colors.colorOnPrimary,
+                        style = typography.bodySmall,
+                        modifier = Modifier.padding(top = SmallPadding)
+                    )
+                }
             }
+
         }
+
+
 
         item {
             Button(
@@ -168,7 +181,7 @@ fun AddHabitPage(
                 )
             ) {
                 Text(
-                    text = "Создать привычку".toUpperCase(),
+                    text = "Создайте привычку".toUpperCase(),
                     style = typography.titleSmall,
                     color = AppTheme.colors.colorPrimary
                 )
@@ -241,7 +254,7 @@ fun AddHabitPage(
         }
 
         item {
-            Row(modifier = Modifier.padding(vertical = SmallPadding)){}
+            Row(modifier = Modifier.padding(vertical = SmallPadding)) {}
         }
     }
 }

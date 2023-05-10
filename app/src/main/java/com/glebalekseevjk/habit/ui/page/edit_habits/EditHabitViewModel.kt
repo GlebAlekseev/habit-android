@@ -46,6 +46,7 @@ class EditHabitViewModel @Inject constructor(
             is EditHabitViewAction.SetTargetType -> setTargetType(action.targetType)
             is EditHabitViewAction.SetTitle -> setTitle(action.title)
             EditHabitViewAction.SaveHabit -> saveHabit()
+            EditHabitViewAction.RemoveHabit -> removeHabit()
         }
     }
 
@@ -61,6 +62,24 @@ class EditHabitViewModel @Inject constructor(
                                 onInitNotifications = {
                                     // пройтись по списку, и запланировать каждое событие
                                 },
+                                onCancelNotifications = {
+                                    // пройтись по списку, и отменить каждое событие
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun removeHabit(){
+        (viewStates as? EditHabitViewState.Loaded)
+            ?.let {
+                CoroutineScope(Dispatchers.IO).launch {
+                    when (habitUseCase.removeHabit(it.habit.id)) {
+                        is Resource.Failure -> {}
+                        is Resource.Success -> {
+                            eventNotificationUseCase.removeEventNotificationsForHabit(it.habit.id,
                                 onCancelNotifications = {
                                     // пройтись по списку, и отменить каждое событие
                                 }
@@ -230,6 +249,7 @@ sealed class EditHabitViewAction {
     data class SetRepeatCount(val repeatCount: Int) : EditHabitViewAction()
     data class SetDuration(val duration: LocalTime) : EditHabitViewAction()
     object SaveHabit : EditHabitViewAction()
+    object RemoveHabit : EditHabitViewAction()
 }
 
 private fun AndroidViewModel.getString(stringId: Int): String =

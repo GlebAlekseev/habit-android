@@ -32,6 +32,7 @@ import com.glebalekseevjk.habit.ui.page.history.HistoryPage
 import com.glebalekseevjk.habit.ui.page.settings.SettingsPage
 import com.glebalekseevjk.habit.ui.page.splash.SplashPage
 import com.glebalekseevjk.habit.ui.page.templates_habits.TemplatesHabitsPage
+import com.glebalekseevjk.habit.ui.page.today.TodayPage
 import com.glebalekseevjk.habit.ui.theme.AppTheme
 import com.glebalekseevjk.habit.ui.theme.MiddlePadding
 import com.glebalekseevjk.habit.ui.theme.drawerShape
@@ -112,6 +113,9 @@ fun AppScaffold(
         mutableStateOf(ModalBottomSheetState.Hide)
     }
 
+    var isVisibleBottomBar by remember {
+        mutableStateOf(false)
+    }
 
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
@@ -199,9 +203,9 @@ fun AppScaffold(
             backgroundColor = AppTheme.colors.colorPrimary,
             bottomBar = {
                 when (currentDestination?.route) {
-                    RouteName.TODAY -> BottomNavigateBar(navController = navController)
-                    RouteName.HABITS -> BottomNavigateBar(navController = navController)
-                    RouteName.HISTORY -> BottomNavigateBar(navController = navController)
+                    RouteName.TODAY -> BottomNavigateBar(navController = navController, isVisibleBottomBar)
+                    RouteName.HABITS -> BottomNavigateBar(navController = navController, isVisibleBottomBar)
+                    RouteName.HISTORY -> BottomNavigateBar(navController = navController, isVisibleBottomBar)
                 }
             },
             drawerShape = drawerShape,
@@ -333,13 +337,8 @@ fun AppScaffold(
                     popExitTransition = { ExitTransition.None },
                 ) {
                     composable(route = RouteName.TODAY) {
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            Text(
-                                text = "TODAY",
-                                color = AppTheme.colors.colorOnPrimary,
-                                style = typography.titleMedium
-                            )
-                        }
+                        TodayPage()
+                        isVisibleBottomBar = true
                     }
                     composable(route = RouteName.HABITS) {
                         HabitsPage(
@@ -355,9 +354,11 @@ fun AppScaffold(
                                 )
                             }
                         )
+                        isVisibleBottomBar = true
                     }
                     composable(route = RouteName.HISTORY) {
                         HistoryPage()
+                        isVisibleBottomBar = true
                     }
                     composable(route = RouteName.ADD_HABITS) {
                         AddHabitPage(
@@ -381,6 +382,7 @@ fun AppScaffold(
                                 )
                             }
                         )
+                        isVisibleBottomBar = false
                     }
                     composable(
                         route = RouteName.EDIT_HABITS + "/{params}",
@@ -465,19 +467,21 @@ fun AppScaffold(
                                     }
                                 },
                                 onSaveHabit = {
+                                    // Save Habit
                                     navController.navigateTo(
-                                        route = RouteName.ADD_HABITS,
+                                        route = navController.currentBackStack.value[1].destination.route.toString(),
                                         navConfig = {
-                                            it.popUpTo(RouteName.ADD_HABITS) {
-                                                inclusive = true
+                                            it.popUpTo(navController.currentBackStack.value[1].destination.route.toString()) {
+                                                inclusive = false
                                             }
                                             it.launchSingleTop = true
                                         }
                                     )
-                                    navController.popBackStack()
                                 }
                             )
                         }
+                        isVisibleBottomBar = false
+
                     }
                     composable(
                         route = RouteName.TEMPLATES_HABITS + "/{templatesId}",
@@ -495,9 +499,11 @@ fun AppScaffold(
                                 }
                             )
                         }
+                        isVisibleBottomBar = false
                     }
                     composable(route = RouteName.SETTINGS) {
                         SettingsPage(onThemeChange, onLanguageChange)
+                        isVisibleBottomBar = false
                     }
                     composable(route = RouteName.SPLASH) {
                         SplashPage {
@@ -512,6 +518,7 @@ fun AppScaffold(
                                     systemUiCtrl.setSystemBarsColor(systemBarColor)
                                 })
                         }
+                        isVisibleBottomBar = false
                     }
                 }
             }

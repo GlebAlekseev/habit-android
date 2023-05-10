@@ -20,6 +20,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.domain.entity.Habit
@@ -53,6 +54,17 @@ fun HabitsPage(
     when (viewStates) {
         HabitsViewState.Failure -> {
             TODO("Ошибка")
+        }
+        HabitsViewState.Empty -> {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.25f),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Text(text = "Пусто", color = AppTheme.colors.colorOnPrimary, style = typography.headlineLarge.copy(fontSize = 48.sp))
+            }
         }
         is HabitsViewState.Loading, is HabitsViewState.Init -> {
             Row(
@@ -177,8 +189,6 @@ fun HabitsPage(
                                                     )
                                                 )
                                             }
-
-
 
                                             Card(
                                                 shape = RoundedCornerShape(ExtraSmallPadding / 2),

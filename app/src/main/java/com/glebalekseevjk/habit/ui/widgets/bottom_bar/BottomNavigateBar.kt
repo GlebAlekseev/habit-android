@@ -1,5 +1,9 @@
 package com.glebalekseevjk.habit.ui.widgets.bottom_bar
 
+import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -11,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -22,7 +27,23 @@ import com.glebalekseevjk.habit.ui.common.navigateTo
 import com.glebalekseevjk.habit.ui.theme.*
 
 @Composable
-fun BottomNavigateBar(navController: NavHostController) {
+fun BottomNavigateBar(navController: NavHostController, isVisible: Boolean = true) {
+    val configuration = LocalConfiguration.current
+    AnimatedVisibility(
+        visible = when (configuration.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> false
+            else -> isVisible
+        },
+        enter = slideInVertically(initialOffsetY = { it }),
+        exit = slideOutVertically(targetOffsetY = { it }),
+        content = {
+            BottomNavigateBarContent(navController)
+        }
+    )
+}
+
+@Composable
+private fun BottomNavigateBarContent(navController: NavHostController) {
     val bottomNavList = listOf(
         BottomNavRoute.Today,
         BottomNavRoute.Habits,
@@ -60,7 +81,7 @@ fun BottomNavigateBar(navController: NavHostController) {
                     navController.navigateTo(
                         route = screen.routeName,
                         navConfig = {
-                            it.popUpTo(navController.currentBackStack.value[1].destination.route!!){
+                            it.popUpTo(navController.currentBackStack.value[1].destination.route!!) {
                                 inclusive = true
                                 saveState = true
                             }

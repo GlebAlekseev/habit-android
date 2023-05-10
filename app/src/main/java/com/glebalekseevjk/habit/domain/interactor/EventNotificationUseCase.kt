@@ -6,7 +6,6 @@ import com.glebalekseevjk.habit.domain.repository.EventNotificationRepository
 import com.glebalekseevjk.habit.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 class EventNotificationUseCase @Inject constructor(
@@ -14,28 +13,52 @@ class EventNotificationUseCase @Inject constructor(
 ) {
     suspend fun loadEventNotificationsForHabit(
         habit: Habit,
-        onCancelNotifications:(List<EventNotification>)->Unit,
-        onInitNotifications: (List<EventNotification>)->Unit
-        ): Resource<Unit> {
+        onCancelNotifications: (List<EventNotification>) -> Unit,
+        onInitNotifications: (List<EventNotification>) -> Unit
+    ): Resource<Unit> {
         val currentDate = LocalDate.now()
-        val deletedNotifications  = eventNotificationRepository
-            .removeEventNotificationsLaterThanDateInclusiveWhereIsDoneFalseForHabit(habit.id, currentDate)
-        when(deletedNotifications){
+        val deletedNotifications = eventNotificationRepository
+            .removeEventNotificationsLaterThanDateInclusiveWhereIsDoneFalseForHabit(
+                habit.id,
+                currentDate
+            )
+        when (deletedNotifications) {
             is Resource.Failure -> return Resource.Failure(deletedNotifications.throwable)
             is Resource.Success -> onCancelNotifications(deletedNotifications.data)
         }
 
         val newNotifications = eventNotificationRepository
             .addEventNotificationsLaterThanDateInclusiveForHabit(habit, currentDate)
-        when(newNotifications){
+        when (newNotifications) {
             is Resource.Failure -> return Resource.Failure(newNotifications.throwable)
             is Resource.Success -> onInitNotifications(newNotifications.data)
         }
         return Resource.Success(Unit)
     }
 
+    suspend fun removeEventNotificationsForHabit(
+        habitId: Int,
+        onCancelNotifications: (List<EventNotification>) -> Unit,
+    ): Resource<Unit> {
+        val deletedEventNotifications =
+            eventNotificationRepository.getEventNotificationListForHabit(habitId)
+        when (deletedEventNotifications) {
+            is Resource.Failure -> return Resource.Failure(deletedEventNotifications.throwable)
+            is Resource.Success -> {
+                val result = eventNotificationRepository.removeEventNotificationForHabit(habitId)
+                when (result) {
+                    is Resource.Failure -> return Resource.Failure(result.throwable)
+                    is Resource.Success -> {
+                        onCancelNotifications(deletedEventNotifications.data)
+                        return Resource.Success(Unit)
+                    }
+                }
+            }
+        }
+    }
 
-//    suspend fun addEventNotification(eventNotification: EventNotification): Resource<Unit> =
+
+    //    suspend fun addEventNotification(eventNotification: EventNotification): Resource<Unit> =
 //        eventNotificationRepository.addEventNotification(eventNotification)
 //
 //    suspend fun doneEventNotification(eventNotificationId: Int): Resource<Unit> =
@@ -43,7 +66,8 @@ class EventNotificationUseCase @Inject constructor(
 //
     suspend fun toggleIsDoneEventNotification(id: Int): Resource<Unit> =
         eventNotificationRepository.toggleIsDoneEventNotification(id)
-//
+
+    //
 //    suspend fun cancelEventNotification(eventNotificationId: Int): Resource<Unit> =
 //        eventNotificationRepository.cancelEventNotification(eventNotificationId)
 //
@@ -58,7 +82,8 @@ class EventNotificationUseCase @Inject constructor(
 //
     suspend fun getEventNotificationListForHabit(habitId: Int): Resource<List<EventNotification>> =
         eventNotificationRepository.getEventNotificationListForHabit(habitId)
-//
+
+    //
     suspend fun getEventNotificationList(): Resource<Flow<List<EventNotification>>> =
         eventNotificationRepository.getEventNotificationList()
 

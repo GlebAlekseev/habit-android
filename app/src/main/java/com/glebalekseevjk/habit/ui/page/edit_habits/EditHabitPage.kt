@@ -15,6 +15,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -28,6 +30,7 @@ import com.glebalekseevjk.habit.domain.entity.Habit.Companion.HabitType.*
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.TargetType
 import com.glebalekseevjk.habit.ui.theme.*
 import com.glebalekseevjk.habit.ui.widgets.CustomTextField
+import kotlinx.coroutines.delay
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -56,6 +59,7 @@ fun EditHabitPage(
     }
 
 
+
     when (viewStates) {
         EditHabitViewState.Failure -> TODO("Ошибка")
         is EditHabitViewState.Init, is EditHabitViewState.Loading -> {
@@ -77,6 +81,14 @@ fun EditHabitPage(
             var titleTextField by remember {
                 mutableStateOf(TextFieldValue(habit.title))
             }
+            val focusRequester = remember {
+                FocusRequester()
+            }
+
+            LaunchedEffect(Unit) {
+                delay(100)
+                focusRequester.requestFocus()
+            }
 
             LazyColumn(
                 state = viewStates.lazyListState,
@@ -94,7 +106,7 @@ fun EditHabitPage(
                                 Text(
                                     text = "Название",
                                     color = AppTheme.colors.colorOnPrimary,
-                                    style = typography.labelLarge
+                                    style = typography.labelLarge,
                                 )
                             },
                             textStyle = typography.labelLarge,
@@ -106,6 +118,7 @@ fun EditHabitPage(
                                 unfocusedIndicatorColor = AppTheme.colors.colorOnPrimary,
                             ),
                             modifier = Modifier
+                                .focusRequester(focusRequester)
                                 .padding(bottom = SmallPadding)
                                 .padding(horizontal = LargePadding)
                         )
@@ -357,20 +370,21 @@ fun EditHabitPage(
                                         color = AppTheme.colors.colorOnPrimary,
                                         style = typography.titleMedium
                                     )
-                                    Card(onClick = {
-                                        onOpenChooseTimeStartModalBottomSheet(
-                                            habit.startExecutionInterval,
-                                            null,
-                                            habit.endExecutionInterval
-                                        ) {
-                                            viewModel.dispatch(
-                                                EditHabitViewAction.SetStartExecutionInterval(
-                                                    it
+                                    Card(
+                                        onClick = {
+                                            onOpenChooseTimeStartModalBottomSheet(
+                                                habit.startExecutionInterval,
+                                                null,
+                                                habit.endExecutionInterval
+                                            ) {
+                                                viewModel.dispatch(
+                                                    EditHabitViewAction.SetStartExecutionInterval(
+                                                        it
+                                                    )
                                                 )
-                                            )
-                                        }
-                                    },
-                                        colors =  CardDefaults.cardColors(
+                                            }
+                                        },
+                                        colors = CardDefaults.cardColors(
                                             containerColor = AppTheme.colors.colorOnPrimary,
                                             contentColor = AppTheme.colors.colorPrimary
                                         ),
@@ -389,20 +403,21 @@ fun EditHabitPage(
                                         color = AppTheme.colors.colorOnPrimary,
                                         style = typography.titleMedium
                                     )
-                                    Card(onClick = {
-                                        onOpenChooseTimeEndModalBottomSheet(
-                                            habit.endExecutionInterval,
-                                            habit.startExecutionInterval,
-                                            null
-                                        ) {
-                                            viewModel.dispatch(
-                                                EditHabitViewAction.SetEndExecutionInterval(
-                                                    it
+                                    Card(
+                                        onClick = {
+                                            onOpenChooseTimeEndModalBottomSheet(
+                                                habit.endExecutionInterval,
+                                                habit.startExecutionInterval,
+                                                null
+                                            ) {
+                                                viewModel.dispatch(
+                                                    EditHabitViewAction.SetEndExecutionInterval(
+                                                        it
+                                                    )
                                                 )
-                                            )
-                                        }
-                                    },
-                                        colors =  CardDefaults.cardColors(
+                                            }
+                                        },
+                                        colors = CardDefaults.cardColors(
                                             containerColor = AppTheme.colors.colorOnPrimary,
                                             contentColor = AppTheme.colors.colorPrimary
                                         ),
@@ -476,7 +491,7 @@ fun EditHabitPage(
                                     )
                                     habit.deadline?.let {
                                         Text(
-                                            text = it.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"))
+                                            text = it.format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
                                                 .toString(),
                                             color = AppTheme.colors.colorOnPrimary,
                                             style = typography.titleSmall
@@ -563,7 +578,7 @@ fun EditHabitPage(
                                         },
                                         color = AppTheme.colors.colorOnPrimary,
                                         style = typography.titleSmall,
-                                        modifier = Modifier.padding(start = LargePadding*3)
+                                        modifier = Modifier.padding(start = LargePadding * 3)
                                     )
                                     Icon(
                                         ImageVector.vectorResource(id = R.drawable.ic_back),
@@ -705,30 +720,66 @@ fun EditHabitPage(
 
                 item {
                     // Создать привычку
-                    Button(
-                        onClick = {
-                            viewModel.dispatch(EditHabitViewAction.SaveHabit)
-                            onSaveHabit()
-                        },
-                        modifier = Modifier
-                            .padding(horizontal = LargePadding)
-                            .padding(top = MiddlePadding),
-                        shape = mediumRoundedCornerShape,
-                        contentPadding = PaddingValues(
-                            vertical = SmallPadding,
-                            horizontal = LargePadding
-                        ),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = AppTheme.colors.colorOnPrimary,
-                            contentColor = AppTheme.colors.colorPrimary
-                        )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Text(
-                            text = "Сохранить".toUpperCase(),
-                            style = typography.titleSmall,
-                            color = AppTheme.colors.colorPrimary
-                        )
+                        if (habitId != null) {
+                            Button(
+                                onClick = {
+                                    viewModel.dispatch(EditHabitViewAction.RemoveHabit)
+                                    onSaveHabit()
+                                },
+                                modifier = Modifier
+                                    .padding(horizontal = LargePadding)
+                                    .padding(top = MiddlePadding),
+                                shape = mediumRoundedCornerShape,
+                                contentPadding = PaddingValues(
+                                    vertical = SmallPadding,
+                                    horizontal = LargePadding
+                                ),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = red500,
+                                    contentColor = AppTheme.colors.colorPrimary
+                                )
+                            ) {
+                                Text(
+                                    text = "Удалить".toUpperCase(),
+                                    style = typography.titleSmall,
+                                    color = AppTheme.colors.colorPrimary
+                                )
+                            }
+                        }
+
+                        Button(
+                            enabled = !viewStates.habit.title.isEmpty(),
+                            onClick = {
+                                viewModel.dispatch(EditHabitViewAction.SaveHabit)
+                                onSaveHabit()
+                            },
+                            modifier = Modifier
+                                .padding(horizontal = LargePadding)
+                                .padding(top = MiddlePadding),
+                            shape = mediumRoundedCornerShape,
+                            contentPadding = PaddingValues(
+                                vertical = SmallPadding,
+                                horizontal = LargePadding
+                            ),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = AppTheme.colors.colorOnPrimary,
+                                contentColor = AppTheme.colors.colorPrimary,
+                                disabledContentColor = AppTheme.colors.colorPrimary.copy(alpha = 0.2f),
+                                disabledContainerColor = AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f),
+                            )
+                        ) {
+                            Text(
+                                text = "Сохранить".toUpperCase(),
+                                style = typography.titleSmall,
+                                color = AppTheme.colors.colorPrimary
+                            )
+                        }
                     }
+
                 }
 
                 item {

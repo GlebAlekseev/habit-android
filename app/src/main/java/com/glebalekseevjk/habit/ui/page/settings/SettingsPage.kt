@@ -2,14 +2,14 @@ package com.glebalekseevjk.habit.ui.page.settings
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +31,7 @@ import com.glebalekseevjk.habit.domain.entity.Language
 import com.glebalekseevjk.habit.ui.theme.*
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsPage(
     onThemeChange: (AppTheme.Theme) -> Unit,
@@ -48,128 +49,123 @@ fun SettingsPage(
             .fillMaxWidth()
             .padding(top = LargePadding)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clickable(
-                    indication = rememberRipple(
-                        bounded = true,
-                        radius = 192.dp,
-                        color = AppTheme.colors.colorOnPrimary
-                    ),
-                    interactionSource = remember {
-                        MutableInteractionSource()
-                    }
-                ) {
-
-                    expanded = !expanded
-                }
-                .padding(vertical = SmallPadding, horizontal = 84.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+        Card(
+            onClick = {
+                expanded = !expanded
+            },
+            colors = CardDefaults.cardColors(
+                containerColor = AppTheme.colors.colorPrimary,
+                contentColor = AppTheme.colors.colorOnPrimary
+            )
         ) {
-            Row(Modifier) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_lang),
-                    contentDescription = stringResource(id = R.string.lang),
-                    tint = AppTheme.colors.colorOnPrimary,
-                    modifier = Modifier.size(MiddleIconSize),
-                )
-                Text(
-                    text = stringResource(id = R.string.lang),
-                    style = typography.titleMedium,
-                    color = AppTheme.colors.colorOnPrimary,
-                    modifier = Modifier
-                        .padding(start = MiddlePadding)
-                        .align(Alignment.CenterVertically)
-                )
-            }
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(vertical = SmallPadding, horizontal = 84.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(Modifier) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_lang),
+                        contentDescription = stringResource(id = R.string.lang),
+                        tint = AppTheme.colors.colorOnPrimary,
+                        modifier = Modifier.size(MiddleIconSize),
+                    )
+                    Text(
+                        text = stringResource(id = R.string.lang),
+                        style = typography.titleMedium,
+                        color = AppTheme.colors.colorOnPrimary,
+                        modifier = Modifier
+                            .padding(start = MiddlePadding)
+                            .align(Alignment.CenterVertically)
+                    )
+                }
 
-            Box() {
-                Text(
-                    text = when (viewStates.language) {
-                        Language.RUSSIAN -> "Русский"
-                        Language.ENGLISH -> "English"
-                    },
-                    style = typography.titleSmall,
-                    color = AppTheme.colors.colorOnPrimary,
-                )
-                DropdownMenu(
-                    expanded = expanded,
-                    offset = DpOffset(0.dp, SmallPadding),
-                    onDismissRequest = {
-                        expanded = !expanded
-                    })
-                {
-                    DropdownMenuItem(onClick = {
-                        onLanguageChange(Language.RUSSIAN)
-                        viewModel.dispatch(SettingsViewAction.SetLanguage(Language.RUSSIAN))
-                        expanded = !expanded
-                    }) {
-                        Text(text = "Русский")
-                    }
-                    DropdownMenuItem(onClick = {
-                        onLanguageChange(Language.ENGLISH)
-                        viewModel.dispatch(SettingsViewAction.SetLanguage(Language.ENGLISH))
-                        expanded = !expanded
-                    }) {
-                        Text(text = "English")
+                Box() {
+                    Text(
+                        text = when (viewStates.language) {
+                            Language.RUSSIAN -> "Русский"
+                            Language.ENGLISH -> "English"
+                        },
+                        style = typography.titleSmall,
+                        color = AppTheme.colors.colorOnPrimary,
+                    )
+                    DropdownMenu(
+                        expanded = expanded,
+                        offset = DpOffset(0.dp, SmallPadding),
+                        onDismissRequest = {
+                            expanded = !expanded
+                        })
+                    {
+                        DropdownMenuItem(onClick = {
+                            onLanguageChange(Language.RUSSIAN)
+                            viewModel.dispatch(SettingsViewAction.SetLanguage(Language.RUSSIAN))
+                            expanded = !expanded
+                        }) {
+                            Text(text = "Русский")
+                        }
+                        DropdownMenuItem(onClick = {
+                            onLanguageChange(Language.ENGLISH)
+                            viewModel.dispatch(SettingsViewAction.SetLanguage(Language.ENGLISH))
+                            expanded = !expanded
+                        }) {
+                            Text(text = "English")
+                        }
                     }
                 }
-            }
 
+            }
         }
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clickable(
-                    indication = rememberRipple(
-                        bounded = true,
-                        radius = 192.dp,
-                        color = AppTheme.colors.colorOnPrimary
-                    ),
-                    interactionSource = remember {
-                        MutableInteractionSource()
-                    }
-                ) {
-                    val theme = if (!viewStates.isDarkTheme) {
-                        AppTheme.Theme.Dark
-                    } else {
-                        AppTheme.Theme.Light
-                    }
-                    onThemeChange(theme)
-                    viewModel.dispatch(SettingsViewAction.SetTheme(!viewStates.isDarkTheme))
+        Card(
+            onClick = {
+                val theme = if (!viewStates.isDarkTheme) {
+                    AppTheme.Theme.Dark
+                } else {
+                    AppTheme.Theme.Light
                 }
-                .padding(vertical = SmallPadding, horizontal = 84.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-
-            Row(Modifier) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_night),
-                    contentDescription = stringResource(id = R.string.night),
-                    tint = AppTheme.colors.colorOnPrimary,
-                    modifier = Modifier.size(MiddleIconSize),
-                )
-                Text(
-                    text = stringResource(id = R.string.night),
-                    style = typography.titleMedium,
-                    color = AppTheme.colors.colorOnPrimary,
-                    modifier = Modifier
-                        .padding(start = MiddlePadding)
-                        .align(Alignment.CenterVertically)
-                )
-            }
-
-            Switch2(
-                scale = 1.2f,
-                checked = viewStates.isDarkTheme,
-                checkedTrackColor = AppTheme.colors.colorOnPrimary,
-                uncheckedTrackColor = AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f)
+                onThemeChange(theme)
+                viewModel.dispatch(SettingsViewAction.SetTheme(!viewStates.isDarkTheme))
+            },
+            colors = CardDefaults.cardColors(
+                containerColor = AppTheme.colors.colorPrimary,
+                contentColor = AppTheme.colors.colorOnPrimary
             )
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(vertical = SmallPadding, horizontal = 84.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
 
+                Row(Modifier) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_night),
+                        contentDescription = stringResource(id = R.string.night),
+                        tint = AppTheme.colors.colorOnPrimary,
+                        modifier = Modifier.size(MiddleIconSize),
+                    )
+                    Text(
+                        text = stringResource(id = R.string.night),
+                        style = typography.titleMedium,
+                        color = AppTheme.colors.colorOnPrimary,
+                        modifier = Modifier
+                            .padding(start = MiddlePadding)
+                            .align(Alignment.CenterVertically)
+                    )
+                }
+
+                Switch2(
+                    scale = 1.2f,
+                    checked = viewStates.isDarkTheme,
+                    checkedTrackColor = AppTheme.colors.colorOnPrimary,
+                    uncheckedTrackColor = AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f)
+                )
+
+            }
         }
     }
 }

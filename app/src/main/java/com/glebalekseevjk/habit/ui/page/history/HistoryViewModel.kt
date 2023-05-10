@@ -30,11 +30,11 @@ class HistoryViewModel @Inject constructor(
 
     fun dispatch(action: HistoryViewAction) {
         when (action) {
-            is HistoryViewAction.InitHistory -> initHabits()
+            is HistoryViewAction.InitHistory -> initHistory()
         }
     }
 
-    private fun initHabits() {
+    private fun initHistory() {
         viewStates = HistoryViewState.Loading
 
         viewModelScope.launch {

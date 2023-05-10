@@ -1,4 +1,4 @@
-package com.glebalekseevjk.habit.ui.page.habits
+package com.glebalekseevjk.habit.ui.page.today
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
@@ -16,31 +16,32 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
-class HabitsViewModel @Inject constructor(
+class TodayViewModel @Inject constructor(
     private val habitUseCase: HabitUseCase,
     private val eventNotificationUseCase: EventNotificationUseCase
 ) : ViewModel() {
-    var viewStates by mutableStateOf<HabitsViewState>(
-        HabitsViewState.Init
+    var viewStates by mutableStateOf<TodayViewState>(
+        TodayViewState.Init
     )
         private set
 
-    fun dispatch(action: HabitsViewAction) {
+    fun dispatch(action: TodayViewAction) {
         when (action) {
-            is HabitsViewAction.InitHabits -> initHabits()
-            is HabitsViewAction.ToggleIsDoneEventNotification -> toggleIsDoneEventNotification(
+            is TodayViewAction.InitToday -> initToday()
+            is TodayViewAction.ToggleIsDoneEventNotification -> toggleIsDoneEventNotification(
                 action.id
             )
         }
     }
 
-    private fun initHabits() {
-        viewStates = HabitsViewState.Loading
+    private fun initToday() {
+        viewStates = TodayViewState.Loading
 
         viewModelScope.launch {
             when (val habits = habitUseCase.getHabitList()) {
-                is Resource.Failure -> viewStates = HabitsViewState.Failure
+                is Resource.Failure -> viewStates = TodayViewState.Failure
                 is Resource.Success -> {
                     val eventNotifications = eventNotificationUseCase.getEventNotificationList()
                     when (eventNotifications) {
@@ -51,21 +52,21 @@ class HabitsViewModel @Inject constructor(
                                 .collect {
                                     val habitList = it.second
                                     val eventNotificationList = it.first
-
-                                    if (habitList.isEmpty()) {
-                                        viewStates = HabitsViewState.Empty
-                                    } else {
-                                        viewStates = HabitsViewState.Loaded(
-                                            habitList.map { habit ->
-                                                HabitUI(
-                                                    habit = habit,
-                                                    eventNotificationList = eventNotificationList.filter { it.habitId == habit.id }
-                                                )
-                                            },
-                                            if (viewStates is HabitsViewState.Loaded) (viewStates as HabitsViewState.Loaded).lazyListState else LazyListState()
-
+                                    val habitUIList = habitList.map { habit ->
+                                        HabitUI(
+                                            habit = habit,
+                                            eventNotificationList = eventNotificationList.filter { it.habitId == habit.id }
                                         )
                                     }
+                                    if (habitUIList.isEmpty()){
+                                        viewStates = TodayViewState.Empty
+                                    }else{
+                                        viewStates = TodayViewState.Loaded(
+                                            habitUIList,
+                                            if (viewStates is TodayViewState.Loaded) (viewStates as TodayViewState.Loaded).lazyListState else LazyListState(),
+                                        )
+                                    }
+
                                 }
                         }
                     }
@@ -87,18 +88,18 @@ data class HabitUI(
     val eventNotificationList: List<EventNotification>
 )
 
-sealed class HabitsViewState {
-    object Init : HabitsViewState()
-    object Loading : HabitsViewState()
-    object Failure : HabitsViewState()
-    object Empty : HabitsViewState()
+sealed class TodayViewState {
+    object Init : TodayViewState()
+    object Loading : TodayViewState()
+    object Failure : TodayViewState()
+    object Empty : TodayViewState()
     data class Loaded(
         val habitList: List<HabitUI>,
         val lazyListState: LazyListState
-    ) : HabitsViewState()
+    ) : TodayViewState()
 }
 
-sealed class HabitsViewAction {
-    object InitHabits : HabitsViewAction()
-    data class ToggleIsDoneEventNotification(val id: Int) : HabitsViewAction()
+sealed class TodayViewAction {
+    object InitToday : TodayViewAction()
+    data class ToggleIsDoneEventNotification(val id: Int) : TodayViewAction()
 }
