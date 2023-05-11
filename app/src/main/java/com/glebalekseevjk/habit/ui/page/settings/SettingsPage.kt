@@ -179,8 +179,8 @@ fun Switch2(
     width: Dp = 36.dp,
     height: Dp = 20.dp,
     strokeWidth: Dp = 2.dp,
-    checkedTrackColor: Color = Color(0xFF35898F),
-    uncheckedTrackColor: Color = Color(0xFFe0e0e0),
+    checkedTrackColor: Color,
+    uncheckedTrackColor: Color,
     gapBetweenThumbAndTrackEdge: Dp = 4.dp
 ) {
     val thumbRadius = (height / 2) - gapBetweenThumbAndTrackEdge

@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -106,7 +107,7 @@ fun TodayPage(
                                 shape = RoundedCornerShape(SmallPadding),
                                 colors = CardDefaults.cardColors(
                                     contentColor = Color(habitUI.habit.colorRGBA),
-                                    containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.2f)
+                                    containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.2f).compositeOver(Color.White)
                                 ),
                                 modifier = Modifier
                             ) {
@@ -154,16 +155,16 @@ fun TodayPage(
                                         shape = RoundedCornerShape(ExtraSmallPadding / 2),
                                         colors = when (habitUI.habit.habitType) {
                                             Habit.Companion.HabitType.REGULAR -> CardDefaults.cardColors(
-                                                contentColor = green500,
-                                                containerColor = green500.copy(alpha = 0.1f)
+                                                contentColor = AppTheme.colors.colorRegularTag,
+                                                containerColor = AppTheme.colors.colorRegularTag.copy(alpha = 0.1f)
                                             )
                                             Habit.Companion.HabitType.HARMFUL -> CardDefaults.cardColors(
-                                                contentColor = red500,
-                                                containerColor = red500.copy(alpha = 0.1f)
+                                                contentColor = AppTheme.colors.colorHarmfulTag,
+                                                containerColor = AppTheme.colors.colorHarmfulTag.copy(alpha = 0.1f)
                                             )
                                             Habit.Companion.HabitType.DISPOSABLE -> CardDefaults.cardColors(
-                                                contentColor = blue500,
-                                                containerColor = blue500.copy(alpha = 0.1f)
+                                                contentColor = AppTheme.colors.colorDisposableTag,
+                                                containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                             )
                                         },
                                         modifier = Modifier.padding(end = SmallPadding)
@@ -192,16 +193,16 @@ fun TodayPage(
                                         shape = RoundedCornerShape(ExtraSmallPadding / 2),
                                         colors = when (habitUI.habit.habitType) {
                                             Habit.Companion.HabitType.REGULAR -> CardDefaults.cardColors(
-                                                contentColor = green500,
-                                                containerColor = green500.copy(alpha = 0.1f)
+                                                contentColor = AppTheme.colors.colorRegularTag,
+                                                containerColor = AppTheme.colors.colorRegularTag.copy(alpha = 0.1f)
                                             )
                                             Habit.Companion.HabitType.HARMFUL -> CardDefaults.cardColors(
-                                                contentColor = red500,
-                                                containerColor = red500.copy(alpha = 0.1f)
+                                                contentColor = AppTheme.colors.colorHarmfulTag,
+                                                containerColor = AppTheme.colors.colorHarmfulTag.copy(alpha = 0.1f)
                                             )
                                             Habit.Companion.HabitType.DISPOSABLE -> CardDefaults.cardColors(
-                                                contentColor = blue500,
-                                                containerColor = blue500.copy(alpha = 0.1f)
+                                                contentColor = AppTheme.colors.colorDisposableTag,
+                                                containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                             )
                                         },
                                         modifier = Modifier.padding(end = SmallPadding)
@@ -220,16 +221,16 @@ fun TodayPage(
                                         shape = RoundedCornerShape(ExtraSmallPadding / 2),
                                         colors = when (habitUI.habit.habitType) {
                                             Habit.Companion.HabitType.REGULAR -> CardDefaults.cardColors(
-                                                contentColor = green500,
-                                                containerColor = green500.copy(alpha = 0.1f)
+                                                contentColor = AppTheme.colors.colorRegularTag,
+                                                containerColor = AppTheme.colors.colorRegularTag.copy(alpha = 0.1f)
                                             )
                                             Habit.Companion.HabitType.HARMFUL -> CardDefaults.cardColors(
-                                                contentColor = red500,
-                                                containerColor = red500.copy(alpha = 0.1f)
+                                                contentColor = AppTheme.colors.colorHarmfulTag,
+                                                containerColor = AppTheme.colors.colorHarmfulTag.copy(alpha = 0.1f)
                                             )
                                             Habit.Companion.HabitType.DISPOSABLE -> CardDefaults.cardColors(
-                                                contentColor = blue500,
-                                                containerColor = blue500.copy(alpha = 0.1f)
+                                                contentColor = AppTheme.colors.colorDisposableTag,
+                                                containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                             )
                                         },
                                     ) {
@@ -253,7 +254,7 @@ fun TodayPage(
                                     text = "$percent%",
                                     style = typography.labelSmall,
                                     modifier = Modifier.align(Alignment.BottomCenter),
-                                    color = green500
+                                    color = AppTheme.colors.colorProgress
                                 )
                                 Card(
                                     onClick = {
@@ -264,10 +265,10 @@ fun TodayPage(
                                         )
                                     },
                                     colors = CardDefaults.cardColors(
-                                        contentColor = if (event.isDone) green500 else AppTheme.colors.colorOnPrimary,
-                                        containerColor = if (event.isDone) green500.copy(alpha = 0.2f) else AppTheme.colors.colorOnPrimary.copy(
+                                        contentColor = if (event.isDone) AppTheme.colors.colorProgress else AppTheme.colors.colorOnPrimary,
+                                        containerColor = if (event.isDone) AppTheme.colors.colorProgress.copy(alpha = 0.2f).compositeOver(Color.White) else AppTheme.colors.colorOnPrimary.copy(
                                             alpha = 0.2f
-                                        )
+                                        ).compositeOver(Color.White)
                                     ),
                                     shape = RoundedCornerShape(ExtraSmallPadding),
                                     modifier = Modifier.padding(vertical = SmallPadding)

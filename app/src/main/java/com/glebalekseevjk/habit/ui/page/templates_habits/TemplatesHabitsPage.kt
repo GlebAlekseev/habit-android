@@ -99,7 +99,7 @@ fun TemplatesHabitsPage(
                                 onNavigateToEditHabits(it.id)
                             }
                             .background(
-                                AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
+                                AppTheme.colors.colorSecondary,
                                 shape = smallRoundedCornerShape
                             )
                             .padding(

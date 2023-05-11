@@ -29,7 +29,7 @@ fun SplashPage(onNextPage: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppTheme.colors.colorSecondary),
+            .background(AppTheme.colors.colorOnPrimary),
         contentAlignment = Alignment.Center
     ) {
         LaunchedEffect(Unit) {

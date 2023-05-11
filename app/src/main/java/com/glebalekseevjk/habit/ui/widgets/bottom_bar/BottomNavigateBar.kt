@@ -52,7 +52,7 @@ private fun BottomNavigateBarContent(navController: NavHostController) {
     BottomNavigation(
         Modifier
             .height(96.dp),
-        backgroundColor = AppTheme.colors.colorSecondary,
+        backgroundColor = AppTheme.colors.colorOnPrimary,
         elevation = MediumElevation
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -90,8 +90,8 @@ private fun BottomNavigateBarContent(navController: NavHostController) {
                         }
                     )
                 },
-                selectedContentColor = AppTheme.colors.selectedContent,
-                unselectedContentColor = AppTheme.colors.unselectedContent,
+                selectedContentColor = AppTheme.colors.colorPrimary,
+                unselectedContentColor = AppTheme.colors.colorUnselected,
             )
         }
     }

@@ -67,7 +67,7 @@ fun ChooseTargetTypeModalBottomSheet(
             style = typography.labelMedium,
             color = AppTheme.colors.colorOnPrimary,
             selectorProperties = WheelPickerDefaults.selectorProperties(
-                color = AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f),
+                color = AppTheme.colors.colorDivider,
                 border = null
             ),
             texts = listTargetType

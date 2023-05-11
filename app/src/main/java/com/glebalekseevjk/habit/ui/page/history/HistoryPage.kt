@@ -11,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
@@ -78,28 +79,28 @@ fun HistoryPage(
                     viewStates.currentSeries.toString(),
                     stringResource(id = R.string.best_series),
                     viewStates.bestSeries.toString(),
-                    containerColor = Color(0xFF7e8a97),
+                    containerColor = AppTheme.colors.colorAdditional1,
                 ),
                 Stats(
                     stringResource(id = R.string.number_completed_habits),
                     viewStates.numberCompletedHabits.toString(),
                     stringResource(id = R.string.number_completed_habits_for_last_week),
                     viewStates.numberCompletedHabitsForLastWeek.toString(),
-                    containerColor = Color(0xFFf77a4e),
+                    containerColor = AppTheme.colors.colorAdditional2,
                 ),
                 Stats(
                     stringResource(id = R.string.percentage_of_completed),
                     "${viewStates.percentageOfCompleted}%",
                     stringResource(id = R.string.number_habits),
                     "${viewStates.numberCompletedHabits} / ${viewStates.numberHabits}",
-                    containerColor = Color(0xFF4e5778),
+                    containerColor = AppTheme.colors.colorAdditional3,
                 ),
                 Stats(
                     stringResource(id = R.string.number_perfect_days),
                     viewStates.numberPerfectDays.toString(),
                     stringResource(id = R.string.number_perfect_days_for_last_week),
                     viewStates.numberPerfectDaysForLastWeek.toString(),
-                    containerColor = Color(0xFF54a79c),
+                    containerColor = AppTheme.colors.colorAdditional4,
                 ),
             )
 
@@ -204,7 +205,7 @@ fun HistoryPage(
                                 shape = RoundedCornerShape(SmallPadding),
                                 colors = CardDefaults.cardColors(
                                     contentColor = Color(habitUI.habit.colorRGBA),
-                                    containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.2f)
+                                    containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.2f).compositeOver(Color.White)
                                 ),
                                 modifier = Modifier
                             ) {
@@ -262,7 +263,7 @@ fun HistoryPage(
                                         )
                                         Text(
                                             text = "${percentOld}% → ${percentNow}%",
-                                            color = green500,
+                                            color = AppTheme.colors.colorProgress,
                                             style = typography.labelSmall,
                                             modifier = Modifier.padding(
                                                 start = ExtraSmallPadding / 2,
@@ -275,16 +276,16 @@ fun HistoryPage(
                                         shape = RoundedCornerShape(ExtraSmallPadding / 2),
                                         colors = when (habitUI.habit.habitType) {
                                             Habit.Companion.HabitType.REGULAR -> CardDefaults.cardColors(
-                                                contentColor = green500,
-                                                containerColor = green500.copy(alpha = 0.1f)
+                                                contentColor = AppTheme.colors.colorRegularTag,
+                                                containerColor = AppTheme.colors.colorRegularTag.copy(alpha = 0.1f)
                                             )
                                             Habit.Companion.HabitType.HARMFUL -> CardDefaults.cardColors(
-                                                contentColor = red500,
-                                                containerColor = red500.copy(alpha = 0.1f)
+                                                contentColor = AppTheme.colors.colorHarmfulTag,
+                                                containerColor = AppTheme.colors.colorHarmfulTag.copy(alpha = 0.1f)
                                             )
                                             Habit.Companion.HabitType.DISPOSABLE -> CardDefaults.cardColors(
-                                                contentColor = blue500,
-                                                containerColor = blue500.copy(alpha = 0.1f)
+                                                contentColor = AppTheme.colors.colorDisposableTag,
+                                                containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                             )
                                         },
                                         modifier = Modifier.padding(end = SmallPadding)
@@ -318,17 +319,12 @@ fun HistoryPage(
                                 horizontalAlignment = Alignment.End,
                                 verticalArrangement = Arrangement.Center
                             ) {
-                                Text(text = "+$percentStep%", color = green500, style = typography.titleLarge)
+                                Text(text = "+$percentStep%", color = AppTheme.colors.colorProgress, style = typography.titleLarge)
                             }
-
-
                         }
                     }
-
                 }
             }
-
-
         }
     }
 }

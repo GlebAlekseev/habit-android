@@ -114,7 +114,7 @@ fun EditHabitPage(
                             colors = TextFieldDefaults.textFieldColors(
                                 textColor = AppTheme.colors.colorOnPrimary,
                                 backgroundColor = AppTheme.colors.colorPrimary,
-                                cursorColor = AppTheme.colors.colorAccent,
+                                cursorColor = AppTheme.colors.colorCursor,
                                 focusedIndicatorColor = AppTheme.colors.colorOnPrimary,
                                 unfocusedIndicatorColor = AppTheme.colors.colorOnPrimary,
                             ),
@@ -152,7 +152,7 @@ fun EditHabitPage(
                             .padding(top = SmallPadding)
                             .padding(horizontal = LargePadding)
                             .background(
-                                AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
+                                AppTheme.colors.colorSecondary,
                                 shape = smallRoundedCornerShape
                             )
                             .fillMaxWidth(1f),
@@ -291,7 +291,7 @@ fun EditHabitPage(
                                             }
                                         }
                                         .background(
-                                            AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
+                                            AppTheme.colors.colorSecondary,
                                             shape = smallRoundedCornerShape
                                         )
                                         .padding(
@@ -358,7 +358,7 @@ fun EditHabitPage(
                                     modifier = Modifier
                                         .padding(top = MiddlePadding)
                                         .background(
-                                            AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
+                                            AppTheme.colors.colorSecondary,
                                             shape = smallRoundedCornerShape
                                         )
                                         .padding(
@@ -480,7 +480,7 @@ fun EditHabitPage(
                                             }
                                         }
                                         .background(
-                                            AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
+                                            AppTheme.colors.colorSecondary,
                                             shape = smallRoundedCornerShape
                                         )
                                         .padding(
@@ -566,7 +566,7 @@ fun EditHabitPage(
                                             }
                                         }
                                         .background(
-                                            AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
+                                            AppTheme.colors.colorSecondary,
                                             shape = smallRoundedCornerShape
                                         )
                                         .padding(
@@ -629,7 +629,7 @@ fun EditHabitPage(
                                                     }
                                                 }
                                                 .background(
-                                                    AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
+                                                    AppTheme.colors.colorSecondary,
                                                     shape = smallRoundedCornerShape
                                                 )
                                                 .padding(
@@ -689,7 +689,7 @@ fun EditHabitPage(
                                                     }
                                                 }
                                                 .background(
-                                                    AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
+                                                    AppTheme.colors.colorSecondary,
                                                     shape = smallRoundedCornerShape
                                                 )
                                                 .padding(

@@ -93,12 +93,12 @@ fun MainDrawer(
                         style = typography.bodyMedium
                     )
 
-                    Divider()
+                    Divider(color = AppTheme.colors.colorDivider)
 
                     for ((route, triple) in navMap) {
                         val (action, icon, title) = triple
                         if (route == RouteName.SETTINGS) {
-                            Divider()
+                            Divider(color = AppTheme.colors.colorDivider)
                         }
                         Card(
                             onClick = {

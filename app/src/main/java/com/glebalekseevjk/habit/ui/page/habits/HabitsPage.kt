@@ -12,6 +12,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
@@ -100,7 +102,7 @@ fun HabitsPage(
                             .padding(vertical = ExtraSmallPadding)
                             .fillMaxWidth(),
                         colors = CardDefaults.cardColors(
-                            containerColor = AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
+                            containerColor = AppTheme.colors.colorSecondary,
                             contentColor = AppTheme.colors.colorOnPrimary
                         ),
                         shape = RoundedCornerShape(ExtraSmallPadding),
@@ -171,16 +173,16 @@ fun HabitsPage(
                                                 shape = RoundedCornerShape(ExtraSmallPadding / 2),
                                                 colors = when (habitUI.habit.habitType) {
                                                     REGULAR -> CardDefaults.cardColors(
-                                                        contentColor = green500,
-                                                        containerColor = green500.copy(alpha = 0.1f)
+                                                        contentColor = AppTheme.colors.colorRegularTag,
+                                                        containerColor = AppTheme.colors.colorRegularTag.copy(alpha = 0.1f)
                                                     )
                                                     HARMFUL -> CardDefaults.cardColors(
-                                                        contentColor = red500,
-                                                        containerColor = red500.copy(alpha = 0.1f)
+                                                        contentColor = AppTheme.colors.colorHarmfulTag,
+                                                        containerColor = AppTheme.colors.colorHarmfulTag.copy(alpha = 0.1f)
                                                     )
                                                     DISPOSABLE -> CardDefaults.cardColors(
-                                                        contentColor = blue500,
-                                                        containerColor = blue500.copy(alpha = 0.1f)
+                                                        contentColor = AppTheme.colors.colorDisposableTag,
+                                                        containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                                     )
                                                 },
                                                 modifier = Modifier.padding(end = SmallPadding)
@@ -203,16 +205,16 @@ fun HabitsPage(
                                                 shape = RoundedCornerShape(ExtraSmallPadding / 2),
                                                 colors = when (habitUI.habit.habitType) {
                                                     REGULAR -> CardDefaults.cardColors(
-                                                        contentColor = green500,
-                                                        containerColor = green500.copy(alpha = 0.1f)
+                                                        contentColor = AppTheme.colors.colorRegularTag,
+                                                        containerColor = AppTheme.colors.colorRegularTag.copy(alpha = 0.1f)
                                                     )
                                                     HARMFUL -> CardDefaults.cardColors(
-                                                        contentColor = red500,
-                                                        containerColor = red500.copy(alpha = 0.1f)
+                                                        contentColor = AppTheme.colors.colorHarmfulTag,
+                                                        containerColor = AppTheme.colors.colorHarmfulTag.copy(alpha = 0.1f)
                                                     )
                                                     DISPOSABLE -> CardDefaults.cardColors(
-                                                        contentColor = blue500,
-                                                        containerColor = blue500.copy(alpha = 0.1f)
+                                                        contentColor = AppTheme.colors.colorDisposableTag,
+                                                        containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                                     )
                                                 },
                                                 modifier = Modifier.padding(end = SmallPadding)
@@ -231,16 +233,16 @@ fun HabitsPage(
                                                 shape = RoundedCornerShape(ExtraSmallPadding / 2),
                                                 colors = when (habitUI.habit.habitType) {
                                                     REGULAR -> CardDefaults.cardColors(
-                                                        contentColor = green500,
-                                                        containerColor = green500.copy(alpha = 0.1f)
+                                                        contentColor = AppTheme.colors.colorRegularTag,
+                                                        containerColor = AppTheme.colors.colorRegularTag.copy(alpha = 0.1f)
                                                     )
                                                     HARMFUL -> CardDefaults.cardColors(
-                                                        contentColor = red500,
-                                                        containerColor = red500.copy(alpha = 0.1f)
+                                                        contentColor = AppTheme.colors.colorHarmfulTag,
+                                                        containerColor = AppTheme.colors.colorHarmfulTag.copy(alpha = 0.1f)
                                                     )
                                                     DISPOSABLE -> CardDefaults.cardColors(
-                                                        contentColor = blue500,
-                                                        containerColor = blue500.copy(alpha = 0.1f)
+                                                        contentColor = AppTheme.colors.colorDisposableTag,
+                                                        containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                                     )
                                                 },
                                             ) {
@@ -269,7 +271,7 @@ fun HabitsPage(
                                     shape = RoundedCornerShape(SmallPadding),
                                     colors = CardDefaults.cardColors(
                                         contentColor = Color(habitUI.habit.colorRGBA),
-                                        containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.2f)
+                                        containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.2f).compositeOver(Color.White)
                                     ),
                                     modifier = Modifier
                                         .onSizeChanged {
@@ -329,7 +331,7 @@ fun HabitsPage(
                                             colors = CardDefaults.cardColors(
                                                 containerColor = when {
                                                     isCurrentDate -> AppTheme.colors.colorOnPrimary
-                                                    isDeadline -> Color.Black
+                                                    isDeadline -> AppTheme.colors.colorDeadline
                                                     else -> transparent
                                                 },
                                                 contentColor = when {
@@ -382,21 +384,21 @@ fun HabitsPage(
                                             shape = RoundedCornerShape(SmallPadding),
                                             colors = CardDefaults.cardColors(
                                                 containerColor = when {
-                                                    isDone -> green500.copy(alpha = 0.1f)
-                                                    isTarget && isBad -> red500.copy(alpha = 0.1f)
+                                                    isDone -> AppTheme.colors.colorIsDone
+                                                    isTarget && isBad -> AppTheme.colors.colorIsBad
                                                     else -> AppTheme.colors.colorPrimary
                                                 },
                                                 contentColor = when {
-                                                    isDeadline -> if (isBad) red500 else Color.Black
+                                                    isDeadline -> if (isBad) AppTheme.colors.colorIsBad else AppTheme.colors.colorDeadline
                                                     else -> AppTheme.colors.colorOnPrimary
                                                 },
                                                 disabledContainerColor = when {
-                                                    isDone -> green500.copy(alpha = 0.1f)
-                                                    isTarget && isBad -> red500.copy(alpha = 0.1f)
+                                                    isDone -> AppTheme.colors.colorIsDone
+                                                    isTarget && isBad -> AppTheme.colors.colorIsBad
                                                     else -> AppTheme.colors.colorPrimary
                                                 },
                                                 disabledContentColor = when {
-                                                    isDeadline -> if (isBad) red500 else Color.Black
+                                                    isDeadline -> if (isBad) AppTheme.colors.colorIsBad else AppTheme.colors.colorDeadline
                                                     else -> AppTheme.colors.colorOnPrimary
                                                 },
                                             ),
@@ -424,7 +426,7 @@ fun HabitsPage(
 
                             Divider(
                                 thickness = 2.dp,
-                                color = AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f),
+                                color = AppTheme.colors.colorDivider,
                                 modifier = Modifier.padding(top = ExtraSmallPadding / 2)
                             )
 
@@ -456,13 +458,13 @@ fun HabitsPage(
                                         (if (countIsDone == 0) 0 else countIsDone / all.toDouble() * 100).toInt()
                                     Text(
                                         text = "$percent%",
-                                        color = green500,
+                                        color = AppTheme.colors.colorProgress,
                                         style = typography.labelMedium,
                                         modifier = Modifier.padding(start = SmallPadding)
                                     )
                                     Text(
                                         text = "$countIsDone/$all",
-                                        color = green500,
+                                        color = AppTheme.colors.colorProgress,
                                         style = typography.labelSmall,
                                         modifier = Modifier.padding(start = SmallPadding)
                                     )

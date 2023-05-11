@@ -60,7 +60,7 @@ fun ChooseTimeModalBottomSheet(
             textStyle = typography.labelMedium,
             textColor = AppTheme.colors.colorOnPrimary,
             selectorProperties = WheelPickerDefaults.selectorProperties(
-                color = AppTheme.colors.colorOnPrimary.copy(alpha = 0.2f),
+                color = AppTheme.colors.colorDivider,
                 border = null
             ),
         ) { snappedTime ->

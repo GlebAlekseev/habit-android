@@ -559,9 +559,6 @@ fun AppScaffold(
     }
 }
 
-
-
-
 @ExperimentalAnimationApi
 private fun AnimatedContentScope<*>.defaultHTrackerEnterTransition(
     initial: NavBackStackEntry,
@@ -569,11 +566,9 @@ private fun AnimatedContentScope<*>.defaultHTrackerEnterTransition(
 ): EnterTransition {
     val initialNavGraph = initial.destination.hostNavGraph
     val targetNavGraph = target.destination.hostNavGraph
-    // If we're crossing nav graphs (bottom navigation graphs), we crossfade
     if (initialNavGraph.id != targetNavGraph.id) {
         return fadeIn()
     }
-    // Otherwise we're in the same nav graph, we can imply a direction
     return fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.Up)
 }
 

@@ -68,7 +68,7 @@ fun MainTopBar(
                     Text(
                         text = LocalDate.now().format(DateTimeFormatter.ofPattern("d MMMM")),
                         style = typography.labelMedium,
-                        color = AppTheme.colors.subtitle,
+                        color = AppTheme.colors.colorUnselected,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .padding(start = MiddlePadding, top = ExtraSmallPadding)
