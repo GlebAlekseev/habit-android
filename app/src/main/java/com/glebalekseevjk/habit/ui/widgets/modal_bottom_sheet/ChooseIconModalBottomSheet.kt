@@ -1,21 +1,22 @@
 package com.glebalekseevjk.habit.ui.widgets.modal_bottom_sheet
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.*
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.glebalekseevjk.habit.R
@@ -56,7 +57,7 @@ fun ChooseIconModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCancel
             .padding(MiddlePadding),
     ) {
         Text(
-            text = "Выбор значка",
+            text = stringResource(id = R.string.choose_icon),
             color = AppTheme.colors.colorOnPrimary,
             style = typography.titleMedium,
         )
@@ -81,8 +82,7 @@ fun ChooseIconModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCancel
                                     shape = RoundedCornerShape(ExtraSmallPadding)
                                 )
                                 .padding(ExtraSmallPadding)
-                                .size(LargeIconSize)
-                            ,
+                                .size(LargeIconSize),
                             tint = if (it == currentIcon) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary
                         )
                     }
@@ -106,7 +106,7 @@ fun ChooseIconModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCancel
                 )
             ) {
                 Text(
-                    text = "Отмена".toUpperCase(),
+                    text = stringResource(id = R.string.cancel).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary
                 )
@@ -128,7 +128,7 @@ fun ChooseIconModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCancel
                 )
             ) {
                 Text(
-                    text = "Сохранить".toUpperCase(),
+                    text = stringResource(id = R.string.save).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary
                 )

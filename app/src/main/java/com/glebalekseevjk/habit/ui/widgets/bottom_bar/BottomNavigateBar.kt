@@ -1,9 +1,9 @@
 package com.glebalekseevjk.habit.ui.widgets.bottom_bar
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import android.view.animation.BounceInterpolator
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,8 +34,8 @@ fun BottomNavigateBar(navController: NavHostController, isVisible: Boolean = tru
             Configuration.ORIENTATION_LANDSCAPE -> false
             else -> isVisible
         },
-        enter = slideInVertically(initialOffsetY = { it }),
-        exit = slideOutVertically(targetOffsetY = { it }),
+        enter = fadeIn(animationSpec = tween(1000)),
+        exit = fadeOut(animationSpec = tween(1000)),
         content = {
             BottomNavigateBarContent(navController)
         }

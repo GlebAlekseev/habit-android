@@ -12,6 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -22,6 +24,8 @@ import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.domain.entity.Habit
 import com.glebalekseevjk.habit.ui.external.kalendar.common.data.KalendarEventCounter
 import com.glebalekseevjk.habit.ui.theme.*
+import com.glebalekseevjk.habit.ui.utils.pxToDp
+import java.lang.Integer.min
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -70,30 +74,30 @@ fun HistoryPage(
         is HistoryViewState.Loaded -> {
             val stats = listOf(
                 Stats(
-                    "Текущая\nсерия",
+                    stringResource(id = R.string.current_series),
                     viewStates.currentSeries.toString(),
-                    "Лучшая серия успехов: ",
+                    stringResource(id = R.string.best_series),
                     viewStates.bestSeries.toString(),
                     containerColor = Color(0xFF7e8a97),
                 ),
                 Stats(
-                    "Привычка\nзавершена",
+                    stringResource(id = R.string.number_completed_habits),
                     viewStates.numberCompletedHabits.toString(),
-                    "Эта неделя: ",
+                    stringResource(id = R.string.number_completed_habits_for_last_week),
                     viewStates.numberCompletedHabitsForLastWeek.toString(),
                     containerColor = Color(0xFFf77a4e),
                 ),
                 Stats(
-                    "Доля за\nвершенных",
+                    stringResource(id = R.string.percentage_of_completed),
                     "${viewStates.percentageOfCompleted}%",
-                    "Привычка: ",
+                    stringResource(id = R.string.number_habits),
                     "${viewStates.numberCompletedHabits} / ${viewStates.numberHabits}",
                     containerColor = Color(0xFF4e5778),
                 ),
                 Stats(
-                    "Идеальные\nдни",
+                    stringResource(id = R.string.number_perfect_days),
                     viewStates.numberPerfectDays.toString(),
-                    "Эта неделя: ",
+                    stringResource(id = R.string.number_perfect_days_for_last_week),
                     viewStates.numberPerfectDaysForLastWeek.toString(),
                     containerColor = Color(0xFF54a79c),
                 ),
@@ -108,13 +112,16 @@ fun HistoryPage(
             ) {
                 item {
                     LazyRow(
-                        state = viewStates.lazyRowListState
+                        state = viewStates.lazyRowListState,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         items(stats) {
                             Card(
                                 modifier = Modifier
                                     .padding(ExtraSmallPadding)
-                                    .height(192.dp),
+                                    .height(IntrinsicSize.Max)
+                                    ,
                                 colors = CardDefaults.cardColors(
                                     containerColor = it.containerColor,
                                     contentColor = AppTheme.colors.colorPrimary
@@ -222,10 +229,12 @@ fun HistoryPage(
                                 Text(
                                     text = habitUI.habit.title + when (habitUI.habit.targetType) {
                                         Habit.Companion.TargetType.OFF -> ""
-                                        Habit.Companion.TargetType.REPEAT -> " — ${habitUI.habit.repeatCount} раз"
+                                        Habit.Companion.TargetType.REPEAT -> " — ${habitUI.habit.repeatCount} " + stringResource(
+                                            id = R.string.times
+                                        )
                                         Habit.Companion.TargetType.DURATION -> " — ${
                                             habitUI.habit.duration!!.format(
-                                                DateTimeFormatter.ofPattern("h ч m мин")
+                                                DateTimeFormatter.ofPattern(stringResource(id = R.string.time_pattern))
                                             )
                                         }"
                                     },
@@ -246,7 +255,7 @@ fun HistoryPage(
                                     ) {
                                         Icon(
                                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_progress_check),
-                                            contentDescription = "Прогресс",
+                                            contentDescription = stringResource(id = R.string.progress),
                                             tint = green500,
                                             modifier = Modifier
                                                 .size(ExtraSmallIconSize)
@@ -282,9 +291,15 @@ fun HistoryPage(
                                     ) {
                                         Text(
                                             text = when (habitUI.habit.habitType) {
-                                                Habit.Companion.HabitType.REGULAR -> "Регулярная"
-                                                Habit.Companion.HabitType.HARMFUL -> "Вредная"
-                                                Habit.Companion.HabitType.DISPOSABLE -> "Одноразовая"
+                                                Habit.Companion.HabitType.REGULAR -> stringResource(
+                                                    id = R.string.regular
+                                                )
+                                                Habit.Companion.HabitType.HARMFUL -> stringResource(
+                                                    id = R.string.harmful
+                                                )
+                                                Habit.Companion.HabitType.DISPOSABLE -> stringResource(
+                                                    id = R.string.disposable
+                                                )
                                             },
                                             style = typography.labelSmall,
                                             modifier = Modifier.padding(

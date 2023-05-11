@@ -12,15 +12,16 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
 import com.commandiron.wheel_picker_compose.core.WheelTextPicker
+import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.theme.AppTheme
 import com.glebalekseevjk.habit.ui.theme.LargePadding
 import com.glebalekseevjk.habit.ui.theme.MiddlePadding
 import com.glebalekseevjk.habit.ui.theme.typography
-
 
 @Composable
 fun ChooseRepeatCountModalBottomSheet(
@@ -41,7 +42,7 @@ fun ChooseRepeatCountModalBottomSheet(
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = "Кол-во повторов",
+            text = stringResource(id = R.string.choose_repeat_count),
             color = AppTheme.colors.colorOnPrimary,
             style = typography.titleMedium,
         )
@@ -84,7 +85,7 @@ fun ChooseRepeatCountModalBottomSheet(
                 )
             ) {
                 Text(
-                    text = "Отмена".toUpperCase(),
+                    text = stringResource(id = R.string.cancel).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary
                 )
@@ -106,7 +107,7 @@ fun ChooseRepeatCountModalBottomSheet(
                 )
             ) {
                 Text(
-                    text = "Сохранить".toUpperCase(),
+                    text = stringResource(id = R.string.save).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary
                 )

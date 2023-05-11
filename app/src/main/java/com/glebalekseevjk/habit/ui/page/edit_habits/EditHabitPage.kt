@@ -19,6 +19,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -53,11 +54,11 @@ fun EditHabitPage(
     viewModel: EditHabitViewModel = hiltViewModel()
 ) {
     val viewStates = viewModel.viewStates
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
         viewModel.dispatch(EditHabitViewAction.InitParams(habitId, templateId))
     }
-
 
 
     when (viewStates) {
@@ -100,11 +101,11 @@ fun EditHabitPage(
                             value = titleTextField,
                             onValueChange = { newText ->
                                 titleTextField = newText
-                                viewModel.dispatch(EditHabitViewAction.SetTitle(newText.text))
+                                viewModel.dispatch(EditHabitViewAction.SetTitle(newText.text.trim()))
                             },
                             placeholder = {
                                 Text(
-                                    text = "Название",
+                                    text = stringResource(id = R.string.title),
                                     color = AppTheme.colors.colorOnPrimary,
                                     style = typography.labelLarge,
                                 )
@@ -185,6 +186,7 @@ fun EditHabitPage(
                                         MutableInteractionSource()
                                     }
                                 ) {
+                                    focusManager.clearFocus()
                                     onOpenChooseIconModalBottomSheet(habit.iconId) {
                                         viewModel.dispatch(EditHabitViewAction.SetIconId(it))
                                     }
@@ -195,7 +197,7 @@ fun EditHabitPage(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically) {
                                 Text(
-                                    text = "Значок",
+                                    text = stringResource(id = R.string.icon),
                                     color = AppTheme.colors.colorOnPrimary,
                                     style = typography.titleMedium
                                 )
@@ -221,6 +223,7 @@ fun EditHabitPage(
                                         MutableInteractionSource()
                                     }
                                 ) {
+                                    focusManager.clearFocus()
                                     onOpenChooseIconColorModalBottomSheet(habit.colorRGBA) {
                                         viewModel.dispatch(EditHabitViewAction.SetColorRGBA(it))
                                     }
@@ -231,7 +234,7 @@ fun EditHabitPage(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically) {
                                 Text(
-                                    text = "Цвет",
+                                    text = stringResource(id = R.string.color),
                                     color = AppTheme.colors.colorOnPrimary,
                                     style = typography.titleMedium
                                 )
@@ -261,7 +264,7 @@ fun EditHabitPage(
                                     .fillMaxWidth()
                             ) {
                                 Text(
-                                    text = "Повторение".toUpperCase(),
+                                    text = stringResource(id = R.string.repeat).toUpperCase(),
                                     color = AppTheme.colors.colorOnPrimary,
                                     style = typography.titleMedium
                                 )
@@ -278,6 +281,7 @@ fun EditHabitPage(
                                                 MutableInteractionSource()
                                             }
                                         ) {
+                                            focusManager.clearFocus()
                                             onOpenChooseEventDayModalBottomSheet(habit.daysOfRepeat) {
                                                 viewModel.dispatch(
                                                     EditHabitViewAction.SetDaysOfRepeat(
@@ -299,20 +303,20 @@ fun EditHabitPage(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = "Дни привычек",
+                                        text = stringResource(id = R.string.habits_day),
                                         color = AppTheme.colors.colorOnPrimary,
                                         style = typography.titleMedium
                                     )
                                     Text(
                                         text = habit.daysOfRepeat.sorted().map {
                                             when (it) {
-                                                Habit.Companion.Day.MONDAY -> "пн"
-                                                Habit.Companion.Day.TUESDAY -> "вт"
-                                                Habit.Companion.Day.WEDNESDAY -> "ср"
-                                                Habit.Companion.Day.THURSDAY -> "чт"
-                                                Habit.Companion.Day.FRIDAY -> "пт"
-                                                Habit.Companion.Day.SATURDAY -> "сб"
-                                                Habit.Companion.Day.SUNDAY -> "вс"
+                                                Habit.Companion.Day.MONDAY -> stringResource(id = R.string.weekday_mon).toLowerCase()
+                                                Habit.Companion.Day.TUESDAY -> stringResource(id = R.string.weekday_tue).toLowerCase()
+                                                Habit.Companion.Day.WEDNESDAY -> stringResource(id = R.string.weekday_wed).toLowerCase()
+                                                Habit.Companion.Day.THURSDAY -> stringResource(id = R.string.weekday_thu).toLowerCase()
+                                                Habit.Companion.Day.FRIDAY -> stringResource(id = R.string.weekday_fri).toLowerCase()
+                                                Habit.Companion.Day.SATURDAY -> stringResource(id = R.string.weekday_sat).toLowerCase()
+                                                Habit.Companion.Day.SUNDAY -> stringResource(id = R.string.weekday_sun).toLowerCase()
                                             }
                                         }.joinToString(", "),
                                         color = AppTheme.colors.colorOnPrimary,
@@ -346,7 +350,7 @@ fun EditHabitPage(
                                     .fillMaxWidth(),
                             ) {
                                 Text(
-                                    text = "Выполнить в интервале".toUpperCase(),
+                                    text = stringResource(id = R.string.execute_in_interval).toUpperCase(),
                                     color = AppTheme.colors.colorOnPrimary,
                                     style = typography.titleMedium
                                 )
@@ -366,12 +370,13 @@ fun EditHabitPage(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = "Между ",
+                                        text = stringResource(id = R.string.between) + " ",
                                         color = AppTheme.colors.colorOnPrimary,
                                         style = typography.titleMedium
                                     )
                                     Card(
                                         onClick = {
+                                            focusManager.clearFocus()
                                             onOpenChooseTimeStartModalBottomSheet(
                                                 habit.startExecutionInterval,
                                                 null,
@@ -399,12 +404,13 @@ fun EditHabitPage(
                                     }
 
                                     Text(
-                                        text = " и ",
+                                        text = " " + stringResource(id = R.string.and) + " ",
                                         color = AppTheme.colors.colorOnPrimary,
                                         style = typography.titleMedium
                                     )
                                     Card(
                                         onClick = {
+                                            focusManager.clearFocus()
                                             onOpenChooseTimeEndModalBottomSheet(
                                                 habit.endExecutionInterval,
                                                 habit.startExecutionInterval,
@@ -447,7 +453,7 @@ fun EditHabitPage(
                                     .fillMaxWidth()
                             ) {
                                 Text(
-                                    text = "Окончание".toUpperCase(),
+                                    text = stringResource(id = R.string.deadline).toUpperCase(),
                                     color = AppTheme.colors.colorOnPrimary,
                                     style = typography.titleMedium
                                 )
@@ -464,6 +470,7 @@ fun EditHabitPage(
                                                 MutableInteractionSource()
                                             }
                                         ) {
+                                            focusManager.clearFocus()
                                             onOpenChooseFinishDateModalBottomSheet(habit.deadline) {
                                                 viewModel.dispatch(
                                                     EditHabitViewAction.SetDeadline(
@@ -485,13 +492,17 @@ fun EditHabitPage(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = "Последний день",
+                                        text = stringResource(id = R.string.deadline_title),
                                         color = AppTheme.colors.colorOnPrimary,
                                         style = typography.titleMedium
                                     )
                                     habit.deadline?.let {
                                         Text(
-                                            text = it.format(DateTimeFormatter.ofPattern("MMMM d, yyyy"))
+                                            text = it.format(
+                                                DateTimeFormatter.ofPattern(
+                                                    stringResource(id = R.string.date_2_pattern)
+                                                )
+                                            )
                                                 .toString(),
                                             color = AppTheme.colors.colorOnPrimary,
                                             style = typography.titleSmall
@@ -528,7 +539,7 @@ fun EditHabitPage(
                                     .fillMaxWidth()
                             ) {
                                 Text(
-                                    text = "Цель на день".toUpperCase(),
+                                    text = stringResource(id = R.string.daily_goal).toUpperCase(),
                                     color = AppTheme.colors.colorOnPrimary,
                                     style = typography.titleMedium
                                 )
@@ -545,6 +556,7 @@ fun EditHabitPage(
                                                 MutableInteractionSource()
                                             }
                                         ) {
+                                            focusManager.clearFocus()
                                             onOpenChooseTargetType(habit.targetType) {
                                                 viewModel.dispatch(
                                                     EditHabitViewAction.SetTargetType(
@@ -566,15 +578,15 @@ fun EditHabitPage(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        text = "Цель",
+                                        text = stringResource(id = R.string.target),
                                         color = AppTheme.colors.colorOnPrimary,
                                         style = typography.titleMedium
                                     )
                                     Text(
                                         text = when (habit.targetType) {
-                                            TargetType.OFF -> "Выкл"
-                                            TargetType.REPEAT -> "Повторения"
-                                            TargetType.DURATION -> "Длительность"
+                                            TargetType.OFF -> stringResource(id = R.string.target_type_off)
+                                            TargetType.REPEAT -> stringResource(id = R.string.target_type_repeat)
+                                            TargetType.DURATION -> stringResource(id = R.string.target_type_duration)
                                         },
                                         color = AppTheme.colors.colorOnPrimary,
                                         style = typography.titleSmall,
@@ -607,6 +619,7 @@ fun EditHabitPage(
                                                         MutableInteractionSource()
                                                     }
                                                 ) {
+                                                    focusManager.clearFocus()
                                                     onOpenChooseRepeatCount(habit.repeatCount) {
                                                         viewModel.dispatch(
                                                             EditHabitViewAction.SetRepeatCount(
@@ -628,7 +641,7 @@ fun EditHabitPage(
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Text(
-                                                text = "Кол-во повторов",
+                                                text = stringResource(id = R.string.choose_repeat_count),
                                                 color = AppTheme.colors.colorOnPrimary,
                                                 style = typography.titleMedium
                                             )
@@ -666,6 +679,7 @@ fun EditHabitPage(
                                                         MutableInteractionSource()
                                                     }
                                                 ) {
+                                                    focusManager.clearFocus()
                                                     onOpenChooseDuration(habit.duration) {
                                                         viewModel.dispatch(
                                                             EditHabitViewAction.SetDuration(
@@ -687,7 +701,7 @@ fun EditHabitPage(
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Text(
-                                                text = "Длительность",
+                                                text = stringResource(id = R.string.target_type_duration),
                                                 color = AppTheme.colors.colorOnPrimary,
                                                 style = typography.titleMedium
                                             )
@@ -744,7 +758,7 @@ fun EditHabitPage(
                                 )
                             ) {
                                 Text(
-                                    text = "Удалить".toUpperCase(),
+                                    text = stringResource(id = R.string.remove).toUpperCase(),
                                     style = typography.titleSmall,
                                     color = AppTheme.colors.colorPrimary
                                 )
@@ -773,7 +787,7 @@ fun EditHabitPage(
                             )
                         ) {
                             Text(
-                                text = "Сохранить".toUpperCase(),
+                                text = stringResource(id = R.string.save).toUpperCase(),
                                 style = typography.titleSmall,
                                 color = AppTheme.colors.colorPrimary
                             )

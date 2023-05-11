@@ -21,8 +21,7 @@ object RouteName {
 internal fun NavHostController.navigateTo(
     route: String,
     navConfig: (NavOptionsBuilder) -> Unit = {
-//        it.launchSingleTop = true
-//        it.popUpTo(route) { inclusive = true }
+
     },
     args: Any? = null,
     sideEffect: () -> Unit = {}

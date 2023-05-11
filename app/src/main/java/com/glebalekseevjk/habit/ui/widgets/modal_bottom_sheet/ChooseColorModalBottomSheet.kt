@@ -1,10 +1,11 @@
 package com.glebalekseevjk.habit.ui.widgets.modal_bottom_sheet
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -18,7 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.theme.*
 
 val colorList = listOf(
@@ -52,7 +55,7 @@ fun ChooseColorModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCance
             .padding(MiddlePadding),
     ) {
         Text(
-            text = "Выбор цвета",
+            text = stringResource(id = R.string.choose_color),
             color = AppTheme.colors.colorOnPrimary,
             style = typography.titleMedium,
         )
@@ -65,15 +68,17 @@ fun ChooseColorModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCance
         ) {
             items(colorList) {
 
-                var size =  LargePadding + MiddlePadding
+                var size = LargePadding + MiddlePadding
                 val isCurrent = it.toArgb() == currentColor
-                if (!isCurrent) size += (ExtraSmallPadding*2)
+                if (!isCurrent) size += (ExtraSmallPadding * 2)
                 val padding = if (isCurrent) ExtraSmallPadding else 0.dp
 
 
                 val modifier = if (isCurrent) Modifier.border(
                     SmallPadding, it.copy(alpha = 0.4f), RoundedCornerShape(
-                    ExtraSmallPadding)) else Modifier
+                        ExtraSmallPadding
+                    )
+                ) else Modifier
                 Box(Modifier.padding(SmallPadding), contentAlignment = Alignment.Center) {
                     Button(
                         onClick = {
@@ -95,7 +100,7 @@ fun ChooseColorModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCance
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Button(
                 onClick = {
-                          onCancel()
+                    onCancel()
                 },
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier,
@@ -109,7 +114,7 @@ fun ChooseColorModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCance
                 )
             ) {
                 Text(
-                    text = "Отмена".toUpperCase(),
+                    text = stringResource(id = R.string.cancel).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary
                 )
@@ -131,7 +136,7 @@ fun ChooseColorModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCance
                 )
             ) {
                 Text(
-                    text = "Сохранить".toUpperCase(),
+                    text = stringResource(id = R.string.save).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary
                 )

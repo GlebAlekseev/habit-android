@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">HTracker</string>
-    <string name="app_version">V1.0</string>
-
+    <string name="app_name" translatable="false">HTracker</string>
+    <string name="app_version" translatable="false">V1.0</string>
     <string name="today">Сегодня</string>
     <string name="habits">Привычки</string>
     <string name="history">История</string>
@@ -11,15 +10,11 @@
     <string name="back">Назад</string>
     <string name="lang">Выбрать язык</string>
     <string name="night">Ночной режим</string>
-
     <string name="regular">Регулярная</string>
     <string name="harmful">Вредная</string>
     <string name="disposable">Одноразовая</string>
-
     <string name="templates_label">или выберите из уже готовых</string>
-    <string name="empty"></string>
-
-
+    <string name="empty" translatable="false"></string>
     <string name="categories_trend_title">Привычки в тренде</string>
     <string name="categories_trend_description">Идите в ногу со всем миром</string>
     <string name="categories_trend_title_1">Структурируйте экранное время</string>
@@ -34,38 +29,92 @@
     <string name="categories_trend_description_5">Выделите несколько минут на быструю уборку помещения</string>
     <string name="categories_trend_title_6">Достигните своего идеального веса</string>
     <string name="categories_trend_description_6">Сегодня вы выглядите не так, как вчера</string>
-
-
     <string name="categories_important_title">Важные привычки</string>
     <string name="categories_important_description">Освежите свою жизнь простыми действиями</string>
-
     <string name="categories_eat_title">Ешьте и пейте с пользой для здоровья</string>
     <string name="categories_eat_description">Оставайтесь здоровым, принимая пищу каждый день</string>
-
     <string name="categories_sports_title">Поддерживайте активность и физическую форму</string>
     <string name="categories_sports_description">Пот не обманывает</string>
-
     <string name="categories_morning_title">Доброе утро</string>
     <string name="categories_morning_description">Делайте то, что правильно, по утрам</string>
-
     <string name="categories_sleep_title">Процедура подготовки ко сну</string>
     <string name="categories_sleep_description">Пусть ваш сон сегодня будет сладким</string>
-
     <string name="categories_productivity_title">Повышайте производительность</string>
     <string name="categories_productivity_description">Применяйте стратегический подход к своим усилиям и времени</string>
-
     <string name="categories_leisure_title">Моменты досуга</string>
     <string name="categories_leisure_description">Проживите жизнь по-максимуму</string>
-
     <string name="categories_budget_title">Ведите бюджет</string>
     <string name="categories_budget_description">Каждая копейка должна работать</string>
-
     <string name="categories_pets_title">Цените своих животных</string>
     <string name="categories_pets_description">Вы очень нужны им</string>
-
     <string name="regular_text">Регулярная привычка</string>
     <string name="harmful_text">Вредная привычка</string>
     <string name="disposable_text">Одноразовая привычка</string>
-
-
+    <string name="weekday_sun">ВС</string>
+    <string name="weekday_mon">ПН</string>
+    <string name="weekday_tue">ВТ</string>
+    <string name="weekday_wed">СР</string>
+    <string name="weekday_thu">ЧТ</string>
+    <string name="weekday_fri">ПТ</string>
+    <string name="weekday_sat">СБ</string>
+    <string name="unknown">Неизвестно</string>
+    <string name="month_june">Июнь</string>
+    <string name="month_july">Июль</string>
+    <string name="month_august">Август</string>
+    <string name="month_september">Сентябрь</string>
+    <string name="month_october">Октябрь</string>
+    <string name="month_november">Ноябрь</string>
+    <string name="month_december">Декабрь</string>
+    <string name="month_january">Январь</string>
+    <string name="month_february">Февраль</string>
+    <string name="month_march">Март</string>
+    <string name="month_april">Апрель</string>
+    <string name="month_may">Май</string>
+    <string name="choose_color">Выбор цвета</string>
+    <string name="choose_deadline">Выбор даты окончания</string>
+    <string name="choose_event_days">Выбор дней повторения</string>
+    <string name="choose_icon">Выбор значка</string>
+    <string name="choose_repeat_count">Кол-во повторов</string>
+    <string name="choose_target_type">Выбор типа цели</string>
+    <string name="choose_time">Выбор времени</string>
+    <string name="cancel">Отмена</string>
+    <string name="save">Сохранить</string>
+    <string name="remove">Удалить</string>
+    <string name="target">Цель</string>
+    <string name="daily_goal">Цель на день</string>
+    <string name="deadline_title">Последний день</string>
+    <string name="target_type_off">Выкл</string>
+    <string name="target_type_duration">Длительность</string>
+    <string name="target_type_repeat">Повторение</string>
+    <string name="deadline">Окончание</string>
+    <string name="and">и</string>
+    <string name="between">Между</string>
+    <string name="execute_in_interval">Выполнить в интервале</string>
+    <string name="habits_day">Дни привычек</string>
+    <string name="repeat">Повторение</string>
+    <string name="color">Цвет</string>
+    <string name="icon">Значок</string>
+    <string name="title">Название</string>
+    <string name="empty_word">Пусто</string>
+    <string name="progress">Пусто</string>
+    <string name="times">раз</string>
+    <string name="create_habit">Создайте привычку</string>
+    <string name="create_new_habit">Создайте новую привычку</string>
+    <string name="disposable_slogan">Напомнит вам о важном разовом событии в выбранную дату.\nПример: сходить к врачу в пятницу.</string>
+    <string name="harmful_slogan">Каждый день по умолчанию выполнено.\nНо если вы сорвались, снимите отметку о выполнении.\nПример: бросить курить и пить.</string>
+    <string name="regular_slogan">Часть ваших повседневных привычек.\nРегулярно помечайте их как выполненные.\nНапример: йога три раза в неделю.</string>
+    <string name="current_series">Текущая\nсерия</string>
+    <string name="best_series">Лучшая серия успехов: </string>
+    <string name="number_completed_habits">Привычка\nзавершена</string>
+    <string name="number_completed_habits_for_last_week">Эта неделя: </string>
+    <string name="percentage_of_completed">Доля за\nвершенных</string>
+    <string name="number_habits">Привычка: </string>
+    <string name="number_perfect_days">Идеальные\nдни</string>
+    <string name="number_perfect_days_for_last_week">Эта неделя: </string>
+    <string name="weekday_pattern" translatable="false">EEEE</string>
+    <string name="date_pattern" translatable="false">d MMMM yyyy</string>
+    <string name="date_2_pattern" translatable="false">MMMM d, yyyy</string>
+    <string name="date_3_pattern" translatable="false">d MMMM</string>
+    <string name="kalendar_pattern" translatable="false">MMMM y</string>
+    <string name="time_pattern" translatable="false">h ч m мин</string>
 </resources>

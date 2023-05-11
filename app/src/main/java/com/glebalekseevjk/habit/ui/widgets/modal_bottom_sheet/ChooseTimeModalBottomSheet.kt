@@ -1,23 +1,27 @@
 package com.glebalekseevjk.habit.ui.widgets.modal_bottom_sheet
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.commandiron.wheel_picker_compose.WheelTimePicker
-import com.commandiron.wheel_picker_compose.core.SelectorProperties
 import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
-import com.glebalekseevjk.habit.ui.theme.*
+import com.glebalekseevjk.habit.R
+import com.glebalekseevjk.habit.ui.theme.AppTheme
+import com.glebalekseevjk.habit.ui.theme.LargePadding
+import com.glebalekseevjk.habit.ui.theme.MiddlePadding
+import com.glebalekseevjk.habit.ui.theme.typography
 import java.time.LocalTime
 
 @Composable
@@ -38,7 +42,7 @@ fun ChooseTimeModalBottomSheet(
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
-            text = "Выбор времени",
+            text = stringResource(id = R.string.choose_time),
             color = AppTheme.colors.colorOnPrimary,
             style = typography.titleMedium,
         )
@@ -51,7 +55,7 @@ fun ChooseTimeModalBottomSheet(
             startTime = initValue ?: LocalTime.of(LocalTime.now().hour, 0),
             minTime = minValue ?: LocalTime.MIN,
             maxTime = maxValue ?: LocalTime.MAX,
-            size = DpSize(256.dp,128.dp),
+            size = DpSize(256.dp, 128.dp),
             rowCount = 3,
             textStyle = typography.labelMedium,
             textColor = AppTheme.colors.colorOnPrimary,
@@ -78,7 +82,7 @@ fun ChooseTimeModalBottomSheet(
                 )
             ) {
                 Text(
-                    text = "Отмена".toUpperCase(),
+                    text = stringResource(id = R.string.cancel).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary
                 )
@@ -100,7 +104,7 @@ fun ChooseTimeModalBottomSheet(
                 )
             ) {
                 Text(
-                    text = "Сохранить".toUpperCase(),
+                    text = stringResource(id = R.string.save).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary
                 )

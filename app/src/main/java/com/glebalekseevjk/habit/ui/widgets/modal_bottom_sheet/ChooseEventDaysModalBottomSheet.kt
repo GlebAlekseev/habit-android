@@ -10,7 +10,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.Day
 import com.glebalekseevjk.habit.ui.theme.*
 
@@ -53,7 +55,7 @@ fun ChooseEventDaysModalBottomSheet(
     ) {
 
         Text(
-            text = "Выбор дней повторения",
+            text = stringResource(id = R.string.choose_event_days),
             color = AppTheme.colors.colorOnPrimary,
             style = typography.titleMedium,
         )
@@ -77,7 +79,7 @@ fun ChooseEventDaysModalBottomSheet(
                 border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
             ) {
                 Text(
-                    "ПН",
+                    stringResource(id = R.string.weekday_mon),
                     style = typography.titleMedium,
                     modifier = Modifier.padding(SmallPadding)
                 )
@@ -94,7 +96,7 @@ fun ChooseEventDaysModalBottomSheet(
                 border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
             ) {
                 Text(
-                    "ВТ",
+                    stringResource(id = R.string.weekday_tue),
                     style = typography.titleMedium,
                     modifier = Modifier.padding(SmallPadding)
                 )
@@ -111,7 +113,7 @@ fun ChooseEventDaysModalBottomSheet(
                 border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
             ) {
                 Text(
-                    "СР",
+                    stringResource(id = R.string.weekday_wed),
                     style = typography.titleMedium,
                     modifier = Modifier.padding(SmallPadding)
                 )
@@ -128,7 +130,7 @@ fun ChooseEventDaysModalBottomSheet(
                 border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
             ) {
                 Text(
-                    "ЧТ",
+                    stringResource(id = R.string.weekday_thu),
                     style = typography.titleMedium,
                     modifier = Modifier.padding(SmallPadding)
                 )
@@ -145,7 +147,7 @@ fun ChooseEventDaysModalBottomSheet(
                 border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
             ) {
                 Text(
-                    "ПТ",
+                    stringResource(id = R.string.weekday_fri),
                     style = typography.titleMedium,
                     modifier = Modifier.padding(SmallPadding)
                 )
@@ -162,7 +164,7 @@ fun ChooseEventDaysModalBottomSheet(
                 border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
             ) {
                 Text(
-                    "СБ",
+                    stringResource(id = R.string.weekday_sat),
                     style = typography.titleMedium,
                     modifier = Modifier.padding(SmallPadding)
                 )
@@ -179,7 +181,7 @@ fun ChooseEventDaysModalBottomSheet(
                 border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
             ) {
                 Text(
-                    "ВС",
+                    stringResource(id = R.string.weekday_sun),
                     style = typography.titleMedium,
                     modifier = Modifier.padding(SmallPadding)
                 )
@@ -206,7 +208,7 @@ fun ChooseEventDaysModalBottomSheet(
                 )
             ) {
                 Text(
-                    text = "Отмена".toUpperCase(),
+                    text = stringResource(id = R.string.cancel).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary
                 )
@@ -236,7 +238,7 @@ fun ChooseEventDaysModalBottomSheet(
                 )
             ) {
                 Text(
-                    text = "Сохранить".toUpperCase(),
+                    text = stringResource(id = R.string.save).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary
                 )

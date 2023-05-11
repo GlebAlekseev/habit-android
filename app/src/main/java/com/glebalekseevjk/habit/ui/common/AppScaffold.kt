@@ -1,22 +1,18 @@
 package com.glebalekseevjk.habit.ui.common
 
 import android.os.Parcelable
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.invalidate
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavType
+import androidx.navigation.*
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -36,14 +32,12 @@ import com.glebalekseevjk.habit.ui.page.today.TodayPage
 import com.glebalekseevjk.habit.ui.theme.AppTheme
 import com.glebalekseevjk.habit.ui.theme.MiddlePadding
 import com.glebalekseevjk.habit.ui.theme.drawerShape
-import com.glebalekseevjk.habit.ui.theme.typography
 import com.glebalekseevjk.habit.ui.utils.fromJson
 import com.glebalekseevjk.habit.ui.widgets.bottom_bar.BottomNavigateBar
 import com.glebalekseevjk.habit.ui.widgets.modal_bottom_sheet.*
 import com.glebalekseevjk.habit.ui.widgets.top_bar.MainTopBar
 import com.glebalekseevjk.habit.ui.widgets.top_bar.StepTopBar
 import com.glebalekseevjk.habit.ui.widgets.top_bar.WindowTopBar
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
@@ -65,13 +59,28 @@ sealed class ModalBottomSheetState : Parcelable {
     ) :
         ModalBottomSheetState()
 
-    data class ChooseTimeStart(val initValue: LocalTime?,val minValue: LocalTime?, val maxValue: LocalTime?, val setTime: (LocalTime) -> Unit) :
+    data class ChooseTimeStart(
+        val initValue: LocalTime?,
+        val minValue: LocalTime?,
+        val maxValue: LocalTime?,
+        val setTime: (LocalTime) -> Unit
+    ) :
         ModalBottomSheetState()
 
-    data class ChooseTimeEnd(val initValue: LocalTime?,val minValue: LocalTime?, val maxValue: LocalTime?, val setTime: (LocalTime) -> Unit) :
+    data class ChooseTimeEnd(
+        val initValue: LocalTime?,
+        val minValue: LocalTime?,
+        val maxValue: LocalTime?,
+        val setTime: (LocalTime) -> Unit
+    ) :
         ModalBottomSheetState()
 
-    data class ChooseTime(val initValue: LocalTime?,val minValue: LocalTime?, val maxValue: LocalTime?, val setTime: (LocalTime) -> Unit) :
+    data class ChooseTime(
+        val initValue: LocalTime?,
+        val minValue: LocalTime?,
+        val maxValue: LocalTime?,
+        val setTime: (LocalTime) -> Unit
+    ) :
         ModalBottomSheetState()
 
     data class ChooseDate(val initValue: LocalDate?, val setDate: (LocalDate) -> Unit) :
@@ -96,7 +105,6 @@ fun AppScaffold(
     onLanguageChange: (Language) -> Unit,
     lang: String
 ) {
-    var counter = 0
     val navController = rememberAnimatedNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -107,6 +115,7 @@ fun AppScaffold(
 
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true
     )
 
     var modalBottomSheetType: ModalBottomSheetState by rememberSaveable {
@@ -124,22 +133,22 @@ fun AppScaffold(
                 is ModalBottomSheetState.ChooseColor -> ChooseColorModalBottomSheet(
                     initValue = action.initValue,
                     callback = action.setColorRGBA,
-                    onCancel = { scope.launch { bottomSheetState.hide() }}
+                    onCancel = { scope.launch { bottomSheetState.hide() } }
                 )
                 is ModalBottomSheetState.ChooseDate -> ChooseDateModalBottomSheet(
                     action.initValue,
                     action.setDate,
-                    onCancel = { scope.launch { bottomSheetState.hide() }}
+                    onCancel = { scope.launch { bottomSheetState.hide() } }
                 )
                 is ModalBottomSheetState.ChooseEventDays -> ChooseEventDaysModalBottomSheet(
                     action.initValue,
                     action.setEventDays,
-                    onCancel = { scope.launch { bottomSheetState.hide() }}
+                    onCancel = { scope.launch { bottomSheetState.hide() } }
                 )
                 is ModalBottomSheetState.ChooseIcon -> ChooseIconModalBottomSheet(
                     action.initValue,
                     action.setIconId,
-                    onCancel = { scope.launch { bottomSheetState.hide() }}
+                    onCancel = { scope.launch { bottomSheetState.hide() } }
                 )
                 is ModalBottomSheetState.ChooseTime -> {
                     ChooseTimeModalBottomSheet(
@@ -147,7 +156,7 @@ fun AppScaffold(
                         action.minValue,
                         action.maxValue,
                         action.setTime,
-                        onCancel = { scope.launch { bottomSheetState.hide() }}
+                        onCancel = { scope.launch { bottomSheetState.hide() } }
                     )
                 }
                 is ModalBottomSheetState.ChooseTimeStart -> {
@@ -156,7 +165,7 @@ fun AppScaffold(
                         action.minValue,
                         action.maxValue,
                         action.setTime,
-                        onCancel = { scope.launch { bottomSheetState.hide() }}
+                        onCancel = { scope.launch { bottomSheetState.hide() } }
                     )
                 }
                 is ModalBottomSheetState.ChooseTimeEnd -> {
@@ -165,7 +174,7 @@ fun AppScaffold(
                         action.minValue,
                         action.maxValue,
                         action.setTime,
-                        onCancel = { scope.launch { bottomSheetState.hide()  }}
+                        onCancel = { scope.launch { bottomSheetState.hide() } }
                     )
                 }
                 is ModalBottomSheetState.ChooseDuration -> ChooseTimeModalBottomSheet(
@@ -173,17 +182,17 @@ fun AppScaffold(
                     null,
                     null,
                     action.setDuration,
-                    onCancel = { scope.launch { bottomSheetState.hide()  }}
+                    onCancel = { scope.launch { bottomSheetState.hide() } }
                 )
                 is ModalBottomSheetState.ChooseRepeatCount -> ChooseRepeatCountModalBottomSheet(
                     action.initValue,
                     action.setRepeatCount,
-                    onCancel = { scope.launch { bottomSheetState.hide() }}
+                    onCancel = { scope.launch { bottomSheetState.hide() } }
                 )
                 is ModalBottomSheetState.ChooseTargetType -> ChooseTargetTypeModalBottomSheet(
                     action.initValue,
                     action.setTargetType,
-                    onCancel = { scope.launch { bottomSheetState.hide() }}
+                    onCancel = { scope.launch { bottomSheetState.hide() } }
                 )
                 ModalBottomSheetState.Hide -> {}
             }
@@ -203,9 +212,18 @@ fun AppScaffold(
             backgroundColor = AppTheme.colors.colorPrimary,
             bottomBar = {
                 when (currentDestination?.route) {
-                    RouteName.TODAY -> BottomNavigateBar(navController = navController, isVisibleBottomBar)
-                    RouteName.HABITS -> BottomNavigateBar(navController = navController, isVisibleBottomBar)
-                    RouteName.HISTORY -> BottomNavigateBar(navController = navController, isVisibleBottomBar)
+                    RouteName.TODAY -> BottomNavigateBar(
+                        navController = navController,
+                        isVisibleBottomBar
+                    )
+                    RouteName.HABITS -> BottomNavigateBar(
+                        navController = navController,
+                        isVisibleBottomBar
+                    )
+                    RouteName.HISTORY -> BottomNavigateBar(
+                        navController = navController,
+                        isVisibleBottomBar
+                    )
                 }
             },
             drawerShape = drawerShape,
@@ -326,15 +344,20 @@ fun AppScaffold(
             drawerBackgroundColor = AppTheme.colors.colorPrimary,
             drawerScrimColor = AppTheme.colors.colorOnPrimary.copy(alpha = 0.4f),
             content = { it ->
+                BackHandler(enabled = bottomSheetState.isVisible) {
+                    scope.launch {
+                        bottomSheetState.hide()
+                    }
+                }
                 AnimatedNavHost(
                     modifier = Modifier
                         .padding(it),
                     navController = navController,
                     startDestination = RouteName.SPLASH,
-                    enterTransition = { EnterTransition.None },
-                    exitTransition = { ExitTransition.None },
-                    popEnterTransition = { EnterTransition.None },
-                    popExitTransition = { ExitTransition.None },
+                    enterTransition = { defaultHTrackerEnterTransition(initialState, targetState) },
+                    exitTransition = { defaultHTrackerExitTransition(initialState, targetState) },
+                    popEnterTransition = { defaultHTrackerPopEnterTransition() },
+                    popExitTransition = { defaultHTrackerPopExitTransition() },
                 ) {
                     composable(route = RouteName.TODAY) {
                         TodayPage()
@@ -419,14 +442,24 @@ fun AppScaffold(
                                 onOpenChooseTimeStartModalBottomSheet = { initValue, minValue, maxValue, callback ->
                                     scope.launch {
                                         modalBottomSheetType =
-                                            ModalBottomSheetState.ChooseTimeStart(initValue, minValue, maxValue, callback)
+                                            ModalBottomSheetState.ChooseTimeStart(
+                                                initValue,
+                                                minValue,
+                                                maxValue,
+                                                callback
+                                            )
                                         bottomSheetState.show()
                                     }
                                 },
                                 onOpenChooseTimeEndModalBottomSheet = { initValue, minValue, maxValue, callback ->
                                     scope.launch {
                                         modalBottomSheetType =
-                                            ModalBottomSheetState.ChooseTimeEnd(initValue, minValue, maxValue, callback)
+                                            ModalBottomSheetState.ChooseTimeEnd(
+                                                initValue,
+                                                minValue,
+                                                maxValue,
+                                                callback
+                                            )
                                         bottomSheetState.show()
                                     }
                                 },
@@ -524,5 +557,50 @@ fun AppScaffold(
             }
         )
     }
-
 }
+
+
+
+
+@ExperimentalAnimationApi
+private fun AnimatedContentScope<*>.defaultHTrackerEnterTransition(
+    initial: NavBackStackEntry,
+    target: NavBackStackEntry,
+): EnterTransition {
+    val initialNavGraph = initial.destination.hostNavGraph
+    val targetNavGraph = target.destination.hostNavGraph
+    // If we're crossing nav graphs (bottom navigation graphs), we crossfade
+    if (initialNavGraph.id != targetNavGraph.id) {
+        return fadeIn()
+    }
+    // Otherwise we're in the same nav graph, we can imply a direction
+    return fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.Up)
+}
+
+@ExperimentalAnimationApi
+private fun AnimatedContentScope<*>.defaultHTrackerExitTransition(
+    initial: NavBackStackEntry,
+    target: NavBackStackEntry,
+): ExitTransition {
+    val initialNavGraph = initial.destination.hostNavGraph
+    val targetNavGraph = target.destination.hostNavGraph
+    if (initialNavGraph.id != targetNavGraph.id) {
+        return fadeOut()
+    }
+    return fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.Up)
+}
+
+private val NavDestination.hostNavGraph: NavGraph
+    get() = hierarchy.first { it is NavGraph } as NavGraph
+
+@ExperimentalAnimationApi
+private fun AnimatedContentScope<*>.defaultHTrackerPopEnterTransition(): EnterTransition {
+    return fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.Down)
+}
+
+@ExperimentalAnimationApi
+private fun AnimatedContentScope<*>.defaultHTrackerPopExitTransition(): ExitTransition {
+    return fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.Down)
+}
+
+

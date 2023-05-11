@@ -35,7 +35,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.stringResource
 import com.himanshoe.kalendar.common.KalendarKonfig
+import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.theme.AppTheme
 import com.glebalekseevjk.habit.ui.theme.typography
 import java.text.DateFormatSymbols
@@ -63,16 +65,17 @@ internal fun KalendarWeekDayNames(kalendarKonfig: KalendarKonfig) {
     }
 }
 
+@Composable
 fun ruLocale(name: String): String{
     when(name){
-        "Sun" -> return "ВС"
-        "Mon" -> return "ПН"
-        "Tue" -> return "ВТ"
-        "Wed" -> return "СР"
-        "Thu" -> return "ЧТ"
-        "Fri" -> return "ПТ"
-        "Sat" -> return "СБ"
-        else -> return "Unknown"
+        "Sun" -> return stringResource(id = R.string.weekday_sun)
+        "Mon" -> return stringResource(id = R.string.weekday_mon)
+        "Tue" -> return stringResource(id = R.string.weekday_tue)
+        "Wed" -> return stringResource(id = R.string.weekday_wed)
+        "Thu" -> return stringResource(id = R.string.weekday_thu)
+        "Fri" -> return stringResource(id = R.string.weekday_fri)
+        "Sat" -> return stringResource(id = R.string.weekday_sat)
+        else -> return stringResource(id = R.string.unknown)
     }
 }
 

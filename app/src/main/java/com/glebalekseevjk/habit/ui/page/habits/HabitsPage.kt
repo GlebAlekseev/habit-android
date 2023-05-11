@@ -1,13 +1,11 @@
 package com.glebalekseevjk.habit.ui.page.habits
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,8 +33,7 @@ import kotlin.math.max
 
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class,
-    ExperimentalFoundationApi::class
+    ExperimentalMaterial3Api::class
 )
 @Composable
 fun HabitsPage(
@@ -63,7 +61,11 @@ fun HabitsPage(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.Bottom
             ) {
-                Text(text = "Пусто", color = AppTheme.colors.colorOnPrimary, style = typography.headlineLarge.copy(fontSize = 48.sp))
+                Text(
+                    text = stringResource(id = R.string.empty_word),
+                    color = AppTheme.colors.colorOnPrimary,
+                    style = typography.headlineLarge.copy(fontSize = 48.sp)
+                )
             }
         }
         is HabitsViewState.Loading, is HabitsViewState.Init -> {
@@ -85,7 +87,8 @@ fun HabitsPage(
                 state = viewStates.lazyListState,
                 verticalArrangement = Arrangement.Top,
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = PaddingValues(MiddlePadding)
             ) {
                 items(viewStates.habitList) { habitUI ->
                     var elementHeight by remember {
@@ -94,7 +97,7 @@ fun HabitsPage(
 
                     Card(
                         modifier = Modifier
-                            .padding(horizontal = MiddlePadding, vertical = ExtraSmallPadding)
+                            .padding(vertical = ExtraSmallPadding)
                             .fillMaxWidth(),
                         colors = CardDefaults.cardColors(
                             containerColor = AppTheme.colors.colorOnPrimary.copy(alpha = 0.1f),
@@ -143,10 +146,16 @@ fun HabitsPage(
                                         Text(
                                             text = habitUI.habit.title + when (habitUI.habit.targetType) {
                                                 Habit.Companion.TargetType.OFF -> ""
-                                                Habit.Companion.TargetType.REPEAT -> " — ${habitUI.habit.repeatCount} раз"
+                                                Habit.Companion.TargetType.REPEAT -> " — ${habitUI.habit.repeatCount} " + stringResource(
+                                                    id = R.string.times
+                                                )
                                                 Habit.Companion.TargetType.DURATION -> " — ${
                                                     habitUI.habit.duration!!.format(
-                                                        DateTimeFormatter.ofPattern("h ч m мин")
+                                                        DateTimeFormatter.ofPattern(
+                                                            stringResource(
+                                                                id = R.string.time_pattern
+                                                            )
+                                                        )
                                                     )
                                                 }"
                                             },
@@ -178,9 +187,9 @@ fun HabitsPage(
                                             ) {
                                                 Text(
                                                     text = when (habitUI.habit.habitType) {
-                                                        REGULAR -> "Регулярная"
-                                                        HARMFUL -> "Вредная"
-                                                        DISPOSABLE -> "Одноразовая"
+                                                        REGULAR -> stringResource(id = R.string.regular)
+                                                        HARMFUL -> stringResource(id = R.string.harmful)
+                                                        DISPOSABLE -> stringResource(id = R.string.disposable)
                                                     },
                                                     style = typography.labelSmall,
                                                     modifier = Modifier.padding(
@@ -237,7 +246,11 @@ fun HabitsPage(
                                             ) {
                                                 Text(
                                                     text = habitUI.habit.deadline!!.format(
-                                                        DateTimeFormatter.ofPattern("d MMMM")
+                                                        DateTimeFormatter.ofPattern(
+                                                            stringResource(
+                                                                id = R.string.date_3_pattern
+                                                            )
+                                                        )
                                                     ),
                                                     style = typography.labelSmall,
                                                     modifier = Modifier.padding(
@@ -254,7 +267,6 @@ fun HabitsPage(
 
                                 Card(
                                     shape = RoundedCornerShape(SmallPadding),
-//                                    border = BorderStroke(2.dp, Color(habitUI.habit.colorRGBA)),
                                     colors = CardDefaults.cardColors(
                                         contentColor = Color(habitUI.habit.colorRGBA),
                                         containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.2f)
@@ -336,13 +348,20 @@ fun HabitsPage(
                                             ) {
                                                 Text(
                                                     text = when (it.dayOfWeek!!) {
-                                                        DayOfWeek.MONDAY -> "Пн"
-                                                        DayOfWeek.TUESDAY -> "Вт"
-                                                        DayOfWeek.WEDNESDAY -> "Ср"
-                                                        DayOfWeek.THURSDAY -> "Чт"
-                                                        DayOfWeek.FRIDAY -> "Пт"
-                                                        DayOfWeek.SATURDAY -> "Сб"
-                                                        DayOfWeek.SUNDAY -> "Вс"
+                                                        DayOfWeek.MONDAY -> stringResource(id = R.string.weekday_mon).lowercase()
+                                                            .capitalize()
+                                                        DayOfWeek.TUESDAY -> stringResource(id = R.string.weekday_tue).lowercase()
+                                                            .capitalize()
+                                                        DayOfWeek.WEDNESDAY -> stringResource(id = R.string.weekday_wed).lowercase()
+                                                            .capitalize()
+                                                        DayOfWeek.THURSDAY -> stringResource(id = R.string.weekday_thu).lowercase()
+                                                            .capitalize()
+                                                        DayOfWeek.FRIDAY -> stringResource(id = R.string.weekday_fri).lowercase()
+                                                            .capitalize()
+                                                        DayOfWeek.SATURDAY -> stringResource(id = R.string.weekday_sat).lowercase()
+                                                            .capitalize()
+                                                        DayOfWeek.SUNDAY -> stringResource(id = R.string.weekday_sun).lowercase()
+                                                            .capitalize()
                                                     },
                                                     style = typography.labelMedium,
                                                     textDecoration = if (isTarget) TextDecoration.Underline else null
@@ -425,7 +444,7 @@ fun HabitsPage(
                                 ) {
                                     Icon(
                                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_progress_check),
-                                        contentDescription = "Прогресс",
+                                        contentDescription = stringResource(id = R.string.progress),
                                         tint = green500,
                                         modifier = Modifier
                                             .size(SmallIconSize)
@@ -471,12 +490,15 @@ fun HabitsPage(
                 }
 
                 item() {
-                    Row(Modifier.padding(vertical = MiddlePadding)) {
+                    Row(Modifier
+                        .padding(vertical = SmallPadding)
+                    ) {
                         Button(
                             onClick = onNavigateToAddHabits,
                             modifier = Modifier,
+                            shape = mediumRoundedCornerShape,
                             contentPadding = PaddingValues(
-                                vertical = MiddlePadding,
+                                vertical = SmallPadding,
                                 horizontal = LargePadding
                             ),
                             colors = ButtonDefaults.buttonColors(
@@ -485,8 +507,8 @@ fun HabitsPage(
                             )
                         ) {
                             Text(
-                                text = "Создайте новую привычку".toUpperCase(),
-                                style = typography.titleMedium,
+                                text = stringResource(id = R.string.create_new_habit).toUpperCase(),
+                                style = typography.titleSmall,
                                 color = AppTheme.colors.colorPrimary
                             )
                         }

@@ -7,7 +7,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -16,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.tooling.preview.Preview
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.theme.*
@@ -24,7 +22,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun MainDrawer(
@@ -82,12 +80,15 @@ fun MainDrawer(
                         style = typography.bodyMedium
                     )
                     Text(
-                        text = LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE")).capitalize(),
+                        text = LocalDate.now()
+                            .format(DateTimeFormatter.ofPattern(stringResource(id = R.string.weekday_pattern)))
+                            .capitalize(),
                         style = typography.titleLarge,
                         modifier = baseModifier.padding(vertical = ExtraSmallPadding)
                     )
                     Text(
-                        text = LocalDate.now().format(DateTimeFormatter.ofPattern("d MMMM yyyy г")),
+                        text = LocalDate.now()
+                            .format(DateTimeFormatter.ofPattern(stringResource(id = R.string.date_pattern))),
                         modifier = baseModifier.padding(bottom = MiddlePadding),
                         style = typography.bodyMedium
                     )
@@ -127,10 +128,7 @@ fun MainDrawer(
                                 )
                             }
                         }
-
-
                     }
-
                 }
             }
         }

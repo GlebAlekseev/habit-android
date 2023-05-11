@@ -13,11 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.domain.entity.Habit
 import com.glebalekseevjk.habit.ui.page.habits.HabitsViewState
 import com.glebalekseevjk.habit.ui.theme.*
@@ -49,7 +51,7 @@ fun TodayPage(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.Bottom
             ) {
-                Text(text = "Пусто", color = AppTheme.colors.colorOnPrimary, style = typography.headlineLarge.copy(fontSize = 48.sp))
+                Text(text = stringResource(id = R.string.empty_word), color = AppTheme.colors.colorOnPrimary, style = typography.headlineLarge.copy(fontSize = 48.sp))
             }
         }
         is TodayViewState.Loading, is TodayViewState.Init -> {
@@ -129,10 +131,12 @@ fun TodayPage(
                                 Text(
                                     text = habitUI.habit.title + when (habitUI.habit.targetType) {
                                         Habit.Companion.TargetType.OFF -> ""
-                                        Habit.Companion.TargetType.REPEAT -> " — ${habitUI.habit.repeatCount} раз"
+                                        Habit.Companion.TargetType.REPEAT -> " — ${habitUI.habit.repeatCount} " + stringResource(
+                                            id = R.string.times
+                                        )
                                         Habit.Companion.TargetType.DURATION -> " — ${
                                             habitUI.habit.duration!!.format(
-                                                DateTimeFormatter.ofPattern("h ч m мин")
+                                                DateTimeFormatter.ofPattern(stringResource(id = R.string.time_pattern))
                                             )
                                         }"
                                     },
@@ -146,29 +150,6 @@ fun TodayPage(
                                     modifier = Modifier,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-//                                    Row(
-//                                        modifier = Modifier,
-//                                        verticalAlignment = Alignment.CenterVertically
-//
-//                                    ) {
-//                                        Icon(
-//                                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_progress_check),
-//                                            contentDescription = "Прогресс",
-//                                            tint = green500,
-//                                            modifier = Modifier
-//                                                .size(ExtraSmallIconSize)
-//                                        )
-//                                        Text(
-//                                            text = "$percent%",
-//                                            color = green500,
-//                                            style = typography.labelSmall,
-//                                            modifier = Modifier.padding(
-//                                                start = ExtraSmallPadding / 2,
-//                                                end = SmallPadding
-//                                            )
-//                                        )
-//
-//                                    }
                                     Card(
                                         shape = RoundedCornerShape(ExtraSmallPadding / 2),
                                         colors = when (habitUI.habit.habitType) {
@@ -189,9 +170,15 @@ fun TodayPage(
                                     ) {
                                         Text(
                                             text = when (habitUI.habit.habitType) {
-                                                Habit.Companion.HabitType.REGULAR -> "Регулярная"
-                                                Habit.Companion.HabitType.HARMFUL -> "Вредная"
-                                                Habit.Companion.HabitType.DISPOSABLE -> "Одноразовая"
+                                                Habit.Companion.HabitType.REGULAR -> stringResource(
+                                                    id = R.string.regular
+                                                )
+                                                Habit.Companion.HabitType.HARMFUL -> stringResource(
+                                                    id = R.string.harmful
+                                                )
+                                                Habit.Companion.HabitType.DISPOSABLE -> stringResource(
+                                                    id = R.string.disposable
+                                                )
                                             },
                                             style = typography.labelSmall,
                                             modifier = Modifier.padding(
@@ -248,7 +235,7 @@ fun TodayPage(
                                     ) {
                                         Text(
                                             text = habitUI.habit.deadline!!.format(
-                                                DateTimeFormatter.ofPattern("d MMMM")
+                                                DateTimeFormatter.ofPattern(stringResource(id = R.string.date_3_pattern))
                                             ),
                                             style = typography.labelSmall,
                                             modifier = Modifier.padding(

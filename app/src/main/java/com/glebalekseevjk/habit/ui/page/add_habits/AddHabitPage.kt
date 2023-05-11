@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.HabitType
@@ -41,17 +40,18 @@ fun AddHabitPage(
         REGULAR to Triple(
             stringResource(id = R.string.regular),
             ImageVector.vectorResource(id = R.drawable.ic_regular),
-            "Часть ваших повседневных привычек.\nРегулярно помечайте их как выполненные.\nНапример: йога три раза в неделю."
+            stringResource(id = R.string.regular_slogan)
         ),
         HARMFUL to Triple(
             stringResource(id = R.string.harmful),
             ImageVector.vectorResource(id = R.drawable.ic_harmful),
-            "Каждый день по умолчанию выполнено.\nНо если вы сорвались, снимите отметку о выполнении.\nПример: бросить курить и пить."
+            stringResource(id = R.string.harmful_slogan)
+
         ),
         DISPOSABLE to Triple(
             stringResource(id = R.string.disposable),
             ImageVector.vectorResource(id = R.drawable.ic_disposable),
-            "Напомнит вам о важном разовом событии в выбранную дату.\nПример: сходить к врачу в пятницу."
+            stringResource(id = R.string.disposable_slogan)
         )
     )
 
@@ -181,7 +181,7 @@ fun AddHabitPage(
                 )
             ) {
                 Text(
-                    text = "Создайте привычку".toUpperCase(),
+                    text = stringResource(id = R.string.create_habit).toUpperCase(),
                     style = typography.titleSmall,
                     color = AppTheme.colors.colorPrimary
                 )
