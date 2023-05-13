@@ -53,7 +53,7 @@ data class Category(
                 titleStringId = R.string.categories_sleep_title,
                 descriptionStringId = R.string.categories_sleep_description,
                 iconId = R.drawable.ic_categories_sleep,
-                colorRGBA = Color(0xFF2a3d66).toArgb(),
+                colorRGBA = Color(0xFF9c7ab8).toArgb(),
             ),
             Category(
                 id = 7,

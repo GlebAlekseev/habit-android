@@ -38,7 +38,7 @@ data class TemplateHabit(
                 titleStringId = R.string.empty,
                 descriptionStringId = R.string.empty,
                 iconId = R.drawable.ic_disposable,
-                colorRGBA = Color(0xFFb2ebf2).toArgb(),
+                colorRGBA = Color(0xFF07d4dc).toArgb(),
                 repeatType = SPECIFIC_DAYS,
                 daysOfRepeat = setOf(),
                 startExecutionInterval = LocalTime.of(12, 0),
@@ -55,7 +55,7 @@ data class TemplateHabit(
                 titleStringId = R.string.empty,
                 descriptionStringId = R.string.empty,
                 iconId = R.drawable.ic_harmful,
-                colorRGBA = Color(0xFFa70000).toArgb(),
+                colorRGBA = Color(0xFFcf3b5f).toArgb(),
                 repeatType = SPECIFIC_DAYS,
                 daysOfRepeat = setOf(
                     MONDAY,
@@ -80,7 +80,7 @@ data class TemplateHabit(
                 titleStringId = R.string.empty,
                 descriptionStringId = R.string.empty,
                 iconId = R.drawable.ic_regular,
-                colorRGBA = Color(0xFF1e5f74).toArgb(),
+                colorRGBA = Color(0xFF0a7272).toArgb(),
                 repeatType = SPECIFIC_DAYS,
                 daysOfRepeat = setOf(
                     MONDAY,
@@ -100,15 +100,13 @@ data class TemplateHabit(
                 duration = LocalTime.of(0, 30)
             ),
 
-
-
             TemplateHabit(
                 id = 1,
                 categoryId = 1,
                 titleStringId = R.string.categories_trend_title_1,
                 descriptionStringId = R.string.categories_trend_description_1,
                 iconId = R.drawable.ic_categories_trend_1,
-                colorRGBA = Color(0xFF0f3057).toArgb(),
+                colorRGBA = Color(0xFFec5c8c).toArgb(),
                 repeatType = SPECIFIC_DAYS,
                 daysOfRepeat = setOf(
                     MONDAY,
@@ -124,7 +122,7 @@ data class TemplateHabit(
                 deadline = null,
                 habitType = REGULAR,
                 targetType = Habit.Companion.TargetType.DURATION,
-                repeatCount = null,
+                repeatCount = 1,
                 duration = LocalTime.of(0, 30)
             ),
             TemplateHabit(
@@ -149,8 +147,8 @@ data class TemplateHabit(
                 deadline = null,
                 habitType = REGULAR,
                 targetType = Habit.Companion.TargetType.OFF,
-                repeatCount = null,
-                duration = null
+                repeatCount = 1,
+                duration = LocalTime.of(0, 30)
             ),
             TemplateHabit(
                 id = 3,
@@ -174,8 +172,8 @@ data class TemplateHabit(
                 deadline = null,
                 habitType = REGULAR,
                 targetType = Habit.Companion.TargetType.OFF,
-                repeatCount = null,
-                duration = null
+                repeatCount = 1,
+                duration = LocalTime.of(0, 30)
             ),
             TemplateHabit(
                 id = 4,
@@ -194,8 +192,8 @@ data class TemplateHabit(
                 deadline = null,
                 habitType = REGULAR,
                 targetType = Habit.Companion.TargetType.OFF,
-                repeatCount = null,
-                duration = null
+                repeatCount = 1,
+                duration = LocalTime.of(0, 30)
             ),
             TemplateHabit(
                 id = 5,
@@ -219,8 +217,8 @@ data class TemplateHabit(
                 deadline = null,
                 habitType = REGULAR,
                 targetType = Habit.Companion.TargetType.OFF,
-                repeatCount = null,
-                duration = null
+                repeatCount = 1,
+                duration = LocalTime.of(0, 30)
             ),
             TemplateHabit(
                 id = 6,
@@ -228,7 +226,7 @@ data class TemplateHabit(
                 titleStringId = R.string.categories_trend_title_6,
                 descriptionStringId = R.string.categories_trend_description_6,
                 iconId = R.drawable.ic_categories_trend_6,
-                colorRGBA = Color(0xFF204051).toArgb(),
+                colorRGBA = Color(0xFF9c7ab8).toArgb(),
                 repeatType = SPECIFIC_DAYS,
                 daysOfRepeat = setOf(),
                 startExecutionInterval = LocalTime.of(9, 0),
@@ -236,8 +234,8 @@ data class TemplateHabit(
                 deadline = LocalDate.now().plusMonths(2),
                 habitType = DISPOSABLE,
                 targetType = Habit.Companion.TargetType.OFF,
-                repeatCount = null,
-                duration = null
+                repeatCount = 1,
+                duration = LocalTime.of(0, 30)
             ),
         )
     }

@@ -25,20 +25,22 @@ import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.theme.*
 
 val colorList = listOf(
-    Color(0xFFffc107),
-    Color(0xFFcdb30c),
-    Color(0xFFB5EFB2),
-    Color(0xFF14b1ab),
-    Color(0xFF5e6f64),
-    Color(0xFF535204),
-    Color(0xFF8675a9),
-    Color(0xFFd9adad),
-    Color(0xFFcf7500),
-    Color(0xFFff9292),
-    Color(0xFFe84a5f),
-    Color(0xFFd789d7),
-    Color(0xFF8557c7),
-    Color(0xFF88BBEF),
+    Color(0xFFec5c8c),
+    Color(0xFFcf3b5f),
+    Color(0xFFae6d84),
+    Color(0xFF9f7963),
+    Color(0xFFc69c84),
+    Color(0xFFbeb775),
+    Color(0xFFf0d044),
+    Color(0xFF8eac50),
+    Color(0xFF4a662f),
+    Color(0xFF0a7272),
+    Color(0xFF659c9d),
+    Color(0xFF07d4dc),
+    Color(0xFFbcd2dd),
+    Color(0xFF9c7ab8),
+    Color(0xFFef6224),
+    Color(0xFFe82882),
 )
 
 

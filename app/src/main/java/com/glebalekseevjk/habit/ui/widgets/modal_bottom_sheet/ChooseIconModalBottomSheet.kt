@@ -42,6 +42,7 @@ val iconList = listOf(
     R.drawable.ic_categories_trend_4,
     R.drawable.ic_categories_trend_5,
     R.drawable.ic_categories_trend_6,
+    R.drawable.ic_lang,
 )
 
 @Composable
