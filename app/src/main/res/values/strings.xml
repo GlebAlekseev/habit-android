@@ -117,4 +117,6 @@
     <string name="date_3_pattern" translatable="false">d MMMM</string>
     <string name="kalendar_pattern" translatable="false">MMMM y</string>
     <string name="time_pattern" translatable="false">h ч m мин</string>
+    <string name="dont_forget" translatable="false">Не забудь!</string>
+    <string name="habit_notifications" translatable="false">Уведомления о привычках</string>
 </resources>

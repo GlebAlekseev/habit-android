@@ -109,4 +109,6 @@
     <string name="number_habits">Habits: </string>
     <string name="number_perfect_days">Perfect\ndays</string>
     <string name="number_perfect_days_for_last_week">This week: </string>
+    <string name="dont_forget" translatable="false">Don\'t forget!</string>
+    <string name="habit_notifications" translatable="false">Habit notifications</string>
 </resources>

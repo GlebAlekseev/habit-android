@@ -10,6 +10,7 @@ import com.glebalekseevjk.habit.domain.mapper.Mapper
 import com.glebalekseevjk.habit.domain.repository.EventNotificationRepository
 import com.glebalekseevjk.habit.utils.Resource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -29,20 +30,16 @@ class EventNotificationRepositoryImpl @Inject constructor(
         }
 
     override suspend fun toggleIsDoneEventNotification(
-        id: Int,
-    ): Resource<Unit> =
+        eventNotification: EventNotification,
+    ): Resource<Boolean> =
         withContext(Dispatchers.IO) {
-            val result = eventNotificationDao.get(id)
-            if (result == null) {
-                Resource.Failure(NoSuchElementException())
-            } else {
-                eventNotificationDao.insert(
-                    result.copy(
-                        isDone = !result.isDone
-                    )
+            val isDone = !eventNotification.isDone
+            eventNotificationDao.insert(
+                mapper.mapItemToDbModel(eventNotification).copy(
+                    isDone = isDone
                 )
-                Resource.Success(Unit)
-            }
+            )
+            return@withContext Resource.Success(isDone)
         }
 
     override suspend fun doneEventNotification(eventNotificationId: Int): Resource<Unit> =
@@ -112,7 +109,7 @@ class EventNotificationRepositoryImpl @Inject constructor(
         }
 
     override suspend fun getEventNotificationList(): Resource<Flow<List<EventNotification>>> {
-        val result = eventNotificationDao.getAll()
+        val result = eventNotificationDao.getAllLiveData()
         val flow = result.asFlow().map { it.map { mapper.mapDbModelToItem(it) } }
         return Resource.Success(flow)
     }
@@ -124,8 +121,7 @@ class EventNotificationRepositoryImpl @Inject constructor(
     ): Resource<List<EventNotification>> =
         withContext(Dispatchers.IO) {
             val isDateInclusive =
-                eventNotificationDao.getForHabitAndDate(habit.id, date.toEpochDay())
-                    ?.let { false } ?: true
+                eventNotificationDao.getForHabit(habit.id).filter { it.date.toLocalDate() == date }.isEmpty()
             val start = if (isDateInclusive) date else date.plusDays(1)
             val end = habit.deadline
                 ?: return@withContext Resource.Failure(RuntimeException("deadline is null"))
@@ -163,17 +159,18 @@ class EventNotificationRepositoryImpl @Inject constructor(
                 val currentDayOfWeek = i % 7 + 1
                 if (currentDayOfWeek in targetWeekOfDaysSet || epochDay == range.last) {
                     val targetDate = LocalDate.ofEpochDay(epochDay)
-                    targetDate.atStartOfDay()
+
+                    val dateResult = targetDate
+                        .atStartOfDay()
+                        .plusHours((startIntervalHour..endIntervalHour).random().toLong())
+                        .plusMinutes(
+                            (startIntervalMinute..endIntervalMinute).random().toLong()
+                        )
                     eventNotificationList.add(
                         EventNotification(
                             id = UNDEFINED_ID,
                             habitId = habit.id,
-                            date = targetDate
-                                .atStartOfDay()
-                                .plusHours((startIntervalHour..endIntervalHour).random().toLong())
-                                .plusMinutes(
-                                    (startIntervalMinute..endIntervalMinute).random().toLong()
-                                ),
+                            date = dateResult,
                             isDone = false
                         )
                     )
@@ -184,7 +181,8 @@ class EventNotificationRepositoryImpl @Inject constructor(
             eventNotificationDao.insertAll(*eventNotificationList.map {
                 mapper.mapItemToDbModel(it)
             }.toTypedArray())
-            return@withContext Resource.Success(eventNotificationList)
+
+            return@withContext Resource.Success(eventNotificationDao.getAll().map { mapper.mapDbModelToItem(it) }.filter { it.habitId == habit.id })
         }
 
     override suspend fun removeEventNotificationsLaterThanDateInclusiveWhereIsDoneFalseForHabit(

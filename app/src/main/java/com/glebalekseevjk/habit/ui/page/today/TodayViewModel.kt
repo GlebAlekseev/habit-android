@@ -8,10 +8,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.glebalekseevjk.habit.domain.entity.EventNotification
 import com.glebalekseevjk.habit.domain.entity.Habit
+import com.glebalekseevjk.habit.domain.interactor.EventNotificationSchedulerUseCase
 import com.glebalekseevjk.habit.domain.interactor.EventNotificationUseCase
 import com.glebalekseevjk.habit.domain.interactor.HabitUseCase
 import com.glebalekseevjk.habit.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TodayViewModel @Inject constructor(
     private val habitUseCase: HabitUseCase,
-    private val eventNotificationUseCase: EventNotificationUseCase
+    private val eventNotificationUseCase: EventNotificationUseCase,
+    private val eventNotificationSchedulerUseCase: EventNotificationSchedulerUseCase
 ) : ViewModel() {
     var viewStates by mutableStateOf<TodayViewState>(
         TodayViewState.Init
@@ -31,7 +35,7 @@ class TodayViewModel @Inject constructor(
         when (action) {
             is TodayViewAction.InitToday -> initToday()
             is TodayViewAction.ToggleIsDoneEventNotification -> toggleIsDoneEventNotification(
-                action.id
+                action.eventNotification
             )
         }
     }
@@ -76,9 +80,21 @@ class TodayViewModel @Inject constructor(
         }
     }
 
-    private fun toggleIsDoneEventNotification(id: Int) {
+    private fun toggleIsDoneEventNotification(eventNotification: EventNotification) {
         viewModelScope.launch {
-            eventNotificationUseCase.toggleIsDoneEventNotification(id)
+            eventNotificationUseCase.toggleIsDoneEventNotification(
+                eventNotification = eventNotification,
+                onInitNotification = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        eventNotificationSchedulerUseCase.scheduleNotificationEvent(it)
+                    }
+                },
+                onCancelNotification = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        eventNotificationSchedulerUseCase.cancelNotificationEvent(it)
+                    }
+                }
+            )
         }
     }
 }
@@ -101,5 +117,5 @@ sealed class TodayViewState {
 
 sealed class TodayViewAction {
     object InitToday : TodayViewAction()
-    data class ToggleIsDoneEventNotification(val id: Int) : TodayViewAction()
+    data class ToggleIsDoneEventNotification(val eventNotification: EventNotification) : TodayViewAction()
 }

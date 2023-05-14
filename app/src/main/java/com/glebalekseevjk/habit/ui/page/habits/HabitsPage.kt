@@ -376,7 +376,7 @@ fun HabitsPage(
                                             onClick = {
                                                 viewModel.dispatch(
                                                     HabitsViewAction.ToggleIsDoneEventNotification(
-                                                        eventNotification!!.id
+                                                        eventNotification!!
                                                     )
                                                 )
                                             },

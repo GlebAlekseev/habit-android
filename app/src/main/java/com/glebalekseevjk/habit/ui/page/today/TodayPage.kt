@@ -260,7 +260,7 @@ fun TodayPage(
                                     onClick = {
                                         viewModel.dispatch(
                                             TodayViewAction.ToggleIsDoneEventNotification(
-                                                event.id
+                                                event
                                             )
                                         )
                                     },

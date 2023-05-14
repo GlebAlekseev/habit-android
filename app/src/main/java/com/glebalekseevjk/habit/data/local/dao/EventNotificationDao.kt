@@ -6,8 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.glebalekseevjk.habit.data.local.model.EventNotificationDbModel
-import com.glebalekseevjk.habit.data.local.model.HabitDbModel
-import java.time.LocalDate
 
 @Dao
 interface EventNotificationDao {
@@ -43,5 +41,8 @@ interface EventNotificationDao {
     suspend fun insertAll(vararg eventNotificationDbModel: EventNotificationDbModel)
 
     @Query("SELECT * FROM EventNotificationDbModel ORDER BY date ASC")
-    fun getAll(): LiveData<List<EventNotificationDbModel>>
+    fun getAllLiveData(): LiveData<List<EventNotificationDbModel>>
+
+    @Query("SELECT * FROM EventNotificationDbModel ORDER BY date ASC")
+    fun getAll(): List<EventNotificationDbModel>
 }

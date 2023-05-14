@@ -64,8 +64,25 @@ class EventNotificationUseCase @Inject constructor(
 //    suspend fun doneEventNotification(eventNotificationId: Int): Resource<Unit> =
 //        eventNotificationRepository.doneEventNotification(eventNotificationId)
 //
-    suspend fun toggleIsDoneEventNotification(id: Int): Resource<Unit> =
-        eventNotificationRepository.toggleIsDoneEventNotification(id)
+    suspend fun toggleIsDoneEventNotification(
+        eventNotification: EventNotification,
+        onCancelNotification: (EventNotification) -> Unit,
+        onInitNotification: (EventNotification) -> Unit
+    ): Resource<Unit> {
+        val isDoneResult =
+            eventNotificationRepository.toggleIsDoneEventNotification(eventNotification)
+        when (isDoneResult) {
+            is Resource.Failure -> return Resource.Failure(isDoneResult.throwable)
+            is Resource.Success -> {
+                when (isDoneResult.data) {
+                    true -> onInitNotification(eventNotification)
+                    false -> onCancelNotification(eventNotification)
+                }
+            }
+        }
+        return Resource.Success(Unit)
+    }
+
 
     //
 //    suspend fun cancelEventNotification(eventNotificationId: Int): Resource<Unit> =
@@ -77,11 +94,11 @@ class EventNotificationUseCase @Inject constructor(
 //    suspend fun removeEventNotificationForHabit(habitId: Int): Resource<Unit> =
 //        eventNotificationRepository.removeEventNotificationForHabit(habitId)
 //
-//    suspend fun getEventNotification(eventNotificationId: Int): Resource<EventNotification> =
-//        eventNotificationRepository.getEventNotification(eventNotificationId)
-//
-    suspend fun getEventNotificationListForHabit(habitId: Int): Resource<List<EventNotification>> =
-        eventNotificationRepository.getEventNotificationListForHabit(habitId)
+    suspend fun getEventNotification(eventNotificationId: Int): Resource<EventNotification> =
+        eventNotificationRepository.getEventNotification(eventNotificationId)
+
+//    suspend fun getEventNotificationListForHabit(habitId: Int): Resource<List<EventNotification>> =
+//        eventNotificationRepository.getEventNotificationListForHabit(habitId)
 
     //
     suspend fun getEventNotificationList(): Resource<Flow<List<EventNotification>>> =

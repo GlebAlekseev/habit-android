@@ -10,6 +10,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.glebalekseevjk.habit.domain.entity.Habit
 import com.glebalekseevjk.habit.domain.entity.TemplateHabit
+import com.glebalekseevjk.habit.domain.interactor.EventNotificationSchedulerUseCase
 import com.glebalekseevjk.habit.domain.interactor.EventNotificationUseCase
 import com.glebalekseevjk.habit.domain.interactor.HabitUseCase
 import com.glebalekseevjk.habit.utils.Resource
@@ -18,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import javax.inject.Inject
 
@@ -25,7 +27,8 @@ import javax.inject.Inject
 class EditHabitViewModel @Inject constructor(
     private val app: Application,
     private val habitUseCase: HabitUseCase,
-    private val eventNotificationUseCase: EventNotificationUseCase
+    private val eventNotificationUseCase: EventNotificationUseCase,
+    private val eventNotificationSchedulerUseCase: EventNotificationSchedulerUseCase
 ) : AndroidViewModel(app) {
     var viewStates by mutableStateOf<EditHabitViewState>(
         EditHabitViewState.Init
@@ -60,10 +63,15 @@ class EditHabitViewModel @Inject constructor(
                             eventNotificationUseCase.loadEventNotificationsForHabit(
                                 habit = it.habit.copy(id = addResult.data.toInt()),
                                 onInitNotifications = {
-                                    // пройтись по списку, и запланировать каждое событие
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        eventNotificationSchedulerUseCase.scheduleNotificationEvent(
+                                            it.filter { it.date.isAfter(LocalDateTime.now()) && !it.isDone })
+                                    }
                                 },
                                 onCancelNotifications = {
-                                    // пройтись по списку, и отменить каждое событие
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        eventNotificationSchedulerUseCase.cancelNotificationEvent(it)
+                                    }
                                 }
                             )
                         }
@@ -72,7 +80,7 @@ class EditHabitViewModel @Inject constructor(
             }
     }
 
-    private fun removeHabit(){
+    private fun removeHabit() {
         (viewStates as? EditHabitViewState.Loaded)
             ?.let {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -81,7 +89,9 @@ class EditHabitViewModel @Inject constructor(
                         is Resource.Success -> {
                             eventNotificationUseCase.removeEventNotificationsForHabit(it.habit.id,
                                 onCancelNotifications = {
-                                    // пройтись по списку, и отменить каждое событие
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        eventNotificationSchedulerUseCase.cancelNotificationEvent(it)
+                                    }
                                 }
                             )
                         }

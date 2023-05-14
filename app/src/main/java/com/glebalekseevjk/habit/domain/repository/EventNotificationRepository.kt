@@ -18,6 +18,6 @@ interface EventNotificationRepository {
 
     suspend fun addEventNotificationsLaterThanDateInclusiveForHabit(habit: Habit, date: LocalDate): Resource<List<EventNotification>>
     suspend fun removeEventNotificationsLaterThanDateInclusiveWhereIsDoneFalseForHabit(habitId: Int, date: LocalDate): Resource<List<EventNotification>>
-    suspend fun toggleIsDoneEventNotification(id: Int): Resource<Unit>
+    suspend fun toggleIsDoneEventNotification(eventNotification: EventNotification): Resource<Boolean>
     suspend fun getEventNotificationList(): Resource<Flow<List<EventNotification>>>
 }
