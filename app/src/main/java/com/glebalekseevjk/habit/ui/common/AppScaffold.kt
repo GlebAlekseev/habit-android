@@ -565,6 +565,7 @@ private fun AnimatedContentScope<*>.defaultHTrackerEnterTransition(
     target: NavBackStackEntry,
 ): EnterTransition {
     val initialNavGraph = initial.destination.hostNavGraph
+
     val targetNavGraph = target.destination.hostNavGraph
     if (initialNavGraph.id != targetNavGraph.id) {
         return fadeIn()
@@ -577,6 +578,8 @@ private fun AnimatedContentScope<*>.defaultHTrackerExitTransition(
     initial: NavBackStackEntry,
     target: NavBackStackEntry,
 ): ExitTransition {
+    if (initial.destination.route == RouteName.SPLASH) return ExitTransition.None
+
     val initialNavGraph = initial.destination.hostNavGraph
     val targetNavGraph = target.destination.hostNavGraph
     if (initialNavGraph.id != targetNavGraph.id) {

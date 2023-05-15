@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import com.glebalekseevjk.habit.broadcastreceiver.NotificationReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.LocalDateTime
@@ -22,7 +23,7 @@ class AlarmScheduler @Inject constructor(@ApplicationContext val context: Contex
                 context,
                 id,
                 broadcastIntent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_ONE_SHOT
+                if (Build.VERSION.SDK_INT >= 30) PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
             )
 
             alarmManager.set(
