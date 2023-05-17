@@ -1,5 +1,6 @@
 package com.glebalekseevjk.habit.ui.page.today
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,10 +25,12 @@ import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.domain.entity.Habit
 import com.glebalekseevjk.habit.ui.page.habits.HabitsViewState
 import com.glebalekseevjk.habit.ui.theme.*
+import com.glebalekseevjk.habit.ui.widgets.AutoResizeText
+import com.glebalekseevjk.habit.ui.widgets.CustomFlowRow
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun TodayPage(
     viewModel: TodayViewModel = hiltViewModel()
@@ -39,6 +42,7 @@ fun TodayPage(
             viewModel.dispatch(TodayViewAction.InitToday)
         }
     }
+
 
     when (viewStates) {
         TodayViewState.Failure -> {
@@ -74,18 +78,7 @@ fun TodayPage(
                 state = viewStates.lazyListState
             ) {
 
-                // Выбрать ивенты на сегодня
-                val eventsToday = viewStates.habitList.flatMap { it.eventNotificationList }
-                    .filter { it.date.toLocalDate().isEqual(LocalDate.now()) }
-                val grouped = eventsToday.groupBy { it.habitId }
-                val itemsToday = grouped.map { map ->
-                    Pair(
-                        viewStates.habitList.filter { it.habit.id == map.key }.first(),
-                        map.value.first()
-                    )
-                }
-
-                items(itemsToday) { (habitUI, event) ->
+                items(viewStates.habitList) { (habitUI, event) ->
                     val countIsDone =
                         habitUI.eventNotificationList.filter { it.isDone }.size
                     val all = habitUI.eventNotificationList.size
@@ -101,7 +94,8 @@ fun TodayPage(
 
                         Row(
                             modifier = Modifier,
-                            verticalAlignment = Alignment.CenterVertically,
+//                                .height(SmallIconSize + MiddlePadding*2),
+                            verticalAlignment = Alignment.Top,
                         ) {
                             Card(
                                 shape = RoundedCornerShape(SmallPadding),
@@ -147,9 +141,10 @@ fun TodayPage(
                                     style = typography.titleMedium,
                                     color = AppTheme.colors.colorOnPrimary
                                 )
-                                Row(
+                                CustomFlowRow(
                                     modifier = Modifier,
-                                    verticalAlignment = Alignment.CenterVertically
+                                    horizontalGap = ExtraSmallPadding,
+                                    verticalGap = ExtraSmallPadding
                                 ) {
                                     Card(
                                         shape = RoundedCornerShape(ExtraSmallPadding / 2),
@@ -167,7 +162,9 @@ fun TodayPage(
                                                 containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                             )
                                         },
-                                        modifier = Modifier.padding(end = SmallPadding)
+                                        modifier = Modifier
+//                                            .padding(end = SmallPadding)
+//                                            .padding(bottom = ExtraSmallPadding)
                                     ) {
                                         Text(
                                             text = when (habitUI.habit.habitType) {
@@ -205,7 +202,9 @@ fun TodayPage(
                                                 containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                             )
                                         },
-                                        modifier = Modifier.padding(end = SmallPadding)
+                                        modifier = Modifier
+//                                            .padding(end = SmallPadding)
+//                                            .padding(bottom = ExtraSmallPadding)
                                     ) {
                                         Text(
                                             text = "${habitUI.habit.startExecutionInterval.toString()} - ${habitUI.habit.endExecutionInterval.toString()}",
@@ -233,6 +232,8 @@ fun TodayPage(
                                                 containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                             )
                                         },
+                                        modifier = Modifier
+//                                            .padding(bottom = ExtraSmallPadding)
                                     ) {
                                         Text(
                                             text = habitUI.habit.deadline!!.format(
@@ -249,11 +250,15 @@ fun TodayPage(
                             }
 
 
-                            Box(contentAlignment = Alignment.Center) {
+                            Box(contentAlignment = Alignment.Center, modifier = Modifier
+                                .padding(bottom = ExtraSmallPadding)
+                                .height(SmallIconSize + MiddlePadding*2)) {
                                 Text(
                                     text = "$percent%",
                                     style = typography.labelSmall,
-                                    modifier = Modifier.align(Alignment.BottomCenter),
+                                    modifier = Modifier
+                                        .offset(0.dp, ExtraSmallPadding)
+                                        .align(Alignment.BottomCenter),
                                     color = AppTheme.colors.colorProgress
                                 )
                                 Card(
@@ -271,7 +276,7 @@ fun TodayPage(
                                         ).compositeOver(Color.White)
                                     ),
                                     shape = RoundedCornerShape(ExtraSmallPadding),
-                                    modifier = Modifier.padding(vertical = SmallPadding)
+                                    modifier = Modifier
 
                                 ) {
                                     Box(
@@ -283,7 +288,7 @@ fun TodayPage(
                                             imageVector = Icons.Default.Done,
                                             contentDescription = "isDone",
                                             modifier = Modifier
-                                                .padding(ExtraSmallPadding)
+                                                .padding(ExtraSmallPadding/2)
                                                 .size(SmallIconSize)
                                         )
                                     }

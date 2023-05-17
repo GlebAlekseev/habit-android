@@ -4,17 +4,18 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.Day
 import com.glebalekseevjk.habit.ui.theme.*
+import com.glebalekseevjk.habit.ui.utils.pxToDp
+import com.glebalekseevjk.habit.ui.widgets.AutoResizeText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,154 +61,73 @@ fun ChooseEventDaysModalBottomSheet(
             style = typography.titleMedium,
         )
 
+        var width by remember {
+            mutableStateOf(0)
+        }
+
+        val days = listOf(
+            Triple(R.string.weekday_mon, { monday = !monday }, monday),
+            Triple(R.string.weekday_tue, { tuesday = !tuesday }, tuesday),
+            Triple(R.string.weekday_wed, { wednesday = !wednesday }, wednesday),
+            Triple(R.string.weekday_thu, { thursday = !thursday }, thursday),
+            Triple(R.string.weekday_fri, { friday = !friday }, friday),
+            Triple(R.string.weekday_sat, { saturday = !saturday }, saturday),
+            Triple(R.string.weekday_sun, { sunday = !sunday }, sunday),
+        )
 
         Row(
             modifier = Modifier
+                .onSizeChanged {
+                    width = it.width
+                }
                 .fillMaxWidth()
                 .padding(vertical = SmallPadding),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Card(
-                onClick = {
-                    monday = !monday
-                },
-                shape = RoundedCornerShape(ExtraSmallPadding),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (monday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
-                    contentColor = if (monday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
-                ),
-                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
-            ) {
-                Text(
-                    stringResource(id = R.string.weekday_mon),
-                    style = typography.titleMedium,
-                    modifier = Modifier.padding(SmallPadding)
-                )
-            }
-            Card(
-                onClick = {
-                    tuesday = !tuesday
-                },
-                shape = RoundedCornerShape(ExtraSmallPadding),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (tuesday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
-                    contentColor = if (tuesday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
-                ),
-                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
-            ) {
-                Text(
-                    stringResource(id = R.string.weekday_tue),
-                    style = typography.titleMedium,
-                    modifier = Modifier.padding(SmallPadding)
-                )
-            }
-            Card(
-                onClick = {
-                    wednesday = !wednesday
-                },
-                shape = RoundedCornerShape(ExtraSmallPadding),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (wednesday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
-                    contentColor = if (wednesday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
-                ),
-                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
-            ) {
-                Text(
-                    stringResource(id = R.string.weekday_wed),
-                    style = typography.titleMedium,
-                    modifier = Modifier.padding(SmallPadding)
-                )
-            }
-            Card(
-                onClick = {
-                    thursday = !thursday
-                },
-                shape = RoundedCornerShape(ExtraSmallPadding),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (thursday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
-                    contentColor = if (thursday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
-                ),
-                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
-            ) {
-                Text(
-                    stringResource(id = R.string.weekday_thu),
-                    style = typography.titleMedium,
-                    modifier = Modifier.padding(SmallPadding)
-                )
-            }
-            Card(
-                onClick = {
-                    friday = !friday
-                },
-                shape = RoundedCornerShape(ExtraSmallPadding),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (friday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
-                    contentColor = if (friday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
-                ),
-                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
-            ) {
-                Text(
-                    stringResource(id = R.string.weekday_fri),
-                    style = typography.titleMedium,
-                    modifier = Modifier.padding(SmallPadding)
-                )
-            }
-            Card(
-                onClick = {
-                    saturday = !saturday
-                },
-                shape = RoundedCornerShape(ExtraSmallPadding),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (saturday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
-                    contentColor = if (saturday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
-                ),
-                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
-            ) {
-                Text(
-                    stringResource(id = R.string.weekday_sat),
-                    style = typography.titleMedium,
-                    modifier = Modifier.padding(SmallPadding)
-                )
-            }
-            Card(
-                onClick = {
-                    sunday = !sunday
-                },
-                shape = RoundedCornerShape(ExtraSmallPadding),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (sunday) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
-                    contentColor = if (sunday) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
-                ),
-                border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
-            ) {
-                Text(
-                    stringResource(id = R.string.weekday_sun),
-                    style = typography.titleMedium,
-                    modifier = Modifier.padding(SmallPadding)
-                )
+            days.forEach {
+                Card(
+                    onClick = it.second,
+                    shape = RoundedCornerShape(ExtraSmallPadding),
+                    colors = CardDefaults.cardColors(
+                        containerColor = if (it.third) AppTheme.colors.colorOnPrimary else AppTheme.colors.colorPrimary,
+                        contentColor = if (it.third) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
+                    ),
+                    border = BorderStroke(2.dp, AppTheme.colors.colorOnPrimary),
+                    modifier = Modifier.size((width / 7.5).toInt().pxToDp())
+                ) {
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()){
+                        AutoResizeText(
+                            stringResource(id = it.first),
+                            style = typography.titleMedium,
+                            modifier = Modifier
+                                .padding(SmallPadding),
+                            color = if (it.third) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary
+                        )
+                    }
+                }
             }
         }
 
 
-
-
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Button(
-                onClick = {
-                    onCancel()
-                },
+                onClick = { onCancel() },
                 shape = RoundedCornerShape(16.dp),
-                modifier = Modifier,
+                modifier = Modifier.width((width / 2.5).toInt().pxToDp()),
                 contentPadding = PaddingValues(
-                    vertical = MiddlePadding,
-                    horizontal = LargePadding
+                    vertical = SmallPadding,
+                    horizontal = MiddlePadding
                 ),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AppTheme.colors.colorOnPrimary,
                     contentColor = AppTheme.colors.colorPrimary
                 )
             ) {
-                Text(
+                AutoResizeText(
                     text = stringResource(id = R.string.cancel).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary
@@ -227,17 +147,17 @@ fun ChooseEventDaysModalBottomSheet(
                     onCancel()
                 },
                 shape = RoundedCornerShape(16.dp),
-                modifier = Modifier,
+                modifier = Modifier.width((width / 2.5).toInt().pxToDp()),
                 contentPadding = PaddingValues(
-                    vertical = MiddlePadding,
-                    horizontal = LargePadding
+                    vertical = SmallPadding,
+                    horizontal = MiddlePadding
                 ),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AppTheme.colors.colorOnPrimary,
                     contentColor = AppTheme.colors.colorPrimary
                 )
             ) {
-                Text(
+                AutoResizeText(
                     text = stringResource(id = R.string.save).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary

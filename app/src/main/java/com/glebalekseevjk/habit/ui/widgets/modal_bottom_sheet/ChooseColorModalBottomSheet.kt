@@ -10,19 +10,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.theme.*
+import com.glebalekseevjk.habit.ui.utils.pxToDp
+import com.glebalekseevjk.habit.ui.widgets.AutoResizeText
 
 val colorList = listOf(
     Color(0xFFec5c8c),
@@ -52,6 +54,7 @@ fun ChooseColorModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCance
 
     val lazyGridState = rememberLazyGridState()
 
+
     Column(
         modifier = Modifier
             .padding(MiddlePadding),
@@ -64,13 +67,16 @@ fun ChooseColorModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCance
         LazyVerticalGrid(
             state = lazyGridState,
             columns = GridCells.Fixed(4),
-            contentPadding = PaddingValues(SmallPadding),
+//            contentPadding = PaddingValues(vertical = SmallPadding),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .padding(vertical = SmallPadding)
+                .heightIn(SmallPadding, (LocalConfiguration.current.screenHeightDp/2).dp)
         ) {
             items(colorList) {
 
-                var size = LargePadding + MiddlePadding
+                var size = LargePadding
                 val isCurrent = it.toArgb() == currentColor
                 if (!isCurrent) size += (ExtraSmallPadding * 2)
                 val padding = if (isCurrent) ExtraSmallPadding else 0.dp
@@ -98,24 +104,32 @@ fun ChooseColorModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCance
             }
         }
 
+        var width by remember {
+            mutableStateOf(0)
+        }
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            modifier = Modifier
+                .onSizeChanged {
+                    width = it.width
+                }
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Button(
-                onClick = {
-                    onCancel()
-                },
+                onClick = { onCancel() },
                 shape = RoundedCornerShape(16.dp),
-                modifier = Modifier,
+                modifier = Modifier.width((width/2.5).toInt().pxToDp()),
                 contentPadding = PaddingValues(
-                    vertical = MiddlePadding,
-                    horizontal = LargePadding
+                    vertical = SmallPadding,
+                    horizontal = MiddlePadding
                 ),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AppTheme.colors.colorOnPrimary,
                     contentColor = AppTheme.colors.colorPrimary
                 )
             ) {
-                Text(
+                AutoResizeText(
                     text = stringResource(id = R.string.cancel).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary
@@ -127,17 +141,17 @@ fun ChooseColorModalBottomSheet(initValue: Int, callback: (Int) -> Unit, onCance
                     onCancel()
                 },
                 shape = RoundedCornerShape(16.dp),
-                modifier = Modifier,
+                modifier = Modifier.width((width/2.5).toInt().pxToDp()),
                 contentPadding = PaddingValues(
-                    vertical = MiddlePadding,
-                    horizontal = LargePadding
+                    vertical = SmallPadding,
+                    horizontal = MiddlePadding
                 ),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = AppTheme.colors.colorOnPrimary,
                     contentColor = AppTheme.colors.colorPrimary
                 )
             ) {
-                Text(
+                AutoResizeText(
                     text = stringResource(id = R.string.save).toUpperCase(),
                     style = typography.titleMedium,
                     color = AppTheme.colors.colorPrimary

@@ -13,11 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.common.RouteName
 import com.glebalekseevjk.habit.ui.theme.*
+import com.glebalekseevjk.habit.ui.widgets.AutoResizeText
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -40,7 +42,7 @@ fun MainTopBar(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
-                Modifier.align(Alignment.CenterVertically),
+                Modifier.align(Alignment.CenterVertically).weight(1f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
@@ -65,10 +67,10 @@ fun MainTopBar(
                         .align(Alignment.CenterVertically)
                 )
                 if (route == RouteName.TODAY) {
-                    Text(
+                    AutoResizeText(
                         text = LocalDate.now().format(DateTimeFormatter.ofPattern("d MMMM")),
                         style = typography.labelMedium,
-                        color = AppTheme.colors.colorUnselected,
+                        color = AppTheme.colors.colorOnPrimary.copy(alpha = 0.6f),
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .padding(start = MiddlePadding, top = ExtraSmallPadding)

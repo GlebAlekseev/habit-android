@@ -1,22 +1,23 @@
 package com.glebalekseevjk.habit.ui.page.edit_habits
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
@@ -30,6 +31,7 @@ import com.glebalekseevjk.habit.domain.entity.Habit
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.HabitType.*
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.TargetType
 import com.glebalekseevjk.habit.ui.theme.*
+import com.glebalekseevjk.habit.ui.widgets.AutoResizeText
 import com.glebalekseevjk.habit.ui.widgets.CustomTextField
 import kotlinx.coroutines.delay
 import java.time.LocalDate
@@ -55,11 +57,20 @@ fun EditHabitPage(
 ) {
     val viewStates = viewModel.viewStates
     val focusManager = LocalFocusManager.current
-
-    LaunchedEffect(Unit) {
-        viewModel.dispatch(EditHabitViewAction.InitParams(habitId, templateId))
+    var isFocusTextField by rememberSaveable {
+        mutableStateOf(true)
     }
 
+    LaunchedEffect(Unit) {
+        if (viewStates is EditHabitViewState.Init) {
+            viewModel.dispatch(EditHabitViewAction.InitParams(habitId, templateId))
+        }
+    }
+
+    BackHandler(isFocusTextField) {
+        focusManager.clearFocus()
+        isFocusTextField = false
+    }
 
     when (viewStates) {
         EditHabitViewState.Failure -> TODO("Ошибка")
@@ -87,8 +98,13 @@ fun EditHabitPage(
             }
 
             LaunchedEffect(Unit) {
-                delay(100)
-                focusRequester.requestFocus()
+                if (isFocusTextField) {
+                    delay(100)
+                    try {
+                        focusRequester.requestFocus()
+                        isFocusTextField = true
+                    }catch (_: Exception){}
+                }
             }
 
             LazyColumn(
@@ -122,9 +138,13 @@ fun EditHabitPage(
                                 .focusRequester(focusRequester)
                                 .padding(bottom = SmallPadding)
                                 .padding(horizontal = LargePadding)
+                                .onFocusChanged {
+                                    if (it.isFocused) {
+                                        isFocusTextField = true
+                                    }
+                                }
                         )
                     }
-
                 }
 
                 item {
@@ -175,78 +195,83 @@ fun EditHabitPage(
                         Column(
                             modifier = Modifier
                         ) {
-                            Row(modifier = Modifier
-                                .clickable(
-                                    indication = rememberRipple(
-                                        bounded = true,
-                                        radius = 128.dp,
-                                        color = AppTheme.colors.colorOnPrimary
-                                    ),
-                                    interactionSource = remember {
-                                        MutableInteractionSource()
-                                    }
-                                ) {
+                            Card(
+                                onClick = {
                                     focusManager.clearFocus()
+                                    isFocusTextField = false
                                     onOpenChooseIconModalBottomSheet(habit.iconId) {
                                         viewModel.dispatch(EditHabitViewAction.SetIconId(it))
                                     }
-                                }
-                                .fillMaxWidth()
-                                .padding(start = LargePadding)
-                                .padding(vertical = SmallPadding),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = stringResource(id = R.string.icon),
-                                    color = AppTheme.colors.colorOnPrimary,
-                                    style = typography.titleMedium
-                                )
-                                Icon(
-                                    ImageVector.vectorResource(id = R.drawable.ic_back),
-                                    stringResource(id = R.string.back),
-                                    tint = AppTheme.colors.colorOnPrimary,
-                                    modifier = Modifier
-                                        .padding(end = SmallPadding)
-                                        .size(SmallIconSize / 2, SmallIconSize)
-                                        .rotate(180f)
-                                )
-                            }
-                            Divider(modifier = Modifier.padding(start = MiddlePadding))
-                            Row(modifier = Modifier
-                                .clickable(
-                                    indication = rememberRipple(
-                                        bounded = true,
-                                        radius = 128.dp,
-                                        color = AppTheme.colors.colorOnPrimary
-                                    ),
-                                    interactionSource = remember {
-                                        MutableInteractionSource()
-                                    }
+                                },
+                                colors = CardDefaults.cardColors(
+                                    contentColor = AppTheme.colors.colorOnPrimary,
+                                    containerColor = transparent
+                                ),
+                                shape = RoundedCornerShape(ExtraSmallPadding),
                                 ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = LargePadding)
+                                        .padding(vertical = SmallPadding),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.icon),
+                                        color = AppTheme.colors.colorOnPrimary,
+                                        style = typography.titleMedium
+                                    )
+                                    Icon(
+                                        ImageVector.vectorResource(id = R.drawable.ic_back),
+                                        stringResource(id = R.string.back),
+                                        tint = AppTheme.colors.colorOnPrimary,
+                                        modifier = Modifier
+                                            .padding(end = SmallPadding)
+                                            .size(SmallIconSize / 2, SmallIconSize)
+                                            .rotate(180f)
+                                    )
+                                }
+                            }
+
+                            Divider(modifier = Modifier.padding(start = MiddlePadding))
+                            Card(
+                                onClick = {
                                     focusManager.clearFocus()
+                                    isFocusTextField = false
                                     onOpenChooseIconColorModalBottomSheet(habit.colorRGBA) {
                                         viewModel.dispatch(EditHabitViewAction.SetColorRGBA(it))
                                     }
-                                }
-                                .fillMaxWidth()
-                                .padding(start = LargePadding)
-                                .padding(vertical = SmallPadding),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = stringResource(id = R.string.color),
-                                    color = AppTheme.colors.colorOnPrimary,
-                                    style = typography.titleMedium
-                                )
-                                Icon(
-                                    ImageVector.vectorResource(id = R.drawable.ic_back),
-                                    stringResource(id = R.string.back),
-                                    tint = AppTheme.colors.colorOnPrimary,
+                                },
+                                shape = RoundedCornerShape(ExtraSmallPadding),
+                                colors = CardDefaults.cardColors(
+                                    contentColor = AppTheme.colors.colorOnPrimary,
+                                    containerColor = transparent
+                                ),
+                            ) {
+                                Row(
                                     modifier = Modifier
-                                        .padding(end = SmallPadding)
-                                        .size(SmallIconSize / 2, SmallIconSize)
-                                        .rotate(180f)
-                                )
+                                        .fillMaxWidth()
+                                        .padding(start = LargePadding)
+                                        .padding(vertical = SmallPadding),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.color),
+                                        color = AppTheme.colors.colorOnPrimary,
+                                        style = typography.titleMedium
+                                    )
+                                    Icon(
+                                        ImageVector.vectorResource(id = R.drawable.ic_back),
+                                        stringResource(id = R.string.back),
+                                        tint = AppTheme.colors.colorOnPrimary,
+                                        modifier = Modifier
+                                            .padding(end = SmallPadding)
+                                            .size(SmallIconSize / 2, SmallIconSize)
+                                            .rotate(180f)
+                                    )
+                                }
                             }
                         }
                     }
@@ -268,69 +293,81 @@ fun EditHabitPage(
                                     color = AppTheme.colors.colorOnPrimary,
                                     style = typography.titleMedium
                                 )
-                                Row(
-                                    modifier = Modifier
-                                        .padding(top = MiddlePadding)
-                                        .clickable(
-                                            indication = rememberRipple(
-                                                bounded = true,
-                                                radius = (128 + 32 + 16).dp,
-                                                color = AppTheme.colors.colorOnPrimary
-                                            ),
-                                            interactionSource = remember {
-                                                MutableInteractionSource()
-                                            }
-                                        ) {
-                                            focusManager.clearFocus()
-                                            onOpenChooseEventDayModalBottomSheet(habit.daysOfRepeat) {
-                                                viewModel.dispatch(
-                                                    EditHabitViewAction.SetDaysOfRepeat(
-                                                        it
-                                                    )
+                                Card(
+                                    onClick = {
+                                        focusManager.clearFocus()
+                                        isFocusTextField = false
+                                        onOpenChooseEventDayModalBottomSheet(habit.daysOfRepeat) {
+                                            viewModel.dispatch(
+                                                EditHabitViewAction.SetDaysOfRepeat(
+                                                    it
+                                                )
+                                            )
+                                        }
+                                    },
+                                    shape = RoundedCornerShape(ExtraSmallPadding),
+                                    colors = CardDefaults.cardColors(
+                                        contentColor = AppTheme.colors.colorOnPrimary,
+                                        containerColor = transparent
+                                    ),
+                                    modifier = Modifier.padding(top = MiddlePadding)
+                                ) {
+                                    val nameDays = habit.daysOfRepeat.sorted().map {
+                                        when (it) {
+                                            Habit.Companion.Day.MONDAY -> stringResource(id = R.string.weekday_mon).toLowerCase()
+                                            Habit.Companion.Day.TUESDAY -> stringResource(id = R.string.weekday_tue).toLowerCase()
+                                            Habit.Companion.Day.WEDNESDAY -> stringResource(id = R.string.weekday_wed).toLowerCase()
+                                            Habit.Companion.Day.THURSDAY -> stringResource(id = R.string.weekday_thu).toLowerCase()
+                                            Habit.Companion.Day.FRIDAY -> stringResource(id = R.string.weekday_fri).toLowerCase()
+                                            Habit.Companion.Day.SATURDAY -> stringResource(id = R.string.weekday_sat).toLowerCase()
+                                            Habit.Companion.Day.SUNDAY -> stringResource(id = R.string.weekday_sun).toLowerCase()
+                                        }
+                                    }.joinToString(", ")
+                                    Row(
+                                        modifier = Modifier
+                                            .background(
+                                                AppTheme.colors.colorSecondary,
+                                                shape = smallRoundedCornerShape
+                                            )
+                                            .padding(
+                                                vertical = MiddlePadding
+                                            )
+                                            .padding(start = MiddlePadding)
+                                            .fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = R.string.habits_day),
+                                            color = AppTheme.colors.colorOnPrimary,
+                                            style = typography.titleMedium
+                                        )
+
+                                        key(nameDays) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .weight(1f)
+                                                    .padding(ExtraSmallPadding),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                AutoResizeText(
+                                                    text = nameDays,
+                                                    color = AppTheme.colors.colorOnPrimary,
+                                                    style = typography.labelSmall
                                                 )
                                             }
                                         }
-                                        .background(
-                                            AppTheme.colors.colorSecondary,
-                                            shape = smallRoundedCornerShape
+
+                                        Icon(
+                                            ImageVector.vectorResource(id = R.drawable.ic_back),
+                                            stringResource(id = R.string.back),
+                                            tint = AppTheme.colors.colorOnPrimary,
+                                            modifier = Modifier
+                                                .padding(end = SmallPadding)
+                                                .size(SmallIconSize / 2, SmallIconSize)
+                                                .rotate(180f)
                                         )
-                                        .padding(
-                                            vertical = MiddlePadding
-                                        )
-                                        .padding(start = MiddlePadding)
-                                        .fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = stringResource(id = R.string.habits_day),
-                                        color = AppTheme.colors.colorOnPrimary,
-                                        style = typography.titleMedium
-                                    )
-                                    Text(
-                                        text = habit.daysOfRepeat.sorted().map {
-                                            when (it) {
-                                                Habit.Companion.Day.MONDAY -> stringResource(id = R.string.weekday_mon).toLowerCase()
-                                                Habit.Companion.Day.TUESDAY -> stringResource(id = R.string.weekday_tue).toLowerCase()
-                                                Habit.Companion.Day.WEDNESDAY -> stringResource(id = R.string.weekday_wed).toLowerCase()
-                                                Habit.Companion.Day.THURSDAY -> stringResource(id = R.string.weekday_thu).toLowerCase()
-                                                Habit.Companion.Day.FRIDAY -> stringResource(id = R.string.weekday_fri).toLowerCase()
-                                                Habit.Companion.Day.SATURDAY -> stringResource(id = R.string.weekday_sat).toLowerCase()
-                                                Habit.Companion.Day.SUNDAY -> stringResource(id = R.string.weekday_sun).toLowerCase()
-                                            }
-                                        }.joinToString(", "),
-                                        color = AppTheme.colors.colorOnPrimary,
-                                        style = typography.labelSmall
-                                    )
-                                    Icon(
-                                        ImageVector.vectorResource(id = R.drawable.ic_back),
-                                        stringResource(id = R.string.back),
-                                        tint = AppTheme.colors.colorOnPrimary,
-                                        modifier = Modifier
-                                            .padding(end = SmallPadding)
-                                            .size(SmallIconSize / 2, SmallIconSize)
-                                            .rotate(180f)
-                                    )
+                                    }
                                 }
                             }
                         }
@@ -377,6 +414,7 @@ fun EditHabitPage(
                                     Card(
                                         onClick = {
                                             focusManager.clearFocus()
+                                            isFocusTextField = false
                                             onOpenChooseTimeStartModalBottomSheet(
                                                 habit.startExecutionInterval,
                                                 null,
@@ -389,17 +427,18 @@ fun EditHabitPage(
                                                 )
                                             }
                                         },
+                                        shape = RoundedCornerShape(ExtraSmallPadding),
                                         colors = CardDefaults.cardColors(
                                             containerColor = AppTheme.colors.colorOnPrimary,
                                             contentColor = AppTheme.colors.colorPrimary
                                         ),
-                                        modifier = Modifier.padding(horizontal = SmallPadding)
+                                        modifier = Modifier.padding(horizontal = ExtraSmallPadding/2)
                                     ) {
                                         Text(
                                             text = habit.startExecutionInterval.toString(),
-                                            style = typography.titleLarge,
+                                            style = typography.titleMedium,
                                             color = AppTheme.colors.colorPrimary,
-                                            modifier = Modifier.padding(ExtraSmallPadding)
+                                            modifier = Modifier.padding(ExtraSmallPadding / 2)
                                         )
                                     }
 
@@ -411,6 +450,7 @@ fun EditHabitPage(
                                     Card(
                                         onClick = {
                                             focusManager.clearFocus()
+                                            isFocusTextField = false
                                             onOpenChooseTimeEndModalBottomSheet(
                                                 habit.endExecutionInterval,
                                                 habit.startExecutionInterval,
@@ -423,17 +463,18 @@ fun EditHabitPage(
                                                 )
                                             }
                                         },
+                                        shape = RoundedCornerShape(ExtraSmallPadding),
                                         colors = CardDefaults.cardColors(
                                             containerColor = AppTheme.colors.colorOnPrimary,
                                             contentColor = AppTheme.colors.colorPrimary
                                         ),
-                                        modifier = Modifier.padding(horizontal = SmallPadding)
+                                        modifier = Modifier.padding(horizontal = ExtraSmallPadding/2)
                                     ) {
                                         Text(
                                             text = habit.endExecutionInterval.toString(),
-                                            style = typography.titleLarge,
+                                            style = typography.titleMedium,
                                             color = AppTheme.colors.colorPrimary,
-                                            modifier = Modifier.padding(ExtraSmallPadding)
+                                            modifier = Modifier.padding(ExtraSmallPadding / 2)
                                         )
                                     }
                                 }
@@ -457,67 +498,71 @@ fun EditHabitPage(
                                     color = AppTheme.colors.colorOnPrimary,
                                     style = typography.titleMedium
                                 )
-                                Row(
-                                    modifier = Modifier
-                                        .padding(top = MiddlePadding)
-                                        .clickable(
-                                            indication = rememberRipple(
-                                                bounded = true,
-                                                radius = (128 + 32 + 16).dp,
-                                                color = AppTheme.colors.colorOnPrimary
-                                            ),
-                                            interactionSource = remember {
-                                                MutableInteractionSource()
-                                            }
-                                        ) {
-                                            focusManager.clearFocus()
-                                            onOpenChooseFinishDateModalBottomSheet(habit.deadline) {
-                                                viewModel.dispatch(
-                                                    EditHabitViewAction.SetDeadline(
-                                                        it
-                                                    )
-                                                )
-                                            }
-                                        }
-                                        .background(
-                                            AppTheme.colors.colorSecondary,
-                                            shape = smallRoundedCornerShape
-                                        )
-                                        .padding(
-                                            vertical = MiddlePadding
-                                        )
-                                        .padding(start = MiddlePadding)
-                                        .fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = stringResource(id = R.string.deadline_title),
-                                        color = AppTheme.colors.colorOnPrimary,
-                                        style = typography.titleMedium
-                                    )
-                                    habit.deadline?.let {
-                                        Text(
-                                            text = it.format(
-                                                DateTimeFormatter.ofPattern(
-                                                    stringResource(id = R.string.date_2_pattern)
+                                Card(
+                                    onClick = {
+                                        focusManager.clearFocus()
+                                        isFocusTextField = false
+                                        onOpenChooseFinishDateModalBottomSheet(habit.deadline) {
+                                            viewModel.dispatch(
+                                                EditHabitViewAction.SetDeadline(
+                                                    it
                                                 )
                                             )
-                                                .toString(),
+                                        }
+                                    },
+                                    shape = RoundedCornerShape(ExtraSmallPadding),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = AppTheme.colors.colorSecondary,
+                                        contentColor = AppTheme.colors.colorOnPrimary
+                                    ),
+                                    modifier = Modifier
+                                        .padding(top = MiddlePadding)
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .padding(
+                                                vertical = MiddlePadding
+                                            )
+                                            .padding(start = MiddlePadding)
+                                            .fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = R.string.deadline_title),
                                             color = AppTheme.colors.colorOnPrimary,
-                                            style = typography.titleSmall
+                                            style = typography.titleMedium
+                                        )
+                                        habit.deadline?.let {
+                                            Box(modifier = Modifier
+                                                .weight(1f)
+                                                .padding(ExtraSmallPadding),
+                                                contentAlignment = Alignment.Center
+                                            ){
+                                                AutoResizeText(
+                                                    text = it.format(
+                                                        DateTimeFormatter.ofPattern(
+                                                            stringResource(id = R.string.date_2_pattern)
+                                                        )
+                                                    )
+                                                        .toString(),
+                                                    color = AppTheme.colors.colorOnPrimary,
+                                                    style = typography.titleSmall,
+                                                )
+                                            }
+
+                                        }
+
+                                        Icon(
+                                            ImageVector.vectorResource(id = R.drawable.ic_back),
+                                            stringResource(id = R.string.back),
+                                            tint = AppTheme.colors.colorOnPrimary,
+                                            modifier = Modifier
+                                                .padding(end = SmallPadding)
+                                                .size(SmallIconSize / 2, SmallIconSize)
+                                                .rotate(180f)
                                         )
                                     }
-
-                                    Icon(
-                                        ImageVector.vectorResource(id = R.drawable.ic_back),
-                                        stringResource(id = R.string.back),
-                                        tint = AppTheme.colors.colorOnPrimary,
-                                        modifier = Modifier
-                                            .padding(end = SmallPadding)
-                                            .size(SmallIconSize / 2, SmallIconSize)
-                                            .rotate(180f)
-                                    )
                                 }
                             }
                         }
@@ -543,95 +588,95 @@ fun EditHabitPage(
                                     color = AppTheme.colors.colorOnPrimary,
                                     style = typography.titleMedium
                                 )
-                                Row(
+                                Card(
+                                    onClick = {
+                                        focusManager.clearFocus()
+                                        isFocusTextField = false
+                                        onOpenChooseTargetType(habit.targetType) {
+                                            viewModel.dispatch(
+                                                EditHabitViewAction.SetTargetType(
+                                                    it
+                                                )
+                                            )
+                                        }
+                                    },
+                                    shape = RoundedCornerShape(ExtraSmallPadding),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = AppTheme.colors.colorSecondary,
+                                        contentColor = AppTheme.colors.colorOnPrimary
+                                    ),
                                     modifier = Modifier
                                         .padding(top = MiddlePadding)
-                                        .clickable(
-                                            indication = rememberRipple(
-                                                bounded = true,
-                                                radius = (128 + 32 + 16).dp,
-                                                color = AppTheme.colors.colorOnPrimary
-                                            ),
-                                            interactionSource = remember {
-                                                MutableInteractionSource()
-                                            }
-                                        ) {
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .padding(
+                                                vertical = MiddlePadding
+                                            )
+                                            .padding(start = MiddlePadding)
+                                            .fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = R.string.target),
+                                            color = AppTheme.colors.colorOnPrimary,
+                                            style = typography.titleMedium
+                                        )
+                                        Box(modifier = Modifier
+                                            .weight(1f)
+                                            .padding(ExtraSmallPadding),
+                                            contentAlignment = Alignment.Center
+                                        ){
+                                            AutoResizeText(
+                                                text = when (habit.targetType) {
+                                                    TargetType.OFF -> stringResource(id = R.string.target_type_off)
+                                                    TargetType.REPEAT -> stringResource(id = R.string.target_type_repeat)
+                                                    TargetType.DURATION -> stringResource(id = R.string.target_type_duration)
+                                                },
+                                                color = AppTheme.colors.colorOnPrimary,
+                                                style = typography.titleSmall,
+                                            )
+                                        }
+
+                                        Icon(
+                                            ImageVector.vectorResource(id = R.drawable.ic_back),
+                                            stringResource(id = R.string.back),
+                                            tint = AppTheme.colors.colorOnPrimary,
+                                            modifier = Modifier
+                                                .padding(end = SmallPadding)
+                                                .size(SmallIconSize / 2, SmallIconSize)
+                                                .rotate(180f)
+                                        )
+                                    }
+                                }
+                            }
+                            when (habit.targetType) {
+                                TargetType.OFF -> {}
+                                TargetType.REPEAT -> {
+                                    Card(
+                                        onClick = {
                                             focusManager.clearFocus()
-                                            onOpenChooseTargetType(habit.targetType) {
+                                            isFocusTextField = false
+                                            onOpenChooseRepeatCount(habit.repeatCount) {
                                                 viewModel.dispatch(
-                                                    EditHabitViewAction.SetTargetType(
+                                                    EditHabitViewAction.SetRepeatCount(
                                                         it
                                                     )
                                                 )
                                             }
-                                        }
-                                        .background(
-                                            AppTheme.colors.colorSecondary,
-                                            shape = smallRoundedCornerShape
-                                        )
-                                        .padding(
-                                            vertical = MiddlePadding
-                                        )
-                                        .padding(start = MiddlePadding)
-                                        .fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = stringResource(id = R.string.target),
-                                        color = AppTheme.colors.colorOnPrimary,
-                                        style = typography.titleMedium
-                                    )
-                                    Text(
-                                        text = when (habit.targetType) {
-                                            TargetType.OFF -> stringResource(id = R.string.target_type_off)
-                                            TargetType.REPEAT -> stringResource(id = R.string.target_type_repeat)
-                                            TargetType.DURATION -> stringResource(id = R.string.target_type_duration)
                                         },
-                                        color = AppTheme.colors.colorOnPrimary,
-                                        style = typography.titleSmall,
-                                        modifier = Modifier.padding(start = LargePadding * 3)
-                                    )
-                                    Icon(
-                                        ImageVector.vectorResource(id = R.drawable.ic_back),
-                                        stringResource(id = R.string.back),
-                                        tint = AppTheme.colors.colorOnPrimary,
+                                        shape = RoundedCornerShape(ExtraSmallPadding),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = AppTheme.colors.colorSecondary,
+                                            contentColor = AppTheme.colors.colorOnPrimary
+                                        ),
                                         modifier = Modifier
-                                            .padding(end = SmallPadding)
-                                            .size(SmallIconSize / 2, SmallIconSize)
-                                            .rotate(180f)
-                                    )
-                                }
-
-                                when (habit.targetType) {
-                                    TargetType.OFF -> {}
-                                    TargetType.REPEAT -> {
+                                            .padding(horizontal = LargePadding)
+                                            .padding(top = MiddlePadding)
+                                    ) {
                                         Row(
                                             modifier = Modifier
-                                                .padding(top = MiddlePadding)
-                                                .clickable(
-                                                    indication = rememberRipple(
-                                                        bounded = true,
-                                                        radius = (128 + 32 + 16).dp,
-                                                        color = AppTheme.colors.colorOnPrimary
-                                                    ),
-                                                    interactionSource = remember {
-                                                        MutableInteractionSource()
-                                                    }
-                                                ) {
-                                                    focusManager.clearFocus()
-                                                    onOpenChooseRepeatCount(habit.repeatCount) {
-                                                        viewModel.dispatch(
-                                                            EditHabitViewAction.SetRepeatCount(
-                                                                it
-                                                            )
-                                                        )
-                                                    }
-                                                }
-                                                .background(
-                                                    AppTheme.colors.colorSecondary,
-                                                    shape = smallRoundedCornerShape
-                                                )
                                                 .padding(
                                                     vertical = MiddlePadding
                                                 )
@@ -646,12 +691,18 @@ fun EditHabitPage(
                                                 style = typography.titleMedium
                                             )
                                             habit.repeatCount?.let {
-                                                Text(
-                                                    text = it.toString(),
-                                                    color = AppTheme.colors.colorOnPrimary,
-                                                    style = typography.titleSmall,
-                                                    modifier = Modifier.padding(start = MiddlePadding)
-                                                )
+                                                Box(modifier = Modifier
+                                                    .weight(1f)
+                                                    .padding(ExtraSmallPadding),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    AutoResizeText(
+                                                        text = it.toString(),
+                                                        color = AppTheme.colors.colorOnPrimary,
+                                                        style = typography.titleSmall,
+                                                    )
+
+                                                }
                                             }
 
                                             Icon(
@@ -665,29 +716,31 @@ fun EditHabitPage(
                                             )
                                         }
                                     }
-                                    TargetType.DURATION -> {
+                                }
+                                TargetType.DURATION -> {
+                                    Card(
+                                        onClick = {
+                                            focusManager.clearFocus()
+                                            isFocusTextField = false
+                                            onOpenChooseDuration(habit.duration) {
+                                                viewModel.dispatch(
+                                                    EditHabitViewAction.SetDuration(
+                                                        it
+                                                    )
+                                                )
+                                            }
+                                        },
+                                        shape = RoundedCornerShape(ExtraSmallPadding),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = AppTheme.colors.colorSecondary,
+                                            contentColor = AppTheme.colors.colorOnPrimary
+                                        ),
+                                        modifier = Modifier
+                                            .padding(horizontal = LargePadding)
+                                            .padding(top = MiddlePadding)
+                                    ) {
                                         Row(
                                             modifier = Modifier
-                                                .padding(top = MiddlePadding)
-                                                .clickable(
-                                                    indication = rememberRipple(
-                                                        bounded = true,
-                                                        radius = (128 + 32 + 16).dp,
-                                                        color = AppTheme.colors.colorOnPrimary
-                                                    ),
-                                                    interactionSource = remember {
-                                                        MutableInteractionSource()
-                                                    }
-                                                ) {
-                                                    focusManager.clearFocus()
-                                                    onOpenChooseDuration(habit.duration) {
-                                                        viewModel.dispatch(
-                                                            EditHabitViewAction.SetDuration(
-                                                                it
-                                                            )
-                                                        )
-                                                    }
-                                                }
                                                 .background(
                                                     AppTheme.colors.colorSecondary,
                                                     shape = smallRoundedCornerShape
@@ -706,12 +759,21 @@ fun EditHabitPage(
                                                 style = typography.titleMedium
                                             )
                                             habit.duration?.let {
-                                                Text(
-                                                    text = it.format(DateTimeFormatter.ofPattern("hh ч. mm м.")),
-                                                    color = AppTheme.colors.colorOnPrimary,
-                                                    style = typography.titleSmall,
-                                                    modifier = Modifier.padding(start = LargePadding)
-                                                )
+                                                Box(modifier = Modifier
+                                                    .weight(1f)
+                                                    .padding(ExtraSmallPadding),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    AutoResizeText(
+                                                        text = it.format(
+                                                            DateTimeFormatter.ofPattern(
+                                                                "hh ч. mm м."
+                                                            )
+                                                        ),
+                                                        color = AppTheme.colors.colorOnPrimary,
+                                                        style = typography.titleSmall,
+                                                    )
+                                                }
                                             }
 
                                             Icon(
@@ -727,9 +789,9 @@ fun EditHabitPage(
                                     }
                                 }
                             }
-
                         }
                     }
+
                 }
 
                 item {

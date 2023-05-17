@@ -24,10 +24,6 @@ interface EventNotificationDao {
     @Query("SELECT * FROM EventNotificationDbModel WHERE habit_id = :habitId ORDER BY date ASC")
     suspend fun getForHabit(habitId: Int): List<EventNotificationDbModel>
 
-
-
-
-//    @Query("DELETE FROM EventNotificationDbModel WHERE habit_id = :habitId AND is_done = false AND date >= :date ORDER BY date ASC")
     @Query("DELETE FROM EventNotificationDbModel WHERE habit_id = :habitId AND is_done = 0 AND date >= :date")
     suspend fun deleteLaterThanDateInclusiveWhereIsDoneFalseForHabit(habitId: Int, date: Long)
 

@@ -129,72 +129,74 @@ fun AppScaffold(
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetContent = {
-            when (val action = modalBottomSheetType) {
-                is ModalBottomSheetState.ChooseColor -> ChooseColorModalBottomSheet(
-                    initValue = action.initValue,
-                    callback = action.setColorRGBA,
-                    onCancel = { scope.launch { bottomSheetState.hide() } }
-                )
-                is ModalBottomSheetState.ChooseDate -> ChooseDateModalBottomSheet(
-                    action.initValue,
-                    action.setDate,
-                    onCancel = { scope.launch { bottomSheetState.hide() } }
-                )
-                is ModalBottomSheetState.ChooseEventDays -> ChooseEventDaysModalBottomSheet(
-                    action.initValue,
-                    action.setEventDays,
-                    onCancel = { scope.launch { bottomSheetState.hide() } }
-                )
-                is ModalBottomSheetState.ChooseIcon -> ChooseIconModalBottomSheet(
-                    action.initValue,
-                    action.setIconId,
-                    onCancel = { scope.launch { bottomSheetState.hide() } }
-                )
-                is ModalBottomSheetState.ChooseTime -> {
-                    ChooseTimeModalBottomSheet(
-                        action.initValue,
-                        action.minValue,
-                        action.maxValue,
-                        action.setTime,
+            key(modalBottomSheetType) {
+                when (val action = modalBottomSheetType) {
+                    is ModalBottomSheetState.ChooseColor -> ChooseColorModalBottomSheet(
+                        initValue = action.initValue,
+                        callback = action.setColorRGBA,
                         onCancel = { scope.launch { bottomSheetState.hide() } }
                     )
-                }
-                is ModalBottomSheetState.ChooseTimeStart -> {
-                    ChooseTimeModalBottomSheet(
+                    is ModalBottomSheetState.ChooseDate -> ChooseDateModalBottomSheet(
                         action.initValue,
-                        action.minValue,
-                        action.maxValue,
-                        action.setTime,
+                        action.setDate,
                         onCancel = { scope.launch { bottomSheetState.hide() } }
                     )
-                }
-                is ModalBottomSheetState.ChooseTimeEnd -> {
-                    ChooseTimeModalBottomSheet(
+                    is ModalBottomSheetState.ChooseEventDays -> ChooseEventDaysModalBottomSheet(
                         action.initValue,
-                        action.minValue,
-                        action.maxValue,
-                        action.setTime,
+                        action.setEventDays,
                         onCancel = { scope.launch { bottomSheetState.hide() } }
                     )
+                    is ModalBottomSheetState.ChooseIcon -> ChooseIconModalBottomSheet(
+                        action.initValue,
+                        action.setIconId,
+                        onCancel = { scope.launch { bottomSheetState.hide() } }
+                    )
+                    is ModalBottomSheetState.ChooseTime -> {
+                        ChooseTimeModalBottomSheet(
+                            action.initValue,
+                            action.minValue,
+                            action.maxValue,
+                            action.setTime,
+                            onCancel = { scope.launch { bottomSheetState.hide() } }
+                        )
+                    }
+                    is ModalBottomSheetState.ChooseTimeStart -> {
+                        ChooseTimeModalBottomSheet(
+                            action.initValue,
+                            action.minValue,
+                            action.maxValue,
+                            action.setTime,
+                            onCancel = { scope.launch { bottomSheetState.hide() } }
+                        )
+                    }
+                    is ModalBottomSheetState.ChooseTimeEnd -> {
+                        ChooseTimeModalBottomSheet(
+                            action.initValue,
+                            action.minValue,
+                            action.maxValue,
+                            action.setTime,
+                            onCancel = { scope.launch { bottomSheetState.hide() } }
+                        )
+                    }
+                    is ModalBottomSheetState.ChooseDuration -> ChooseTimeModalBottomSheet(
+                        action.initValue,
+                        null,
+                        null,
+                        action.setDuration,
+                        onCancel = { scope.launch { bottomSheetState.hide() } }
+                    )
+                    is ModalBottomSheetState.ChooseRepeatCount -> ChooseRepeatCountModalBottomSheet(
+                        action.initValue,
+                        action.setRepeatCount,
+                        onCancel = { scope.launch { bottomSheetState.hide() } }
+                    )
+                    is ModalBottomSheetState.ChooseTargetType -> ChooseTargetTypeModalBottomSheet(
+                        action.initValue,
+                        action.setTargetType,
+                        onCancel = { scope.launch { bottomSheetState.hide() } }
+                    )
+                    ModalBottomSheetState.Hide -> {}
                 }
-                is ModalBottomSheetState.ChooseDuration -> ChooseTimeModalBottomSheet(
-                    action.initValue,
-                    null,
-                    null,
-                    action.setDuration,
-                    onCancel = { scope.launch { bottomSheetState.hide() } }
-                )
-                is ModalBottomSheetState.ChooseRepeatCount -> ChooseRepeatCountModalBottomSheet(
-                    action.initValue,
-                    action.setRepeatCount,
-                    onCancel = { scope.launch { bottomSheetState.hide() } }
-                )
-                is ModalBottomSheetState.ChooseTargetType -> ChooseTargetTypeModalBottomSheet(
-                    action.initValue,
-                    action.setTargetType,
-                    onCancel = { scope.launch { bottomSheetState.hide() } }
-                )
-                ModalBottomSheetState.Hide -> {}
             }
         },
         sheetShape = RoundedCornerShape(

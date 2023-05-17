@@ -26,6 +26,7 @@ import com.glebalekseevjk.habit.domain.entity.Habit
 import com.glebalekseevjk.habit.ui.external.kalendar.common.data.KalendarEventCounter
 import com.glebalekseevjk.habit.ui.theme.*
 import com.glebalekseevjk.habit.ui.utils.pxToDp
+import com.glebalekseevjk.habit.ui.widgets.CustomFlowRow
 import java.lang.Integer.min
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -38,6 +39,7 @@ data class Stats(
     val containerColor: Color,
 )
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HistoryPage(
     viewModel: HistoryViewModel = hiltViewModel()
@@ -190,7 +192,7 @@ fun HistoryPage(
                         (if (countIsDoneBeforeToday == 0) 0 else countIsDoneBeforeToday / all.toDouble() * 100).toInt() + percentStep
 
                     Card(
-                        modifier = Modifier.padding(MiddlePadding),
+                        modifier = Modifier.padding(vertical = MiddlePadding),
                         colors = CardDefaults.cardColors(
                             containerColor = transparent
                         ),
@@ -199,7 +201,7 @@ fun HistoryPage(
 
                         Row(
                             modifier = Modifier,
-                            verticalAlignment = Alignment.CenterVertically,
+                            verticalAlignment = Alignment.Top,
                         ) {
                             Card(
                                 shape = RoundedCornerShape(SmallPadding),
@@ -241,37 +243,15 @@ fun HistoryPage(
                                     },
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier.padding(bottom = ExtraSmallPadding),
+                                    modifier = Modifier.padding(bottom = ExtraSmallPadding/2),
                                     style = typography.titleMedium,
                                     color = AppTheme.colors.colorOnPrimary
                                 )
-                                Row(
-                                    modifier = Modifier,
-                                    verticalAlignment = Alignment.CenterVertically
+                                CustomFlowRow(
+                                    modifier = Modifier.padding(end = SmallPadding),
+                                    verticalGap = ExtraSmallPadding,
+                                    horizontalGap = ExtraSmallPadding
                                 ) {
-                                    Row(
-                                        modifier = Modifier,
-                                        verticalAlignment = Alignment.CenterVertically
-
-                                    ) {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_progress_check),
-                                            contentDescription = stringResource(id = R.string.progress),
-                                            tint = green500,
-                                            modifier = Modifier
-                                                .size(ExtraSmallIconSize)
-                                        )
-                                        Text(
-                                            text = "${percentOld}% → ${percentNow}%",
-                                            color = AppTheme.colors.colorProgress,
-                                            style = typography.labelSmall,
-                                            modifier = Modifier.padding(
-                                                start = ExtraSmallPadding / 2,
-                                                end = SmallPadding
-                                            )
-                                        )
-
-                                    }
                                     Card(
                                         shape = RoundedCornerShape(ExtraSmallPadding / 2),
                                         colors = when (habitUI.habit.habitType) {
@@ -288,7 +268,9 @@ fun HistoryPage(
                                                 containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                             )
                                         },
-                                        modifier = Modifier.padding(end = SmallPadding)
+                                        modifier = Modifier
+//                                            .padding(end = SmallPadding)
+//                                            .padding(top = ExtraSmallPadding)
                                     ) {
                                         Text(
                                             text = when (habitUI.habit.habitType) {
@@ -309,13 +291,34 @@ fun HistoryPage(
                                             )
                                         )
                                     }
+                                    Row(
+                                        modifier = Modifier
+//                                            .padding(top = ExtraSmallPadding)
+                                        ,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_progress_check),
+                                            contentDescription = stringResource(id = R.string.progress),
+                                            tint = green500,
+                                            modifier = Modifier
+                                                .size(ExtraSmallIconSize)
+                                        )
+                                        Text(
+                                            text = "${percentOld}% → ${percentNow}%",
+                                            color = AppTheme.colors.colorProgress,
+                                            style = typography.labelSmall,
+                                            modifier = Modifier.padding(start = ExtraSmallPadding)
+                                        )
+
+                                    }
                                 }
                             }
 
 
 
                             Column(
-                                modifier = Modifier,
+                                modifier = Modifier.height(SmallIconSize + MiddlePadding*2),
                                 horizontalAlignment = Alignment.End,
                                 verticalArrangement = Arrangement.Center
                             ) {

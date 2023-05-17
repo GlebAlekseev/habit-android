@@ -2,6 +2,7 @@ package com.glebalekseevjk.habit.ui.page.settings
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -29,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.domain.entity.Language
 import com.glebalekseevjk.habit.ui.theme.*
+import com.glebalekseevjk.habit.ui.widgets.AutoResizeText
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,7 +49,7 @@ fun SettingsPage(
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(top = LargePadding)
+            .padding(top = LargePadding),
     ) {
         Card(
             onClick = {
@@ -61,29 +63,29 @@ fun SettingsPage(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(vertical = SmallPadding, horizontal = 84.dp)
+                    .padding(vertical = SmallPadding, horizontal = 64.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(Modifier) {
+                Row(Modifier.weight(1f)) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_lang),
                         contentDescription = stringResource(id = R.string.lang),
                         tint = AppTheme.colors.colorOnPrimary,
                         modifier = Modifier.size(MiddleIconSize),
                     )
-                    Text(
+                    AutoResizeText(
                         text = stringResource(id = R.string.lang),
                         style = typography.titleMedium,
                         color = AppTheme.colors.colorOnPrimary,
                         modifier = Modifier
-                            .padding(start = MiddlePadding)
+                            .padding(horizontal = MiddlePadding)
                             .align(Alignment.CenterVertically)
                     )
                 }
 
-                Box() {
-                    Text(
+                Box(Modifier) {
+                    AutoResizeText(
                         text = when (viewStates.language) {
                             Language.RUSSIAN -> "Русский"
                             Language.ENGLISH -> "English"
@@ -136,24 +138,24 @@ fun SettingsPage(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(vertical = SmallPadding, horizontal = 84.dp)
+                    .padding(vertical = SmallPadding, horizontal = 64.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
-                Row(Modifier) {
+                Row(Modifier.weight(1f)) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_night),
                         contentDescription = stringResource(id = R.string.night),
                         tint = AppTheme.colors.colorOnPrimary,
                         modifier = Modifier.size(MiddleIconSize),
                     )
-                    Text(
+                    AutoResizeText(
                         text = stringResource(id = R.string.night),
                         style = typography.titleMedium,
                         color = AppTheme.colors.colorOnPrimary,
                         modifier = Modifier
-                            .padding(start = MiddlePadding)
+                            .padding(horizontal = MiddlePadding)
                             .align(Alignment.CenterVertically)
                     )
                 }

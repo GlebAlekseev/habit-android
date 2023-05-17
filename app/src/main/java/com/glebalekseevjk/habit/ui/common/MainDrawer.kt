@@ -16,8 +16,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.theme.*
+import com.glebalekseevjk.habit.ui.widgets.AutoResizeText
+import com.glebalekseevjk.habit.ui.widgets.FontSizeRange
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -69,28 +72,32 @@ fun MainDrawer(
                 Column(
                     modifier = Modifier.padding(top = LargePadding),
                 ) {
-                    Text(
+                    AutoResizeText(
                         text = stringResource(id = R.string.app_name),
                         style = typography.displayMedium,
-                        modifier = baseModifier
+                        modifier = baseModifier,
+                        color = AppTheme.colors.colorOnPrimary,
                     )
-                    Text(
+                    AutoResizeText(
                         text = stringResource(id = R.string.app_version),
                         modifier = baseModifier,
-                        style = typography.bodyMedium
+                        style = typography.bodyMedium,
+                        color = AppTheme.colors.colorOnPrimary
                     )
-                    Text(
+                    AutoResizeText(
                         text = LocalDate.now()
                             .format(DateTimeFormatter.ofPattern(stringResource(id = R.string.weekday_pattern)))
                             .capitalize(),
                         style = typography.titleLarge,
-                        modifier = baseModifier.padding(vertical = ExtraSmallPadding)
+                        modifier = baseModifier.padding(vertical = ExtraSmallPadding),
+                        color = AppTheme.colors.colorOnPrimary
                     )
-                    Text(
+                    AutoResizeText(
                         text = LocalDate.now()
                             .format(DateTimeFormatter.ofPattern(stringResource(id = R.string.date_pattern))),
                         modifier = baseModifier.padding(bottom = MiddlePadding),
-                        style = typography.bodyMedium
+                        style = typography.bodyMedium,
+                        color = AppTheme.colors.colorOnPrimary
                     )
 
                     Divider(color = AppTheme.colors.colorDivider)
@@ -121,10 +128,11 @@ fun MainDrawer(
                                     tint = AppTheme.colors.colorOnPrimary,
                                     modifier = Modifier.size(MiddleIconSize),
                                 )
-                                Text(
+                                AutoResizeText(
                                     modifier = Modifier.padding(start = MiddlePadding),
                                     text = stringResource(id = title),
-                                    style = typography.titleMedium
+                                    style = typography.titleMedium,
+                                    color = AppTheme.colors.colorOnPrimary
                                 )
                             }
                         }

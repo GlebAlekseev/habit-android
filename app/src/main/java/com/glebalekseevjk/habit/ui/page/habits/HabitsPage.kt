@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.IconButton
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +36,7 @@ import kotlin.math.max
 
 
 @OptIn(
-    ExperimentalMaterial3Api::class
+    ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class, ExperimentalLayoutApi::class
 )
 @Composable
 fun HabitsPage(
@@ -163,10 +164,10 @@ fun HabitsPage(
                                             },
                                             maxLines = 2,
                                             overflow = TextOverflow.Ellipsis,
-                                            modifier = Modifier.padding(bottom = ExtraSmallPadding),
+                                            modifier = Modifier,
                                             style = typography.titleMedium
                                         )
-                                        Row(
+                                        FlowRow(
                                             modifier = Modifier.fillMaxWidth(),
                                         ) {
                                             Card(
@@ -185,7 +186,9 @@ fun HabitsPage(
                                                         containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                                     )
                                                 },
-                                                modifier = Modifier.padding(end = SmallPadding)
+                                                modifier = Modifier
+                                                    .padding(end = SmallPadding)
+                                                    .padding(top = ExtraSmallPadding)
                                             ) {
                                                 Text(
                                                     text = when (habitUI.habit.habitType) {
@@ -217,7 +220,9 @@ fun HabitsPage(
                                                         containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                                     )
                                                 },
-                                                modifier = Modifier.padding(end = SmallPadding)
+                                                modifier = Modifier
+                                                    .padding(end = SmallPadding)
+                                                    .padding(top = ExtraSmallPadding)
                                             ) {
                                                 Text(
                                                     text = "${habitUI.habit.startExecutionInterval.toString()} - ${habitUI.habit.endExecutionInterval.toString()}",
@@ -245,6 +250,8 @@ fun HabitsPage(
                                                         containerColor = AppTheme.colors.colorDisposableTag.copy(alpha = 0.1f)
                                                     )
                                                 },
+                                                modifier = Modifier
+                                                    .padding(top = ExtraSmallPadding)
                                             ) {
                                                 Text(
                                                     text = habitUI.habit.deadline!!.format(
@@ -266,35 +273,43 @@ fun HabitsPage(
 
                                     }
                                 }
-
-                                Card(
-                                    shape = RoundedCornerShape(SmallPadding),
-                                    colors = CardDefaults.cardColors(
-                                        contentColor = Color(habitUI.habit.colorRGBA),
-                                        containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.2f).compositeOver(Color.White)
-                                    ),
+                                Box(
                                     modifier = Modifier
-                                        .onSizeChanged {
-                                            if (elementHeight != it.height) {
-                                                elementHeight = max(it.height, elementHeight)
-                                            }
-                                        }
-                                ) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(id = habitUI.habit.iconId),
-                                        contentDescription = habitUI.habit.title,
-                                        tint = Color(habitUI.habit.colorRGBA),
+                                        .height(elementHeight.pxToDp()),
+                                    contentAlignment = Alignment.Center) {
+                                    Card(
+                                        shape = RoundedCornerShape(SmallPadding),
+                                        colors = CardDefaults.cardColors(
+                                            contentColor = Color(habitUI.habit.colorRGBA),
+                                            containerColor = Color(habitUI.habit.colorRGBA).copy(alpha = 0.2f).compositeOver(Color.White)
+                                        ),
                                         modifier = Modifier
-                                            .padding(ExtraSmallPadding)
-                                            .size(
-                                                MiddleIconSize
-                                            )
-                                    )
+                                    ) {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(id = habitUI.habit.iconId),
+                                            contentDescription = habitUI.habit.title,
+                                            tint = Color(habitUI.habit.colorRGBA),
+                                            modifier = Modifier
+                                                .padding(ExtraSmallPadding)
+                                                .size(
+                                                    MiddleIconSize
+                                                )
+                                        )
+                                    }
                                 }
+
+
                             }
 
+
+                            var widthDays by remember {
+                                mutableStateOf(0)
+                            }
                             Row(
                                 modifier = Modifier
+                                    .onSizeChanged {
+                                        widthDays = it.width
+                                    }
                                     .padding(ExtraSmallPadding)
                                     .padding(top = MiddlePadding)
                                     .fillMaxWidth(),
@@ -322,9 +337,10 @@ fun HabitsPage(
                                     val isDeadline = date == habitUI.habit.deadline
                                     val isCurrentDate = date == currentDate
 
+                                    val widthDay = widthDays / 8
                                     Column(
                                         horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier.weight(1f)
+                                        modifier = Modifier.width(widthDay.pxToDp())
                                     ) {
                                         Card(
                                             shape = RoundedCornerShape(ExtraSmallPadding),
@@ -381,7 +397,7 @@ fun HabitsPage(
                                                 )
                                             },
                                             enabled = isTarget && isBad || isTarget && isCurrentDate,
-                                            shape = RoundedCornerShape(SmallPadding),
+                                            shape = RoundedCornerShape((widthDay/4).pxToDp()),
                                             colors = CardDefaults.cardColors(
                                                 containerColor = when {
                                                     isDone -> AppTheme.colors.colorIsDone
@@ -407,7 +423,7 @@ fun HabitsPage(
                                                 AppTheme.colors.colorOnPrimary
                                             ) else null,
                                             modifier = Modifier
-                                                .size(LargePadding + SmallPadding)
+                                                .size(widthDay.pxToDp())
                                         ) {
                                             Box(
                                                 modifier = Modifier.fillMaxSize(),

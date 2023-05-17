@@ -23,3 +23,4 @@ class EventNotificationMapperImpl @Inject constructor() :
             dbModel.isDone,
         )
 }
+

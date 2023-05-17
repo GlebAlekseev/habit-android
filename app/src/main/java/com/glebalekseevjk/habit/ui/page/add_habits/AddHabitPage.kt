@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -25,8 +26,10 @@ import com.glebalekseevjk.habit.domain.entity.Habit.Companion.HabitType
 import com.glebalekseevjk.habit.domain.entity.Habit.Companion.HabitType.*
 import com.glebalekseevjk.habit.ui.theme.*
 import com.glebalekseevjk.habit.ui.utils.pxToDp
+import com.glebalekseevjk.habit.ui.widgets.AutoResizeText
+import com.glebalekseevjk.habit.ui.widgets.CustomFlowRow
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun AddHabitPage(
     onNavigateToTemplatesHabits: (Int) -> Unit,
@@ -79,52 +82,107 @@ fun AddHabitPage(
                             widthRow = it.width
                         }
                 ) {
-                    habitsTypeMap.forEach {
-                        val (title, icon, _) = it.value
-                        val (contentColor, backgroundColor) = if (viewStates.habitType == it.key)
-                            Pair(
-                                AppTheme.colors.colorPrimary,
-                                AppTheme.colors.colorOnPrimary
+                    CustomFlowRow(
+                        alignment = Alignment.CenterHorizontally,
+                        horizontalGap = ExtraSmallPadding,
+                        verticalGap = ExtraSmallPadding
+                    ) {
+                        habitsTypeMap.toList().forEach {
+                            val (title, icon, _) = it.second
+                            val (contentColor, backgroundColor) = if (viewStates.habitType == it.first)
+                                Pair(
+                                    AppTheme.colors.colorPrimary,
+                                    AppTheme.colors.colorOnPrimary
+                                )
+                            else Pair(
+                                AppTheme.colors.colorOnPrimary,
+                                AppTheme.colors.colorSecondary
                             )
-                        else Pair(
-                            AppTheme.colors.colorOnPrimary,
-                            AppTheme.colors.colorSecondary
-                        )
-
-                        Card(
-                            onClick = {
-                                viewModel.dispatch(AddHabitViewAction.SetHabitType(it.key))
-                            },
-                            modifier = if (it.key == HARMFUL) Modifier.padding(horizontal = ExtraSmallPadding) else Modifier,
-                            colors = CardDefaults.cardColors(
-                                contentColor = contentColor,
-                                containerColor = backgroundColor
-                            )
-                        ) {
-                            Column(
-                                Modifier
-                                    .background(
-                                        backgroundColor,
-                                        shape = smallRoundedCornerShape
-                                    )
-                                    .padding(SmallPadding),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
+                            Card(
+                                onClick = {
+                                    viewModel.dispatch(AddHabitViewAction.SetHabitType(it.first))
+                                },
+                                modifier = Modifier,
+                                colors = CardDefaults.cardColors(
+                                    contentColor = contentColor,
+                                    containerColor = backgroundColor
+                                )
                             ) {
-                                Icon(
-                                    imageVector = icon,
-                                    contentDescription = title,
-                                    modifier = Modifier
-                                        .padding(vertical = MiddlePadding)
-                                        .size(LargeIconSize),
-                                    tint = contentColor
-                                )
-                                Text(
-                                    text = title.toUpperCase(),
-                                    color = contentColor,
-                                    style = typography.titleSmall
-                                )
+                                Column(
+                                    Modifier
+                                        .background(
+                                            backgroundColor,
+                                            shape = smallRoundedCornerShape
+                                        )
+                                        .padding(SmallPadding),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Icon(
+                                        imageVector = icon,
+                                        contentDescription = title,
+                                        modifier = Modifier
+                                            .padding(vertical = MiddlePadding)
+                                            .size(LargeIconSize),
+                                        tint = contentColor
+                                    )
+                                    AutoResizeText(
+                                        text = title.toUpperCase(),
+                                        color = contentColor,
+                                        style = typography.titleSmall
+                                    )
+                                }
                             }
+                        }
+                    }
+
+                    LazyRow {
+                        items(habitsTypeMap.toList()){
+//                            val (title, icon, _) = it.second
+//                            val (contentColor, backgroundColor) = if (viewStates.habitType == it.first)
+//                                Pair(
+//                                    AppTheme.colors.colorPrimary,
+//                                    AppTheme.colors.colorOnPrimary
+//                                )
+//                            else Pair(
+//                                AppTheme.colors.colorOnPrimary,
+//                                AppTheme.colors.colorSecondary
+//                            )
+//                            Card(
+//                                onClick = {
+//                                    viewModel.dispatch(AddHabitViewAction.SetHabitType(it.first))
+//                                },
+//                                modifier = if (it.first == HARMFUL) Modifier.padding(horizontal = ExtraSmallPadding) else Modifier,
+//                                colors = CardDefaults.cardColors(
+//                                    contentColor = contentColor,
+//                                    containerColor = backgroundColor
+//                                )
+//                            ) {
+//                                Column(
+//                                    Modifier
+//                                        .background(
+//                                            backgroundColor,
+//                                            shape = smallRoundedCornerShape
+//                                        )
+//                                        .padding(SmallPadding),
+//                                    verticalArrangement = Arrangement.Center,
+//                                    horizontalAlignment = Alignment.CenterHorizontally
+//                                ) {
+//                                    Icon(
+//                                        imageVector = icon,
+//                                        contentDescription = title,
+//                                        modifier = Modifier
+//                                            .padding(vertical = MiddlePadding)
+//                                            .size(LargeIconSize),
+//                                        tint = contentColor
+//                                    )
+//                                    AutoResizeText(
+//                                        text = title.toUpperCase(),
+//                                        color = contentColor,
+//                                        style = typography.titleSmall
+//                                    )
+//                                }
+//                            }
                         }
                     }
                 }

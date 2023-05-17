@@ -25,6 +25,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.glebalekseevjk.habit.ui.common.BottomNavRoute
 import com.glebalekseevjk.habit.ui.common.navigateTo
 import com.glebalekseevjk.habit.ui.theme.*
+import com.glebalekseevjk.habit.ui.widgets.AutoResizeText
 
 @Composable
 fun BottomNavigateBar(navController: NavHostController, isVisible: Boolean = true) {
@@ -70,10 +71,10 @@ private fun BottomNavigateBarContent(navController: NavHostController) {
                     )
                 },
                 label = {
-                    Text(
+                    AutoResizeText(
                         text = stringResource(screen.stringId),
                         style = typography.titleMedium,
-                        modifier = Modifier
+                        modifier = Modifier,
                     )
                 },
                 selected = currentDestination?.hierarchy?.any { it.route == screen.routeName } == true,

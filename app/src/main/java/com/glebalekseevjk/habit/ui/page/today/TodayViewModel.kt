@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 
@@ -62,11 +63,23 @@ class TodayViewModel @Inject constructor(
                                             eventNotificationList = eventNotificationList.filter { it.habitId == habit.id }
                                         )
                                     }
-                                    if (habitUIList.isEmpty()){
+
+                                    // Выбрать ивенты на сегодня
+                                    val eventsToday = habitUIList.flatMap { it.eventNotificationList }
+                                        .filter { it.date.toLocalDate().isEqual(LocalDate.now()) }
+                                    val grouped = eventsToday.groupBy { it.habitId }
+                                    val itemsToday = grouped.map { map ->
+                                        Pair(
+                                            habitUIList.filter { it.habit.id == map.key }.first(),
+                                            map.value.first()
+                                        )
+                                    }
+
+                                    if (itemsToday.isEmpty()){
                                         viewStates = TodayViewState.Empty
                                     }else{
                                         viewStates = TodayViewState.Loaded(
-                                            habitUIList,
+                                            itemsToday,
                                             if (viewStates is TodayViewState.Loaded) (viewStates as TodayViewState.Loaded).lazyListState else LazyListState(),
                                         )
                                     }
@@ -110,7 +123,7 @@ sealed class TodayViewState {
     object Failure : TodayViewState()
     object Empty : TodayViewState()
     data class Loaded(
-        val habitList: List<HabitUI>,
+        val habitList: List<Pair<HabitUI, EventNotification>>,
         val lazyListState: LazyListState
     ) : TodayViewState()
 }

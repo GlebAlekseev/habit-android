@@ -21,6 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.glebalekseevjk.habit.ui.page.habits.HabitsViewAction
+import com.glebalekseevjk.habit.ui.page.habits.HabitsViewState
 import com.glebalekseevjk.habit.ui.theme.*
 
 @Composable
@@ -32,7 +34,9 @@ fun TemplatesHabitsPage(
     val viewStates = viewModel.viewStates
 
     LaunchedEffect(Unit) {
-        viewModel.dispatch(TemplatesViewAction.InitTemplates(categoryId))
+        if (viewStates is TemplatesViewState.Init) {
+            viewModel.dispatch(TemplatesViewAction.InitTemplates(categoryId))
+        }
     }
 
     when (viewStates) {

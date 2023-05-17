@@ -57,13 +57,6 @@ class EventNotificationUseCase @Inject constructor(
         }
     }
 
-
-    //    suspend fun addEventNotification(eventNotification: EventNotification): Resource<Unit> =
-//        eventNotificationRepository.addEventNotification(eventNotification)
-//
-//    suspend fun doneEventNotification(eventNotificationId: Int): Resource<Unit> =
-//        eventNotificationRepository.doneEventNotification(eventNotificationId)
-//
     suspend fun toggleIsDoneEventNotification(
         eventNotification: EventNotification,
         onCancelNotification: (EventNotification) -> Unit,
@@ -83,24 +76,9 @@ class EventNotificationUseCase @Inject constructor(
         return Resource.Success(Unit)
     }
 
-
-    //
-//    suspend fun cancelEventNotification(eventNotificationId: Int): Resource<Unit> =
-//        eventNotificationRepository.cancelEventNotification(eventNotificationId)
-//
-//    suspend fun removeEventNotification(eventNotificationId: Int): Resource<Unit> =
-//        eventNotificationRepository.removeEventNotification(eventNotificationId)
-//
-//    suspend fun removeEventNotificationForHabit(habitId: Int): Resource<Unit> =
-//        eventNotificationRepository.removeEventNotificationForHabit(habitId)
-//
     suspend fun getEventNotification(eventNotificationId: Int): Resource<EventNotification> =
         eventNotificationRepository.getEventNotification(eventNotificationId)
 
-//    suspend fun getEventNotificationListForHabit(habitId: Int): Resource<List<EventNotification>> =
-//        eventNotificationRepository.getEventNotificationListForHabit(habitId)
-
-    //
     suspend fun getEventNotificationList(): Resource<Flow<List<EventNotification>>> =
         eventNotificationRepository.getEventNotificationList()
 

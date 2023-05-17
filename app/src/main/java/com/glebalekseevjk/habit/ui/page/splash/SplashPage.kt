@@ -47,13 +47,13 @@ fun SplashPage(onNextPage: () -> Unit) {
         ) {
             Box(
                 modifier = Modifier
-                    .offset(LocalConfiguration.current.screenWidthDp.dp / 2, 0.dp)
+                    .offset((LocalConfiguration.current.screenWidthDp / 2.1).toInt().dp, 0.dp)
                     .fillMaxSize()
                     .background(AppTheme.colors.colorPrimary)
             )
             Box(
                 modifier = Modifier
-                    .offset(-LocalConfiguration.current.screenWidthDp.dp / 2, 0.dp)
+                    .offset((-LocalConfiguration.current.screenWidthDp / 2.1).toInt().dp, 0.dp)
                     .fillMaxSize()
                     .background(AppTheme.colors.colorPrimary)
             )

@@ -14,6 +14,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.glebalekseevjk.habit.R
 import com.glebalekseevjk.habit.ui.theme.*
+import com.glebalekseevjk.habit.ui.widgets.AutoResizeText
 
 
 @Composable
@@ -47,7 +48,7 @@ fun StepTopBar(title: String, lang: String? = null, onBack: () -> Unit) {
                     )
                 }
 
-                Text(
+                AutoResizeText(
                     text = title.toUpperCase(),
                     style = typography.headlineLarge,
                     color = AppTheme.colors.colorOnPrimary,

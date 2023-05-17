@@ -117,7 +117,7 @@ internal fun KalendarMonth(
                                             colors = CardDefaults.cardColors(
                                                 containerColor = if (isSelected) AppTheme.colors.colorPrimary else AppTheme.colors.colorOnPrimary,
                                             ),
-                                            modifier = Modifier.offset(-16.dp,12.dp)
+                                            modifier = Modifier.offset(-8.dp,6.dp)
                                         ) {
                                             Text(
                                                 text = it.counter.toString(),
