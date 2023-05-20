@@ -69,20 +69,6 @@ data class Category(
                 iconId = R.drawable.ic_categories_leisure,
                 colorRGBA = Color(0xFF8675a9).toArgb(),
             ),
-            Category(
-                id = 9,
-                titleStringId = R.string.categories_budget_title,
-                descriptionStringId = R.string.categories_budget_description,
-                iconId = R.drawable.ic_categories_budget,
-                colorRGBA = Color(0xFFF8BA2D).toArgb(),
-            ),
-            Category(
-                id = 10,
-                titleStringId = R.string.categories_pets_title,
-                descriptionStringId = R.string.categories_pets_description,
-                iconId = R.drawable.ic_categories_pets,
-                colorRGBA = Color(0xFFffa36c).toArgb(),
-            ),
         )
     }
 }

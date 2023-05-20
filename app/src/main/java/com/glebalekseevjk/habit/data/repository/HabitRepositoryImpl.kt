@@ -27,7 +27,6 @@ class HabitRepositoryImpl @Inject constructor(
             val id = habitDao.insert(item)
             Resource.Success(id)
         }
-
     override suspend fun removeHabit(habitId: Int): Resource<Unit> =
         withContext(Dispatchers.IO) {
             try {
@@ -37,7 +36,6 @@ class HabitRepositoryImpl @Inject constructor(
                 Resource.Failure(NoSuchElementException())
             }
         }
-
     override suspend fun getHabit(habitId: Int): Resource<Habit> = withContext(Dispatchers.IO) {
         val result = habitDao.get(habitId)
         if (result == null) {
@@ -46,7 +44,6 @@ class HabitRepositoryImpl @Inject constructor(
             Resource.Success(mapper.mapDbModelToItem(result))
         }
     }
-
     override suspend fun getHabitList(): Resource<Flow<List<Habit>>> {
         val result = habitDao.getAll()
         val flow = result.asFlow().map { it.map { mapper.mapDbModelToItem(it) } }
